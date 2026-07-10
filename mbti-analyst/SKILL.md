@@ -1,6 +1,6 @@
 ---
 name: mbti-analyst
-description: Use when the user provides Jungian 8-function cognitive scores (荣格八维), MBTI test results, or asks about 人格分析 / 认知功能 / 依恋类型 / 恋爱适配 / 八维分析 / 荣格分析. Also trigger on data from soulstation.club/8function. Chinese keywords: 八维, MBTI, 荣格, 人格分析, 依恋, 恋爱适配, 认知功能, 适配性, 荣格八维.
+description: "Use when the user provides Jungian 8-function cognitive scores (荣格八维), MBTI test results, or asks about 人格分析 / 认知功能 / 依恋类型 / 恋爱适配 / 八维分析 / 荣格分析. Also trigger on data from soulstation.club/8function. Chinese keywords: 八维, MBTI, 荣格, 人格分析, 依恋, 恋爱适配, 认知功能, 适配性, 荣格八维."
 ---
 
 # MbtiAnalyst — 认知功能人格分析与恋爱适配
