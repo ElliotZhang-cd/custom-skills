@@ -11,9 +11,23 @@
 type: concept | entity | synthesis
 tags: []
 created: YYYY-MM-DD
-sources: []     # 与正文「来源」段对应
+sources: []     # 与正文「来源」段对应（本字段由 scripts/sync_sources.py 自动生成，请勿手写）
 ---
 ```
+
+> ⛔ 禁止字段：`source_count`、`updated`——派生物，真相源分别是 sources 数组和 git。曾两次根除又回潮（2026-06-24、2026-07-20），写入前确认不含。
+
+## 来源段格式（当前约定）
+
+| 类型 | 格式 | 示例 |
+|------|------|------|
+| raw 文件 | `[[wikilink]]`（带 .md 扩展名） | `[[raw/webpages/foo.md]]` |
+| 外部 URL | `[描述](url)` | `[GitHub](https://github.com/...)` |
+| 本地路径 | 反引号 | `` `~/.agents/skills/` `` |
+| 原创观察 | 文字标记 | `原创观察` |
+
+> ⛔ 禁止裸 URL（`- https://...`）和 md 链接写法（`- [](raw/...)`）；统一使用上表格式。
+> 闭环：LLM 按此格式写「来源」段 → `scripts/sync_sources.py` 按此格式提取生成 frontmatter `sources`。
 
 ## 正文结构（当前约定）
 
