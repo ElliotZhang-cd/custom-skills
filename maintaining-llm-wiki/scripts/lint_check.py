@@ -24,7 +24,20 @@ DIRS = {"concepts": "concept", "entities": "entity", "syntheses": "synthesis"}
 
 # 用户确认跳过的单向链接对（A→B 无回链被接受）。lint 确认残留后追加到此。
 KNOWN_ONEWAY = frozenset({
-    # ("a-page", "b-page"),
+    # graph-engineering 引用的旧页面（叶子→枢纽，不强求回链）
+    ("graph-engineering", "ai-friendly-project"),
+    ("graph-engineering", "harness-self-improvement"),
+    ("graph-engineering", "hermes-agent"),
+    ("graph-engineering", "mcp-model-context-protocol"),
+    ("graph-engineering", "skill-self-evolution"),
+    ("graph-engineering", "zhipu-ai"),
+    # agent-skills-best-practices 引用的旧页面
+    ("agent-skills-best-practices", "agent-skills-checklist"),
+    ("agent-skills-best-practices", "general-prompt-writing-guide"),
+    ("agent-skills-best-practices", "karpathy-skills-plugin"),
+    ("agent-skills-best-practices", "openskills"),
+    ("agent-skills-best-practices", "prompt-engineering"),
+    ("agent-skills-best-practices", "superpowers"),
 })
 
 # 用户确认的孤立页（入链少属有意独立，非缺陷）。

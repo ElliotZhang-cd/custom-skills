@@ -19,7 +19,8 @@ wiki_sync 已强制 sources/格式/标签/页脚一致，lint_check 保留作绊
 2. 完整报告一次性呈现（按严重程度排列）
 3. 用户确认修复范围 → 批量修复
 4. 修复后重跑脚本 + 一次性验证全部项
-5. 确认零问题后单次 `git commit -m "[lint] 标题"`
+5. 追加 log.md（格式见 `references/log-format.md`；操作类型 `lint`）
+6. 确认零问题后单次 `git commit -m "[lint] 标题"`
 
 ## 检查项分工
 
@@ -48,3 +49,10 @@ wiki_sync 已强制 sources/格式/标签/页脚一致，lint_check 保留作绊
 - 不自动删除任何内容
 - 修复前需用户确认
 - 发现矛盾 → 按 Ingest 矛盾处理执行（保留双方 + contested:true + 告知用户）
+
+## 验收标准
+
+- ✅ wiki_sync 无 diff + lint_check 零 ERROR
+- ✅ log.md 已追加（lint 类型）
+- ✅ 单次 commit 且 diff 符合预期
+- ✅ 规则未覆盖的情形 → 停下，向用户说明现状与选项，等确认后再继续
