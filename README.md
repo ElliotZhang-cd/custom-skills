@@ -42,6 +42,29 @@
 
 ## 维护
 
-- 自建技能在 `~/.agents/skills/<name>`（git 仓库根），修改后 `git add/commit/push`
-- 第三方技能：`npx skills install <name>` 安装/更新，各自环境独立
+### 架构
+
+- 本仓库（`~/custom-skills/`）= 4 个自建 skill 的唯一真相源
+- 分发：`~/.agents/skills/` → `~/.claude/skills/` 全为符号链接，改本仓库即刻全局生效
+- GitHub remote（`ElliotZhang-cd/custom-skills`）= 备份真相源，push 是备份不是分发
+
+### 铁律
+
+1. 自建 skill 绝不进入 openskills 账本（`~/.agents/.skill-lock.json` 只含第三方）；不对自建 skill 跑 `openskills update`（会毁掉链接）
+2. `npx skills` 只做发现（`npx skills find`），不做任何写入
+3. 编辑只发生在本仓库，不编辑 `~/.claude/skills/` 下的任何目录（全是链接，防止改错副本）
+4. 维护面 = 使用面：只维护 opencode + claude 两条链路
+
+### 更新自建
+
+```bash
+vim <skill>/...                                    # 编辑真相源，立即生效
+git add -A && git commit -m "[skill] 变更说明"
+git -c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY push origin master
+```
+
+### 第三方（openskills 管理，不入本仓库）
+
+- 引入：`npx skills find xxx`（发现）→ `npx openskills install owner/repo -y` → `npx openskills sync`
+- 更新：发现问题 `npx openskills update <name>`；季度全量 `npx openskills update -y`
 - 行尾：`.gitattributes` 强制 LF，避免 Windows 检出 CRLF
