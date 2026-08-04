@@ -24,25 +24,21 @@ DIRS = {"concepts": "concept", "entities": "entity", "syntheses": "synthesis"}
 
 # 用户确认跳过的单向链接对（A→B 无回链被接受）。lint 确认残留后追加到此。
 KNOWN_ONEWAY = frozenset({
-    # graph-engineering 引用的旧页面（叶子→枢纽，不强求回链）
-    ("graph-engineering", "ai-friendly-project"),
-    ("graph-engineering", "harness-self-improvement"),
-    ("graph-engineering", "hermes-agent"),
-    ("graph-engineering", "mcp-model-context-protocol"),
-    ("graph-engineering", "skill-self-evolution"),
-    ("graph-engineering", "zhipu-ai"),
-    # agent-skills-best-practices 引用的旧页面
-    ("agent-skills-best-practices", "agent-skills-checklist"),
-    ("agent-skills-best-practices", "general-prompt-writing-guide"),
-    ("agent-skills-best-practices", "karpathy-skills-plugin"),
-    ("agent-skills-best-practices", "openskills"),
-    ("agent-skills-best-practices", "prompt-engineering"),
-    ("agent-skills-best-practices", "superpowers"),
+    # 2026-08-04 起改为 cap 规则化：目标页「相关」段满 10 条（REL_CAP）自动豁免单向，
+    # 本清单只保留"目标未满 cap 但有意单向"的真特例（当前无）。
 })
 
-# 用户确认的孤立页（入链少属有意独立，非缺陷）。
 KNOWN_ORPHAN = frozenset({
     "English-level-up-tips",  # 2026-07-21 用户裁定：独立岛页，无需强加关联
+    # 2026-08-04 全库链接审计（横纵分类法+上限10）后：叶子页入链自然减少，入链 1-2 属常态，非缺陷
+    "academic-research-skills",
+    "cc-switch",
+    "claude-code-web-fetch-preflight",
+    "hermes-agent-orange-book",
+    "playwright-cli",
+    "winget",
+    "world-model-survey",
+    "zleap-agent-harness-design",
 })
 
 # 用户确认的 sources 特例（fm 与来源段有意不一一对应）。
@@ -190,10 +186,23 @@ for n, ls in out.items():
 for name in sorted(pages):
     if inlinks[name] <= 2 and name not in KNOWN_ORPHAN:
         infos.append(f"[孤立页] {pages[name]['dir']}/{name}.md 入链={inlinks[name]}")
+
+# 「相关」段链接数（cap 判定：满 10 条即无回链空间，单向豁免）
+REL_CAP = 10
+def rel_count(name):
+    text = pages[name]["text"]
+    seg = re.search(r"^## 相关\n(.*?)(?=^## |\Z)", text, re.M | re.S)
+    if not seg:
+        return 0
+    return len(re.findall(r"^\- \[\[", seg.group(1), re.M))
+rel_cnt = {n: rel_count(n) for n in pages}
+
 for a in sorted(out):
     for b in sorted(out[a]):
         if a not in out.get(b, set()) and (a, b) not in KNOWN_ONEWAY and (b, a) not in KNOWN_ONEWAY:
-            infos.append(f"[单向] {a} → {b}（{b} 无回链）")
+            if rel_cnt.get(b, 0) >= REL_CAP:
+                continue  # 目标页相关段已满 cap，无法回链 → 自动豁免
+            infos.append(f"[单向] {a} → {b}（{b} 无回链，相关段 {rel_cnt.get(b, 0)}/{REL_CAP}）")
 
 # ---------- 检查 7: log 行数 + git 脏工作区（INFO） ----------
 log_path = f"{W}/log.md"
