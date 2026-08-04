@@ -68,3 +68,10 @@ git -c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY push origin master
 - 引入：`npx skills find xxx`（发现）→ `npx openskills install owner/repo -y` → `npx openskills sync`
 - 更新：发现问题 `npx openskills update <name>`；季度全量 `npx openskills update -y`
 - 行尾：`.gitattributes` 强制 LF，避免 Windows 检出 CRLF
+
+### Windows 侧同步（hermes / workbuddy）
+
+- 机制：GitHub 中转（WSL 为准，不软链接）
+- WSL push 后 → Windows 运行 `C:\Users\elliot\sync-custom-skills.bat`（pull 到 `C:\Users\elliot\custom-skills`）
+- hermes：`skills.external_dirs: ["C:/Users/elliot/custom-skills"]`（config.yaml），pull 后自动加载
+- workbuddy：`C:\Users\elliot\.workbuddy\skills\` 手动同步或依赖其自身机制
