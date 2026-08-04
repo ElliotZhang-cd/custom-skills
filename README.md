@@ -72,6 +72,6 @@ git -c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY push origin master
 ### Windows 侧同步（hermes / workbuddy）
 
 - 机制：GitHub 中转（WSL 为准，不软链接）
-- WSL push 后 → Windows 运行 `C:\Users\elliot\sync-custom-skills.bat`（pull 到 `C:\Users\elliot\custom-skills`）
-- hermes：`skills.external_dirs: ["C:/Users/elliot/custom-skills"]`（config.yaml），pull 后自动加载
-- workbuddy：`C:\Users\elliot\.workbuddy\skills\` 手动同步或依赖其自身机制
+- WSL push 后 → Windows 运行 `sync-custom-skills.bat`（一键：git pull 到 `C:\Users\elliot\custom-skills` + 自动分发到 workbuddy + 校验 hermes 配置）
+- hermes：`skills.external_dirs: ["C:/Users/elliot/custom-skills"]`（config.yaml）——直接读仓库，无需复制（local 优先，复制会遮蔽更新）
+- workbuddy：`C:\Users\elliot\.workbuddy\skills\` 由 bat 脚本 robocopy 分发（保留 `_user_meta.json`）
