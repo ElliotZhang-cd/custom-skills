@@ -8,6 +8,7 @@
 4. index     页脚计数 vs 文件系统；wiki/raw 文件全部登记
 5. sources   frontmatter sources 与正文「来源」段一一对应
 6. 互链      孤立页（入链 ≤2）+ 单向链接（A→B 但 B 不回链）
+7. 页面大小  超长页（>PAGE_CAP 行）提示拆分候选（豁免录 KNOWN_OVERSIZE）
 
 用法: python3 lint_check.py [wiki_root]
   wiki_root 可选，默认平台自识别（见 wiki_paths.py）
@@ -45,6 +46,12 @@ KNOWN_ORPHAN = frozenset({
 # 用户确认的 sources 特例（fm 与来源段有意不一一对应）。
 KNOWN_SOURCES_EXCEPTION = frozenset({
     # "page-name",  # 原因
+})
+
+# 用户确认豁免的超长页（>PAGE_CAP 但拆分无增益，如清单型页面）。
+PAGE_CAP = 200  # 超过提示拆分候选（[I] 级，用户裁决；与内置 llm-wiki 阈值对齐）
+KNOWN_OVERSIZE = frozenset({
+    "wsl-environment-snapshot",  # 2026-08-05 用户裁定：环境清单型内容，拆分无增益
 })
 
 errors, infos = [], []
@@ -205,7 +212,15 @@ for a in sorted(out):
                 continue  # 目标页相关段已满 cap，无法回链 → 自动豁免
             infos.append(f"[单向] {a} → {b}（{b} 无回链，相关段 {rel_cnt.get(b, 0)}/{REL_CAP}）")
 
-# ---------- 检查 7: log 行数 + git 脏工作区（INFO） ----------
+# ---------- 检查 7: 页面大小（INFO） ----------
+for name, p in sorted(pages.items()):
+    if name in KNOWN_OVERSIZE:
+        continue
+    n = p["text"].count("\n") + 1
+    if n > PAGE_CAP:
+        infos.append(f"[超长页] {p['dir']}/{name}.md {n} 行（>{PAGE_CAP}），建议拆分子页或移 raw 留蒸馏骨架（豁免录 KNOWN_OVERSIZE）")
+
+# ---------- 检查 8: log 行数 + git 脏工作区（INFO） ----------
 log_path = f"{W}/log.md"
 if os.path.isfile(log_path):
     log_lines = sum(1 for _ in open(log_path, encoding="utf-8"))

@@ -14,7 +14,8 @@
 
 ## 处理异常
 
-- **矛盾**：不覆盖，保留双方 + frontmatter `contested: true` + 告知用户
+- **矛盾**：机械矛盾（口径/数字/标题不一致）→ 直接修复 + log 记录；语义矛盾（来源观点冲突）→ 不覆盖，保留双方 + frontmatter `contested: true` + 告知用户
+- **同 URL 重入库**：先与 `git show HEAD:raw/对应文件` 比对，有差异先报告（漂移检测不建脚本，人工比对成本为零）
 - **不完整**：标注「待补充」+ `status: incomplete`，不强下结论
 
 ## 验收标准
