@@ -20,9 +20,21 @@ if not exist "%REPO%\.git" (
 
 echo [1/3] pulling latest from GitHub...
 cd /d "%REPO%"
+set "DIRTY="
+git diff --quiet --exit-code
+if errorlevel 1 set "DIRTY=1"
+git diff --cached --quiet --exit-code
+if errorlevel 1 set "DIRTY=1"
+if defined DIRTY (
+    echo [sync] 错误: 仓库有本地未提交修改，--ff-only pull 会被拒绝:
+    git status --short
+    echo [sync] 处理: 改动已在远端则 git checkout -- . 丢弃；否则 git stash
+    pause
+    exit /b 1
+)
 git pull --ff-only origin master
 if !errorlevel! neq 0 (
-    echo [sync] pull 失败，请检查网络/代理
+    echo [sync] pull 失败（已排除本地修改干扰），请检查网络/代理
     pause
     exit /b 1
 )
