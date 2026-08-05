@@ -6,10 +6,12 @@
 提取顺序：raw 路径 → URL → 本地路径 → 原创观察标记。
 
 用法: python3 sync_sources.py [wiki_root]
+  wiki_root 可选，默认平台自识别（见 wiki_paths.py）
 """
 import os, re, glob, sys
+from wiki_paths import default_wiki_root
 
-W = sys.argv[1] if len(sys.argv) > 1 else "/mnt/c/Users/elliot/Documents/LLMWiki"
+W = sys.argv[1] if len(sys.argv) > 1 else default_wiki_root()
 DIRS = ["concepts", "entities", "syntheses"]
 
 

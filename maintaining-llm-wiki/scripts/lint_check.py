@@ -10,7 +10,7 @@
 6. 互链      孤立页（入链 ≤2）+ 单向链接（A→B 但 B 不回链）
 
 用法: python3 lint_check.py [wiki_root]
-  wiki_root 默认 /mnt/c/Users/elliot/Documents/LLMWiki
+  wiki_root 可选，默认平台自识别（见 wiki_paths.py）
 
 输出分两级：
   [E] ERROR — 机械可判定、应修复（检查 1-5）
@@ -18,8 +18,9 @@
 退出码: 0 = 无 ERROR, 1 = 有 ERROR
 """
 import os, re, glob, sys, collections
+from wiki_paths import default_wiki_root
 
-W = sys.argv[1] if len(sys.argv) > 1 else "/mnt/c/Users/elliot/Documents/LLMWiki"
+W = sys.argv[1] if len(sys.argv) > 1 else default_wiki_root()
 DIRS = {"concepts": "concept", "entities": "entity", "syntheses": "synthesis"}
 
 # 用户确认跳过的单向链接对（A→B 无回链被接受）。lint 确认残留后追加到此。

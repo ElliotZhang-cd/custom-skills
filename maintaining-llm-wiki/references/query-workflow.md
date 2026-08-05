@@ -6,8 +6,8 @@
 
 按序执行，命中足够即停：
 
-1. `grep -in "关键词" /mnt/c/Users/elliot/Documents/LLMWiki/index.md` — 表格过滤定位页面
-2. `grep -rn "关键词" /mnt/c/Users/elliot/Documents/LLMWiki/wiki/ --include='*.md'` — 限定 wiki/ 目录精搜
+1. 定位页面（WSL: `grep -in "关键词" /mnt/c/Users/<用户名>/Documents/LLMWiki/index.md`；Windows: `Select-String -Path "$env:USERPROFILE\Documents\LLMWiki\index.md" -Pattern "关键词"`）— 表格过滤定位页面
+2. 精搜（WSL: `grep -rn "关键词" /mnt/c/Users/<用户名>/Documents/LLMWiki/wiki/ --include='*.md'`；Windows: `Get-ChildItem "$env:USERPROFILE\Documents\LLMWiki\wiki" -Recurse -Filter *.md \| Select-String "关键词"`）— 限定 wiki/ 目录精搜
 3. 命中 >10 页 → 回 index.md 按标签收敛，再精读
 4. `raw/` 不做全文检索；仅当需要溯源验证 wiki 断言时，按 index 登记路径精读单个文件
 5. `log.md` 排除出检索对象（操作记录，非知识内容）

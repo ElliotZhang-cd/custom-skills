@@ -2,13 +2,14 @@
 """派生数据同步入口：sync_sources → rebuild_tags。
 
 用法: python3 wiki_sync.py [wiki_root]
-  wiki_root 默认 /mnt/c/Users/elliot/Documents/LLMWiki
+  wiki_root 可选，默认平台自识别（见 wiki_paths.py）
 
 退出码 = 各子脚本退出码的按位或（0 = 全部成功）。
 """
 import os, sys, subprocess
+from wiki_paths import default_wiki_root
 
-W = sys.argv[1] if len(sys.argv) > 1 else "/mnt/c/Users/elliot/Documents/LLMWiki"
+W = sys.argv[1] if len(sys.argv) > 1 else default_wiki_root()
 SKILL_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def run(name):

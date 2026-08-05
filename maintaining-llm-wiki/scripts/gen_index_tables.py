@@ -8,10 +8,12 @@
 - 页脚计数与标签索引由 rebuild_tags.py 处理，本脚本不碰。
 
 用法: python3 gen_index_tables.py [wiki_root]
+  wiki_root 可选，默认平台自识别（见 wiki_paths.py）
 """
 import os, re, glob, sys, subprocess
+from wiki_paths import default_wiki_root
 
-W = sys.argv[1] if len(sys.argv) > 1 else "/mnt/c/Users/elliot/Documents/LLMWiki"
+W = sys.argv[1] if len(sys.argv) > 1 else default_wiki_root()
 IDX = f"{W}/index.md"
 
 TYPE_MAP = {

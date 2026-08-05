@@ -15,6 +15,6 @@
 | 2026-07-14 | 过度约束格式 | 违背 Karpathy "optional and modular" 原则 | 所有格式降级为"当前约定"，明确 co-evolve |
 | 2026-07-14 | description 不是触发条件 | 模型无法判断是否该加载 skill | description 改为触发词列表 |
 | 2026-07-20 | source_count/updated 根除后两次回潮 | "已根除"规则只写进 log.md 历史档案，ingest 上下文不可见，LLM 被 Obsidian 先验自动补全 | 禁止规则写在生成点（note-format.md 模板注释），不靠 checklist（**已由 lint_check.py 脚本绊线**） |
-| 2026-07-21 | edit 工具 oldString 在 frontmatter 与正文重复时误匹配 | frontmatter 的 `sources:` 行与正文「来源」段含相同 URL，replace 命中 frontmatter，污染 YAML | 编辑前 grep oldString 全文确认唯一性；优先使用更长上下文锚定 |
+| 2026-07-21 | edit 工具 oldString 在 frontmatter 与正文重复时误匹配 | frontmatter 的 `sources:` 行与正文「来源」段含相同 URL，replace 命中 frontmatter，污染 YAML | 编辑前搜索 oldString 全文确认唯一性；优先使用更长上下文锚定 |
 | 2026-07-23 | git clone/push 超时，但 curl 能访问 GitHub | 环境变量 `HTTPS_PROXY` 存在，git-remote-https 不自动继承代理；直连 GitHub 不可达 | git 命令显式 `-c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY`（**已内联至 SKILL.md 入口表备注**） |
 | 2026-08-04 | 页面提炼质量不稳定（不够全面/抓不住重点） | skill 只有格式骨架、缺内容蒸馏标准与核对环节 | note-format.md 蒸馏规范四条 + ingest 核对步骤（强制） |

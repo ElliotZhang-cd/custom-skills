@@ -5,7 +5,11 @@ description: 维护 LLM Wiki 知识库（入库/查询/lint/派生同步）。Wh
 
 # Maintaining LLM Wiki — 知识库维护
 
-知识库根目录：`C:\Users\elliot\Documents\LLMWiki`（WSL操作时转 `/mnt/c/...`）
+## 📍 路径解析规则（双平台自识别）
+
+- **知识库根目录**：Windows `%USERPROFILE%\Documents\LLMWiki`（如 `C:\Users\elliot\Documents\LLMWiki`）；WSL 转 `/mnt/c/Users/<Windows用户名>/Documents/LLMWiki`
+- **脚本**（scripts/*.py）：默认自动识别平台与根目录（共享 `scripts/wiki_paths.py`），零配置；也可显式传 `[wiki_root]` 覆盖
+- **运行脚本**：在 skill 目录下执行——WSL 用 `python3 scripts/xxx.py`，Windows 用 `python scripts\xxx.py`
 
 ## 🔒 硬约束（4条，不可违反）
 

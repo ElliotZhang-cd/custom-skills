@@ -3,13 +3,14 @@
 同时重建页脚「最后更新」行（计数 + 日期），消除手工派生数据。
 
 用法: python3 rebuild_tags.py [wiki_root]
-  wiki_root 默认 /mnt/c/Users/elliot/Documents/LLMWiki
+  wiki_root 可选，默认平台自识别（见 wiki_paths.py）
 
 配套 lint 检查: 运行后不产生 diff 即说明索引无漂移。
 """
-import os, re, glob, sys, collections, subprocess
+import os, re, glob, sys, collections, datetime
+from wiki_paths import default_wiki_root
 
-W = sys.argv[1] if len(sys.argv) > 1 else "/mnt/c/Users/elliot/Documents/LLMWiki"
+W = sys.argv[1] if len(sys.argv) > 1 else default_wiki_root()
 DIRS = {"concepts": "concept", "entities": "entity", "syntheses": "synthesis"}
 
 tags = collections.defaultdict(list)
@@ -51,7 +52,7 @@ else:
     print("标签索引无漂移")
 
 # 重建页脚
-date = subprocess.run(['date', '+%F'], capture_output=True, text=True).stdout.strip()
+date = datetime.date.today().isoformat()
 raw_count = len(glob.glob(f"{W}/raw/**/*.md", recursive=True))
 total = sum(counts.values())
 footer = f"*最后更新：{date} | wiki 页面：{counts['concepts']} concepts + {counts['entities']} entities + {counts['syntheses']} syntheses = {total} | 原始资料：{raw_count}*"

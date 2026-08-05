@@ -5,6 +5,7 @@
 ## 步骤 0：派生数据重建（先跑，不手扫）
 
 ```bash
+# 在 skill 目录下执行；WSL 用 python3，Windows 用 python
 python3 scripts/wiki_sync.py         # sync_sources + rebuild_tags（修复派生数据）
 python3 scripts/lint_check.py        # 6 项机械检查（仅绊线，wiki_sync 已覆盖大部分）
 git status --porcelain               # 脏工作区检测（忘 commit 兜底）
