@@ -82,7 +82,7 @@ def build_table(idx, d, headers):
     return "\n".join(rows)
 
 def build_raw_table(idx):
-    raw_files = sorted(os.path.relpath(f, W) for f in glob.glob(f"{W}/raw/**/*.md", recursive=True))
+    raw_files = sorted(os.path.relpath(f, W).replace("\\", "/") for f in glob.glob(f"{W}/raw/**/*.md", recursive=True))
     old = parse_table(idx, "原始资料表", 3)
     rows = []
     for rf in raw_files:

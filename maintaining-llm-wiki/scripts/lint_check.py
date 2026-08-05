@@ -101,7 +101,7 @@ for name, p in sorted(pages.items()):
 # ---------- 检查 4: index 一致性 ----------
 idx = open(f"{W}/index.md", encoding="utf-8").read()
 actual = {d: len(glob.glob(f"{W}/wiki/{d}/*.md")) for d in DIRS}
-raw_files = sorted(os.path.relpath(f, W) for f in glob.glob(f"{W}/raw/**/*.md", recursive=True))
+raw_files = sorted(os.path.relpath(f, W).replace("\\", "/") for f in glob.glob(f"{W}/raw/**/*.md", recursive=True))
 fm_m = re.search(r"wiki 页面：(\d+) concepts \+ (\d+) entities \+ (\d+) syntheses = (\d+) \| 原始资料：(\d+)", idx)
 if not fm_m:
     errors.append("[index] 页脚计数行缺失或格式不符")
