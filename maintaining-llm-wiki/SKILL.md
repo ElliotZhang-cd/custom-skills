@@ -28,7 +28,7 @@ description: 维护 LLM Wiki 知识库（入库/查询/lint/派生同步）。Wh
 |**派生同步**|重建派生数据|`scripts/wiki_sync.py`（= sync_sources + rebuild_tags）|
 |**索引重建**|index 三表/原始资料表乱序或漏登|`scripts/gen_index_tables.py`（三表骨架自动，简述列 LLM 补写）|
 
-> 备注：知识库有 GitHub remote（origin）。push/clone/pull 跑不通时，显式加 `-c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY`（git 不自动继承代理）；commit 为本地操作，无需代理。
+> 备注：知识库有 GitHub remote（origin）。本机 `~/.gitconfig` 已配置 `http(s).proxy = http://127.0.0.1:7890`，直接 push/pull 即可；跑不通时可能的解法：显式 `-c http.proxy=<代理地址> -c https.proxy=<代理地址>`（注意 shell 的 `$HTTPS_PROXY` 通常为空，`-c http.proxy=$HTTPS_PROXY` 传空值会覆盖 .gitconfig 有效代理导致失败，代理地址要写实际值）；commit 为本地操作，无需代理。
 
 ## 🔁 协同进化（co-evolve）
 
