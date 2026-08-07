@@ -4,7 +4,7 @@
 > 安装状态以 `hermes skills list` 为准；本文档只补静态字段（description / source / howtoinstall），装/卸技能时顺手更新。
 > 与 `README.md`（WSL 侧，opencode/claude 链路）互为镜像：README 管自建 4 个 + openskills 第三方，本文档管 Hermes（Windows）侧。
 
-## 当前收录（4）
+## 当前收录（5）
 
 ### 1. guizang-ppt-skill — 归藏网页 PPT
 
@@ -50,6 +50,18 @@
 - **description**：把书/长视频/播客/课程/访谈蒸馏成一组原子化、可被 agent 调用的 skills（RIA-TV++ 方法论：Adler 理解 → 5 agent 并行提取 → 三重验证 → RIA++ 构造 → Zettelkasten 链接 → 压力测试）。NOT 书摘/读后感
 - **source**：https://github.com/kangarooking/cangjie-skill （Hermes 适配版）
 - **howtoinstall**：已由适配会话安装至 `$HERMES_HOME/skills/cangjie-skill/`（含 methodology/、extractors/、templates/）；更新需手动同步上游
+
+### 5. humanizer-zh — 中文去 AI 味
+- **description**：去除文本中的 AI 生成痕迹（基于维基百科"AI 写作特征"综合指南：夸大象征、宣传性语言、-ing 肤浅分析、模糊归因、破折号过度、三段式法则、AI 词汇、否定式排比、过多连接性短语）。翻译自 blader/humanizer，参考 hardikpandya/stop-slop
+- **source**：https://github.com/op7418/Humanizer-zh （MIT）
+- **howtoinstall**（Hermes/Windows）：
+  ```bash
+  export HTTP_PROXY=http://127.0.0.1:7890 HTTPS_PROXY=http://127.0.0.1:7890 HERMES_ALLOW_PRIVATE_URLS=true
+  hermes skills install skills-sh/op7418/humanizer-zh/humanizer-zh -y   # 或 clawhub 源: humanizer-zh
+  # 更新
+  hermes skills update humanizer-zh
+  ```
+- **备注**：与内置 `humanizer`（英文版）并存，中文触发词走本技能
 
 ## 维护规则
 
