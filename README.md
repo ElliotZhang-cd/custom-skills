@@ -1,5 +1,7 @@
 # agent-skills
 
+[![skills.sh](https://skills.sh/b/ElliotZhang-cd/custom-skills)](https://skills.sh/ElliotZhang-cd/custom-skills)
+
 个人自定义技能仓库（WSL 为准）。仅包含自建技能，第三方技能由 `npx skills` 独立管理，不入本仓库。
 
 ## 自建技能（本仓库）
@@ -35,10 +37,8 @@
 
 ### 方法与流程
 - `grill-me` / `grilling` — 方案严苛评审访谈
-- `analyzing-complex-systems` — 见自建列表（本地维护版）
 - `find-skills` — 发现并安装新技能
 - `mcp-builder` — MCP 服务器构建指南
-- `template-skill` — 技能模板占位
 
 ## 维护
 
@@ -50,10 +50,11 @@
 
 ### 铁律
 
-1. 自建 skill 绝不进入 openskills 账本（`~/.agents/.skill-lock.json` 只含第三方）；不对自建 skill 跑 `openskills update`（会毁掉链接）
-2. `npx skills` 只做发现（`npx skills find`），不做任何写入
+1. 自建 skill 绝不进入 skills CLI 锁文件（`~/.agents/.skill-lock.json` 只含第三方）；不对自建 skill 跑 `npx skills update`（会毁掉链接）
+2. 第三方唯一管理器 = `npx skills`（find/add/update/remove）；openskills 已弃用（曾导致双管理器事故）
 3. 编辑只发生在本仓库，不编辑 `~/.claude/skills/` 下的任何目录（全是链接，防止改错副本）
 4. 维护面 = 使用面：只维护 opencode + claude 两条链路
+5. 任何 add/update/remove 后运行 `python3 scripts/gen-skills-table.py` 刷新 AGENTS.md 技能表格
 
 ### 更新自建
 
@@ -61,12 +62,14 @@
 vim <skill>/...                                    # 编辑真相源，立即生效
 git add -A && git commit -m "[skill] 变更说明"
 git -c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY push origin master
+# 若 description 变更 → python3 scripts/gen-skills-table.py
 ```
 
-### 第三方（openskills 管理，不入本仓库）
+### 第三方（skills CLI 管理，不入本仓库）
 
-- 引入：`npx skills find xxx`（发现）→ `npx openskills install owner/repo -y` → `npx openskills sync`
-- 更新：发现问题 `npx openskills update <name>`；季度全量 `npx openskills update -y`
+- 引入：`npx skills find xxx`（发现）→ `DISABLE_TELEMETRY=1 npx skills add <source> -g -a amp -y`（安装到 `~/.agents/skills/`，实测命令模板）→ `python3 scripts/gen-skills-table.py`
+- 更新：发现问题 `DISABLE_TELEMETRY=1 npx skills update <name>`；季度全量 `npx skills update -y` → 刷新表格
+- 创建新 skill：`npx skills init <name>` 脚手架 → 并入本仓库 → 链接链自动生效
 - 行尾：`.gitattributes` 强制 LF，避免 Windows 检出 CRLF
 
 ### Windows 侧同步（hermes / workbuddy）
