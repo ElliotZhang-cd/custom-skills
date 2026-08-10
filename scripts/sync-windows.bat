@@ -2,7 +2,7 @@
 chcp 65001 >nul
 rem ============================================================
 rem sync-windows.bat - Windows 侧同步 custom-skills 并分发
-rem 真相源: WSL ~/custom-skills -> GitHub -> 本脚本 (pull + 分发)
+rem 真相源: GitHub（唯一账本）-> 本脚本 (pull + 分发到 workbuddy; hermes 直读仓库)
 rem 用法: 双击运行，或加入任务计划定期执行
 rem 注意: UTF-8 编码 + CRLF 行尾 + chcp 65001（否则中文乱码）
 rem ============================================================
@@ -21,12 +21,10 @@ if not exist "%REPO%\.git" (
 echo [1/3] pulling latest from GitHub...
 cd /d "%REPO%"
 set "DIRTY="
-git diff --quiet --exit-code
-if errorlevel 1 set "DIRTY=1"
-git diff --cached --quiet --exit-code
-if errorlevel 1 set "DIRTY=1"
+git status --porcelain | findstr /R "." >nul
+if !errorlevel! equ 0 set "DIRTY=1"
 if defined DIRTY (
-    echo [sync] 错误: 仓库有本地未提交修改，--ff-only pull 会被拒绝:
+    echo [sync] 错误: 仓库有本地未提交修改（含未跟踪文件），--ff-only pull 会被拒绝:
     git status --short
     echo [sync] 处理: 改动已在远端则 git checkout -- . 丢弃；否则 git stash
     pause
