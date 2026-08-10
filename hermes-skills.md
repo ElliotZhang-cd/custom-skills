@@ -2,7 +2,7 @@
 
 > 记录**非内置**（非 builtin）的 Hermes 技能：来源、用途、安装/更新方式。
 > 安装状态以 `hermes skills list` 为准；本文档只补静态字段（description / source / howtoinstall），装/卸技能时顺手更新。
-> 与 `README.md`（WSL 侧，opencode/claude 链路）互为镜像：README 管自建 4 个 + openskills 第三方，本文档管 Hermes（Windows）侧。
+> 与 `README.md` 互为镜像：README 管自建 6 个（GitHub 真相源，经 external_dirs / sync 脚本分发）+ npx skills 第三方，本文档管 Hermes（Windows）侧非内置技能。
 
 ## 当前收录（5）
 

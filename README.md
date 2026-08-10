@@ -2,7 +2,7 @@
 
 [![skills.sh](https://skills.sh/b/ElliotZhang-cd/custom-skills)](https://skills.sh/ElliotZhang-cd/custom-skills)
 
-个人自定义技能仓库（WSL 为准）。仅包含自建技能，第三方技能由 `npx skills` 独立管理，不入本仓库。
+个人自定义技能仓库（**GitHub 为唯一真相源**，WSL / Windows 双编辑入口）。仅包含自建技能，第三方技能由 `npx skills` 独立管理，不入本仓库。
 
 ## 自建技能（本仓库）
 
@@ -46,22 +46,22 @@
 
 ### 架构
 
-- 本仓库（`~/custom-skills/`）= 4 个自建 skill 的唯一真相源
-- 分发：`~/.agents/skills/` → `~/.claude/skills/` 全为符号链接，改本仓库即刻全局生效
-- GitHub remote（`ElliotZhang-cd/custom-skills`）= 备份真相源，push 是备份不是分发
+- GitHub remote（`ElliotZhang-cd/custom-skills`）= **唯一真相源**（唯一账本）；WSL `~/custom-skills/` 与 Windows `C:\Users\elliot\custom-skills` 均为 clone + 编辑入口，任一端改完 push，他端 pull
+- 分发：WSL 侧 `~/.agents/skills/` → `~/.claude/skills/` 全为符号链接，pull 后即全局生效
+- 冲突纪律：改前先 pull；两端同时改同一文件会产生 git 冲突，手动解决（sync 脚本用 `--ff-only` 保护，绝不自动覆盖）
 
 ### 铁律
 
 1. 自建 skill 绝不进入 skills CLI 锁文件（`~/.agents/.skill-lock.json` 只含第三方）；不对自建 skill 跑 `npx skills update`（会毁掉链接）
 2. 第三方唯一管理器 = `npx skills`（find/add/update/remove）；openskills 已弃用（曾导致双管理器事故）
-3. 编辑只发生在本仓库，不编辑 `~/.claude/skills/` 下的任何目录（全是链接，防止改错副本）
+3. 编辑只发生在任一 clone（WSL `~/custom-skills/` 或 Windows `C:\Users\elliot\custom-skills`），不编辑 `~/.claude/skills/` 下的任何目录（全是链接，防止改错副本）
 4. 维护面 = 使用面：只维护 opencode + claude 两条链路
 5. 任何 add/update/remove 后运行 `python3 scripts/gen-skills-table.py` 刷新 AGENTS.md 技能表格
 
-### 更新自建
+### 更新自建（任一端编辑 → push → 他端同步）
 
 ```bash
-vim <skill>/...                                    # 编辑真相源，立即生效
+vim <skill>/...                                    # 编辑本端 clone，改完即 push
 git add -A && git commit -m "[skill] 变更说明"
 git -c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY push origin master
 # 若 description 变更 → python3 scripts/gen-skills-table.py
@@ -74,10 +74,16 @@ git -c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY push origin master
 - 创建新 skill：`npx skills init <name>` 脚手架 → 并入本仓库 → 链接链自动生效
 - 行尾：`.gitattributes` 强制 LF，避免 Windows 检出 CRLF
 
+### WSL 侧同步（一键）
+
+```bash
+bash scripts/sync-wsl.sh        # 脏树守卫 → git pull --ff-only → 自动建/删两级符号链接 → 刷新 AGENTS.md 表格
+```
+
 ### Windows 侧同步（hermes / workbuddy）
 
-- 机制：GitHub 中转（WSL 为准，不软链接）
-- WSL push 后 → Windows 运行 `sync-custom-skills.bat`（转发到本仓库 `scripts/sync-windows.bat`，一键：git pull 到 `C:\Users\elliot\custom-skills` + 自动分发到 workbuddy + 校验 hermes 配置）
+- 机制：GitHub 中转（两端都是 clone，不软链接）
+- push 后 → Windows 运行 `sync-custom-skills.bat`（转发到本仓库 `scripts/sync-windows.bat`，一键：git pull 到 `C:\Users\elliot\custom-skills` + 自动分发到 workbuddy + 校验 hermes 配置）
 - hermes：`skills.external_dirs: ["C:/Users/elliot/custom-skills"]`（config.yaml）——直接读仓库，无需复制（local 优先，复制会遮蔽更新）
 - workbuddy：`C:\Users\elliot\.workbuddy\skills\` 由 bat 脚本 robocopy 分发（保留 `_user_meta.json`）
 - 脚本真相源：`scripts/sync-windows.bat`（已去敏感化，`%USERPROFILE%` 派生路径，不硬编码用户名）
