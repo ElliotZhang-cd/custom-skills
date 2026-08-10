@@ -27,7 +27,14 @@ DIRS = {"concepts": "concept", "entities": "entity", "syntheses": "synthesis"}
 # 用户确认跳过的单向链接对（A→B 无回链被接受）。lint 确认残留后追加到此。
 KNOWN_ONEWAY = frozenset({
     # 2026-08-04 起改为 cap 规则化：目标页「相关」段满 10 条（REL_CAP）自动豁免单向，
-    # 本清单只保留"目标未满 cap 但有意单向"的真特例（当前无）。
+    # 本清单只保留"目标未满 cap 但有意单向"的真特例。
+    # 2026-08-10 knowledge-management 相关段瘦身（10→5）后暴露：5 个应用/叶子实体单向
+    # 引用枢纽页 knowledge-management，回链会挤占相关段 cap，按「叶子→枢纽单向允许」录入。
+    ("English-level-up-tips", "knowledge-management"),
+    ("academic-research-skills", "knowledge-management"),
+    ("claude-md-management-plugin", "knowledge-management"),
+    ("flomo-agent", "knowledge-management"),
+    ("frontend-design-plugin", "knowledge-management"),
 })
 
 KNOWN_ORPHAN = frozenset({
