@@ -35,6 +35,12 @@ KNOWN_ONEWAY = frozenset({
     ("claude-md-management-plugin", "knowledge-management"),
     ("flomo-agent", "knowledge-management"),
     ("frontend-design-plugin", "knowledge-management"),
+    # 2026-08-12 lint：前身关系单向允许（Skill 八段式与 Prompt 三层结构同构论据见 general-prompt-writing-guide）
+    ("agent-skills-best-practices", "prompt-engineering"),
+    # 2026-08-12 lint：正文事实引用（cangjie 蒸馏产物入库记录），非相关段互链
+    ("skill-maintenance-workflow", "cangjie-skill"),
+    # 2026-08-12 lint：环境清单职责引用（快照页记录已安装软件），回链增益低
+    ("wsl-environment-snapshot", "superpowers"),
 })
 
 KNOWN_ORPHAN = frozenset({
@@ -48,6 +54,16 @@ KNOWN_ORPHAN = frozenset({
     "winget",
     "world-model-survey",
     "zleap-agent-harness-design",
+    # 2026-08-13 lint 全库修复后剩余长尾页（入链 1-2），同 2026-08-04 裁定
+    "deepseek-strategy-liang-wenfeng",
+    "dingtalk-one-product-postmortem",
+    "flomo-agent",
+    "graph-engineering-practical-guide",
+    "nuwa-skill",
+    "product-intent-and-positioning",
+    "stanford-ai-index-2026-analysis",
+    "world-model",
+    "zhipu-ai",
 })
 
 # 用户确认的 sources 特例（fm 与来源段有意不一一对应）。
