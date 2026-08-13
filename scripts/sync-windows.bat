@@ -1,10 +1,13 @@
 @echo off
 chcp 65001 >nul
 rem ============================================================
-rem sync-windows.bat - Windows 侧同步 custom-skills 并分发
-rem 真相源: GitHub（唯一账本）-> 本脚本 (pull + 分发到 workbuddy; hermes 直读仓库)
-rem 用法: 双击运行，或加入任务计划定期执行
-rem 注意: UTF-8 编码 + CRLF 行尾 + chcp 65001（否则中文乱码）
+rem sync-windows.bat - sync custom-skills on Windows side
+rem Source of truth: GitHub -> this script (pull + distribute to workbuddy; hermes reads repo directly)
+rem Usage: double-click, or schedule in Task Scheduler
+rem NOTE: comments MUST stay ASCII-only. Chinese rem lines + chcp 65001 trigger
+rem   cmd's multi-byte misparse; an ASCII "->" in a comment got split and its
+rem   ">" became a redirection, creating a stray 0-byte file on every run
+rem   (investigated 2026-08-13). Chinese is safe in echo lines only.
 rem ============================================================
 setlocal enabledelayedexpansion
 set "REPO=%USERPROFILE%\custom-skills"
