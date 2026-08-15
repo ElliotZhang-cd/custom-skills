@@ -79,6 +79,25 @@ KNOWN_OVERSIZE = frozenset({
     "wsl-environment-snapshot",  # 2026-08-05 用户裁定：环境清单型内容，拆分无增益
 })
 
+# 用户确认相关段少于 2 条但可接受的页面。
+KNOWN_FEW_RELATED = frozenset({
+    "a-programming-paradigm-for-spatiotemporal-composability",  # 2026-08-14 用户确认
+})
+
+# 用户确认不需要被 wiki 引用的 raw 文件（如纯备份/归档）。
+KNOWN_UNREFERENCED_RAW = frozenset({
+    "raw/README.md",  # 仓库说明，非知识来源
+    "raw/configs/AGENTS-v4-backup.md",  # 历史备份
+    "raw/configs/reasonix-config.md",  # 本地配置，非独立知识来源
+    "raw/configs/reasonix-desktop-config.md",  # 本地敏感配置，不入库
+    "raw/configs/workbuddy-dida365-setup.md",  # 本地配置备份
+    "raw/logs/archive-2026-06.md",  # 日志归档
+    "raw/logs/archive-2026-07.md",  # 日志归档
+    "raw/logs/llm-wiki-setup-log.md",  # 初始化日志
+    "raw/projects/karpathy-skills/README.zh.md",  # 翻译副本，已有英文版被引用
+    "raw/reference/opencode-omo-tutorial.md",  # 历史教程，已被实体页覆盖
+})
+
 errors, infos = [], []
 
 # ---------- 读取全部 wiki 页面 ----------
@@ -130,6 +149,30 @@ for name, p in sorted(pages.items()):
     elif tm.group(1) != DIRS[p["dir"]]:
         errors.append(f"[type] {p['dir']}/{name}.md type={tm.group(1)}，应为 {DIRS[p['dir']]}")
 
+# ---------- 检查 3.5: 一句话 / 结构化字段 ----------
+ONE_LINER_CAP = 100
+for name, p in sorted(pages.items()):
+    text = p["text"]
+    m = re.search(r"^## 一句话\s*\n\s*> ?(.*)", text, re.M)
+    if not m:
+        m = re.search(r"^> 一句话：?(.*)", text, re.M)
+    if not m:
+        errors.append(f"[一句话] {p['dir']}/{name}.md 缺可解析的「一句话」")
+    else:
+        one = m.group(1).strip()
+        if len(one) > ONE_LINER_CAP:
+            errors.append(f"[一句话] {p['dir']}/{name}.md 长度 {len(one)} > {ONE_LINER_CAP}，请重写为更短的一句话")
+    tm = re.search(r"^tags:\s*\[([^\]]*)\]", p["fm"], re.M)
+    tags = [t.strip() for t in tm.group(1).split(",") if t.strip()] if tm else []
+    if not tags:
+        errors.append(f"[tags] {p['dir']}/{name}.md tags 为空")
+    if p["dir"] == "entities":
+        if not re.search(r"^entity_type:\s*\S+", p["fm"], re.M):
+            errors.append(f"[entity_type] {p['dir']}/{name}.md 缺 entity_type")
+    if p["dir"] == "syntheses":
+        if not re.search(r"^coverage:\s*\S+", p["fm"], re.M):
+            errors.append(f"[coverage] {p['dir']}/{name}.md 缺 coverage")
+
 # ---------- 检查 4: index 一致性 ----------
 idx = open(f"{W}/index.md", encoding="utf-8").read()
 actual = {d: len(glob.glob(f"{W}/wiki/{d}/*.md")) for d in DIRS}
@@ -148,6 +191,15 @@ for name, p in sorted(pages.items()):
 for rf in raw_files:
     if f"[[{rf}]]" not in idx:
         errors.append(f"[index] raw 未登记：{rf}")
+
+# ---------- 检查 4.5: raw 必须被 wiki 引用 ----------
+referenced_raw = set()
+for p in pages.values():
+    referenced_raw.update(re.findall(r"\[\[(raw/[^\]|]+?)\]\]", p["text"]))
+    referenced_raw.update(re.findall(r"\[[^\]]*\]\((raw/[^)\s]+)\)", p["text"]))
+for rf in raw_files:
+    if rf not in referenced_raw and rf not in KNOWN_UNREFERENCED_RAW:
+        errors.append(f"[raw] 未被任何 wiki 页面引用：{rf}")
 
 # ---------- 检查 5: sources 一致性 ----------
 def parse_fm_sources(fm):
@@ -229,6 +281,14 @@ def rel_count(name):
         return 0
     return len(re.findall(r"^\- \[\[", seg.group(1), re.M))
 rel_cnt = {n: rel_count(n) for n in pages}
+
+for name in sorted(pages):
+    if rel_cnt[name] < 2 and name not in KNOWN_FEW_RELATED:
+        infos.append(f"[相关少] {pages[name]['dir']}/{name}.md 相关段 {rel_cnt[name]}/2（可接受或补强关联）")
+
+for name, p in sorted(pages.items()):
+    if re.search(r"^contested:\s*true", p["fm"], re.M):
+        infos.append(f"[contested] {p['dir']}/{name}.md 存在未解决矛盾，等待人类裁决")
 
 for a in sorted(out):
     for b in sorted(out[a]):

@@ -1,47 +1,97 @@
 ---
 name: maintaining-llm-wiki
-description: 维护 LLM Wiki 知识库（入库/查询/lint/派生同步）。When the user mentions "知识库", "入库", "ingest", "wiki", "处理文章", or asks to add sources to the LLM Wiki, queries wiki content, requests to check/lint the wiki, or asks to 基于/从知识库制作、整理、总结、提炼内容（如根据知识库生成 PPT/报告/总结）。
+description: 维护 LLM Wiki 知识库（入库/查询/lint/派生同步/生命周期）。当用户提到“知识库”“入库”“ingest”“wiki”“处理文章”“检查/审计知识库”“基于知识库制作/总结/提炼内容”时使用。
 ---
 
 # Maintaining LLM Wiki — 知识库维护
 
-## 📍 路径解析规则（双平台自识别）
+## 一句话
 
-- **知识库根目录**：Windows `%USERPROFILE%\Documents\LLMWiki`（如 `C:\Users\elliot\Documents\LLMWiki`）；WSL 转 `/mnt/c/Users/<Windows用户名>/Documents/LLMWiki`
-- **脚本**（scripts/*.py）：默认自动识别平台与根目录（共享 `scripts/wiki_paths.py`），零配置；也可显式传 `[wiki_root]` 覆盖
-- **运行脚本**：在 skill 目录下执行——WSL 用 `python3 scripts/xxx.py`，Windows 用 `python scripts\xxx.py`
+> LLM Wiki 是一套以 Markdown 为载体、LLM 为维护者、人类为监督者的知识管理模式：提前编译知识，而非临时检索合成。本 Skill 负责让 LLM 安全、一致、可溯源地把 raw 编译成结构化 wiki，并持续维护 index/log/质量。
 
-## 🔒 硬约束（4条，不可违反）
+## 适用边界
 
-1. **raw/ 现有文件只读** — 现有文件不修改、不删除；允许新增（ingest 原始资料、日志归档）
-2. **用户内容不碰** — 不修改、不删除
-3. **事实有来源** — 链接到 raw/ 或外部 URL
+**做：**
+- 入库：把新 raw 编译成或更新 wiki 页面
+- 查询：基于 wiki 回答并标注 `[[wikilink]]` 来源
+- Lint：机械 + 语义健康检查
+- 派生同步：重建 index / tags / README
+- 生命周期：重命名、废弃、归档、删除（需确认）
+- 基于知识库制作 PPT / 报告 / 总结
+
+**不做：**
+- 不修改 raw 内容
+- 不自动删除用户内容
+- 不把临时聊天内容写入 wiki
+- 当前不引入向量库 / 重检索
+
+## 路径解析
+
+- 知识库根目录：Windows `%USERPROFILE%\Documents\LLMWiki`；WSL `/mnt/c/Users/<Windows用户名>/Documents/LLMWiki`
+- 若 skill 已合并至 `LLMWiki/skills/maintaining-llm-wiki`，脚本自动用相对路径定位根目录
+- 脚本运行：WSL `python3 scripts/xxx.py`，Windows `python scripts\xxx.py`
+
+## 硬约束
+
+1. **raw 只读，且只存 Markdown** — 不修改、不删除 raw；非 Markdown 先转 Markdown 再入库
+2. **用户内容不碰** — 删除/归档/重命名必须用户确认
+3. **事实有来源** — 核心断言要链接到 raw 或外部 URL
 4. **变更后更新 index + 追加 log** — 纯读操作除外
+5. **页面必须结构化** — 有「一句话」≤100 字；entity 有 `entity_type`；synthesis 有 `coverage`
+6. **禁止派生字段** — 不写 `updated` / `source_count`
 
-## 工作流入口（按需加载 details）
+## 工作流入口
 
-|操作|触发词|加载文件|
-|-|-|-|
-|**Ingest**|"入库""ingest""处理文章"|`references/ingest-workflow.md`|
-|**Query**|提问/分析/对比|`references/query-workflow.md`|
-|**Lint**|"检查""lint""审计"|`references/lint-workflow.md`|
-|**派生同步**|重建派生数据|`scripts/wiki_sync.py`（= sync_sources + rebuild_tags）|
-|**索引重建**|index 三表/原始资料表乱序或漏登|`scripts/gen_index_tables.py`（三表骨架自动，简述列 LLM 补写）|
+| 操作 | 触发词 | 加载 |
+|------|--------|------|
+| Ingest | “入库”“ingest”“处理文章” | `references/ingest-workflow.md` |
+| Query | 提问 / 分析 / 对比 | `references/query-workflow.md` |
+| Lint | “检查”“lint”“审计” | `references/lint-workflow.md` |
+| 派生同步 | 重建派生数据 | `scripts/wiki_sync.py` |
+| 生命周期 | 重命名 / 废弃 / 归档 / 删除 | `references/ingest-workflow.md` + `references/lint-workflow.md` |
+| 安全 / 健康 | 密钥检查 / git 健康 | `scripts/check_secrets.py`、`scripts/check_repo.py` |
 
-> 备注：知识库有 GitHub remote（origin）。本机 `~/.gitconfig` 已配置 `http(s).proxy = http://127.0.0.1:7890`，直接 push/pull 即可；跑不通时可能的解法：显式 `-c http.proxy=<代理地址> -c https.proxy=<代理地址>`（注意 shell 的 `$HTTPS_PROXY` 通常为空，`-c http.proxy=$HTTPS_PROXY` 传空值会覆盖 .gitconfig 有效代理导致失败，代理地址要写实际值）；commit 为本地操作，无需代理。
+## 核心规则摘要
 
-## 🔁 协同进化（co-evolve）
+- index 简述从页面「一句话」自动提取，不手工维护
+- 页面格式：标题 → 一句话 → 要点 → 相关 → 来源
+- 相关链接 ≥2 为建议；少于 2 报 `[I]`，不强制
+- `contested: true` 页面由 lint 列出，等待人类裁决
+- 外部 URL 默认尽量保存 raw Markdown 副本
+- 完全过时页面移入 `_archive/`；仍可参考的标 `status: deprecated`
+- 每次完整 lint 必须输出语义检查报告
+- 新会话首次操作前先读 `README.md` / `index.md` / `log.md`
 
-操作中遇到规则不适用、或发现更优模式 → **向用户提议修改** → 用户同意后更新 SKILL.md 或 references/ 文件 → log.md 记录：
+## 质量标准
+
+- [ ] `lint_check.py` 0 ERROR
+- [ ] 页面符合 `references/note-format.md`
+- [ ] 一句话可解析且 ≤100 字
+- [ ] `entity_type` / `coverage` 完整
+- [ ] `sources` 与正文来源段一致
+- [ ] Ingest 完稿有来源边界汇报
+- [ ] 变更已写 log，且已提交
+
+## Gotchas
+
+- raw 不引入 frontmatter；来源 URL 写在 wiki `sources` 或 raw 正文首部
+- 禁止手写 index 摘要；由 `gen_index_tables.py` 从「一句话」生成
+- 不要为凑相关链接数制造弱关联
+- 不要凭模型记忆写页面；必须基于 raw/URL，并汇报来源边界
+- 脚本要双平台可用：路径用正斜杠，使用 Python 标准库
+- 删除/归档前必须展示影响范围并等用户确认
+
+## References
+
+- `references/pitfalls.md` — 必读踩坑
+- `references/note-format.md` — 页面格式 / 蒸馏 / 链接规则
+- `references/ingest-workflow.md` — 入库流程
+- `references/query-workflow.md` — 查询 / 回存
+- `references/lint-workflow.md` — lint 流程与报告
+- `references/log-format.md` — 日志格式
+
+## 协同进化
+
+遇到不适用或更优模式 → 向用户提议 → 用户同意后更新 SKILL.md / references / scripts → log.md 记录：
 `## [日期] lint | SKILL.md — 更新了X规则`
-
-> 当前 references/ 中的约定是**起点，不是终点**。根据领域和偏好与用户共同迭代。
-
-## 必读（操作前）
-
-`references/pitfalls.md` — 信噪比最高的踩坑记录
-
-## 风格
-
-简体中文，简洁专业，专有名词保留原文。
 

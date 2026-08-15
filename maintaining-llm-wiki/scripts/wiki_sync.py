@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""派生数据同步入口：sync_sources → rebuild_tags。
+"""派生数据同步入口：sync_sources → rebuild_tags → gen_index_tables → update_readme。
 
 用法: python3 wiki_sync.py [wiki_root]
   wiki_root 可选，默认平台自识别（见 wiki_paths.py）
@@ -20,5 +20,5 @@ def run(name):
         print(f"[!] {name}: {r.stderr.strip()}", file=sys.stderr)
     return r.returncode
 
-rc = run('sync_sources') | run('rebuild_tags')
+rc = run('sync_sources') | run('rebuild_tags') | run('gen_index_tables') | run('update_readme')
 sys.exit(rc)

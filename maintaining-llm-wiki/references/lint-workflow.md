@@ -2,16 +2,22 @@
 
 # Lint 健康检查流程
 
+## 触发频率
+
+- **每次写入后**：跑机械 lint，确保 0 ERROR 后再 commit。
+- **定期/按需**：跑完整 lint，包括语义检查报告、标签审计、git 健康检查。
+
 ## 步骤 0：派生数据重建（先跑，不手扫）
 
 ```bash
 # 在 skill 目录下执行；WSL 用 python3，Windows 用 python
-python3 scripts/wiki_sync.py         # sync_sources + rebuild_tags（修复派生数据）
-python3 scripts/lint_check.py        # 6 项机械检查（仅绊线，wiki_sync 已覆盖大部分）
-git status --porcelain               # 脏工作区检测（忘 commit 兜底）
+python3 scripts/wiki_sync.py         # sync_sources + rebuild_tags + gen_index + update_readme
+python3 scripts/lint_check.py        # 机械检查
+python3 scripts/check_skill_links.py # 多平台入口检查（如已迁移）
+python3 scripts/check_secrets.py     # 敏感信息扫描
+git status --porcelain               # 脏工作区检测
 ```
 
-wiki_sync 已强制 sources/格式/标签/页脚一致，lint_check 保留作绊线（验证生成器本身）。
 `[E]` 进报告；`[I]` 由用户裁决（确认跳过的录入脚本 KNOWN 常量）。
 
 ## 批量原则（禁止逐项循环）
@@ -27,26 +33,56 @@ wiki_sync 已强制 sources/格式/标签/页脚一致，lint_check 保留作绊
 
 | 检查项 | 执行方式 |
 |--------|------------------------|
-| **断链 / 孤立页 / 单向链接 / index 一致性 / sources 一致性 / 禁止字段 / type** | 🤖 `lint_check.py` |
-| **标签索引漂移** | 🤖 `rebuild_tags.py` |
-| **矛盾** | 🧠 语义：术语一致性扫描 → 断言交叉对比 → 日期矛盾检测 |
-| **过时声明** | 🧠 语义：对比 raw/ 文件修改时间与 wiki 断言 |
-| **缺失交叉引用** | 🧠 语义：主题重叠但「相关」段无互链的页面对（脚本的单向链接清单作输入） |
-| **链接强度与数量** | 🧠 语义：按横纵分类法（note-format「链接规则」）审查弱关联；「相关」段 >10 条提示修剪 |
-| **数据缺口** | 🧠 语义：扫描「待补充」「疑问」标记（排除"还可以了解更多"型缺口） |
+| 断链 / 孤立页 / 单向链接 / index 一致性 / sources 一致性 / 禁止字段 / type | 🤖 `lint_check.py` |
+| 一句话可解析且 ≤100 字 | 🤖 `lint_check.py` |
+| entity_type / coverage / tags 非空 | 🤖 `lint_check.py` |
+| raw 必须被 wiki 引用 | 🤖 `lint_check.py` |
+| `contested: true` 页面列出 | 🤖 `lint_check.py` 输出 `[I]` |
+| 相关链接少于 2 条 | 🤖 `lint_check.py` 输出 `[I]` |
+| 标签索引漂移 | 🤖 `rebuild_tags.py` |
+| 多平台 skill 入口 | 🤖 `check_skill_links.py` |
+| 敏感信息 | 🤖 `check_secrets.py` |
+| git 健康 | 🤖 `check_repo.py`（低频） |
+| 矛盾 | 🧠 语义：术语一致性扫描 → 断言交叉对比 → 日期矛盾检测 |
+| 过时声明 | 🧠 语义：对比 raw/ 文件修改时间与 wiki 断言 |
+| 缺失交叉引用 | 🧠 语义：主题重叠但「相关」段无互链的页面对 |
+| 链接强度与数量 | 🧠 语义：横纵分类法审查弱关联；「相关」>10 条提示修剪 |
+| 数据缺口 | 🧠 语义：扫描「待补充」「疑问」标记 |
+| 重复页面 | 🧠 语义：比较标题/标签/一句话相似页面 |
+| 标签审计 | 🧠 语义：列出疑似重复/低频/同义 tag |
 
 ## 报告要求
 
 按严重程度排列。末尾追加「建议方向」：值得深入的概念、需新资料补充的缺口、值得研究的新问题。
 
+每次完整 lint **必须输出语义检查报告**：
+
+```markdown
+## 语义检查
+- 矛盾：无 / ...
+- 过时：无 / ...
+- 数据缺口：无 / ...
+- 缺失交叉引用：无 / ...
+- 重复页面：无 / ...
+- 标签审计：无 / ...
+- 建议方向：...
+```
+
 ## 单向链接决策规则（cap 规则化，2026-08-04 起）
 
 `[I]` 单向链接（A→B 无回链）处理：
-- **目标页「相关」段已满 10 条（REL_CAP）→ lint 自动豁免**，无需人工处理（目标已无回链空间，单向是设计使然）
+- **目标页「相关」段已满 10 条（REL_CAP）→ lint 自动豁免**，无需人工处理。
 - 目标未满 cap 的单向 → 按强关联三选：
   - 强关联（横/纵关系成立）→ B 的「相关」段补回链
   - 弱关联（关系分类答不出）→ 从 A「相关」段删除出链
   - 确属有意单向 → 录入 `scripts/lint_check.py` 的 `KNOWN_ONEWAY`（真特例，应保持个位数）
+
+## 生命周期检查
+
+- 重命名：`git mv` + 更新所有 `[[wikilink]]` + index
+- 废弃：`status: deprecated` 原地保留
+- 完全过时：移入 `_archive/`，从 index 移除，原链接改纯文本并标注 `(archived)`
+- 删除：仅用户确认后删除；raw 永不删除
 
 ## 规则
 
@@ -57,6 +93,7 @@ wiki_sync 已强制 sources/格式/标签/页脚一致，lint_check 保留作绊
 ## 验收标准
 
 - ✅ wiki_sync 无 diff + lint_check 零 ERROR
+- ✅ 完整 lint 有语义检查报告
 - ✅ log.md 已追加（lint 类型）
 - ✅ 单次 commit 且 diff 符合预期
 - ✅ 规则未覆盖的情形 → 停下，向用户说明现状与选项，等确认后再继续

@@ -26,9 +26,9 @@ TYPE_MAP = {
 }
 
 TABLES = {
-    "concepts": ("概念表", "概念", "简述", "标签"),
-    "entities": ("实体表", "实体", "类型", "简述"),
-    "syntheses": ("综合表", "主题", "涵盖范围", "简述"),
+    "concepts": ("概念表", "概念", "标签"),
+    "entities": ("实体表", "实体", "entity_type", "一句话", "标签"),
+    "syntheses": ("综合表", "主题", "coverage", "一句话", "标签"),
 }
 
 def get_fm_tags(text):
@@ -61,22 +61,35 @@ def parse_table(idx, dirname, ncols):
         out[name] = cells[1:ncols]
     return out
 
+def get_fm_field(text, field):
+    m = re.search(rf"^{field}:\s*(.+)", text, re.M)
+    return m.group(1).strip().strip("'\"") if m else ""
+
+def extract_one_liner(text):
+    m = re.search(r"^## 一句话\s*\n\s*> ?(.*)", text, re.M)
+    if m:
+        return m.group(1).strip()
+    m = re.search(r"^> 一句话：?(.*)", text, re.M)
+    if m:
+        return m.group(1).strip()
+    return ""
+
 def build_table(idx, d, headers):
-    label, h1, *semantic_headers = headers
-    old = parse_table(idx, label, 1 + len(semantic_headers))
+    label = headers[0]
     rows = []
     for f in sorted(glob.glob(f"{W}/wiki/{d}/*.md")):
         name = os.path.basename(f)[:-3]
         text = open(f, encoding="utf-8").read()
-        sem = old.get(name) or ["待补简述"] * len(semantic_headers)
-        sem = sem + ["待补简述"] * (len(semantic_headers) - len(sem))  # 列数变化兜底
+        one = extract_one_liner(text)
         tags = get_fm_tags(text)
         if d == "concepts":
-            cells = [f"[[{name}]]", sem[0], tags]
+            cells = [f"[[{name}]]", one, tags]
         elif d == "entities":
-            cells = [f"[[{name}]]", sem[0], sem[1]]
+            et = get_fm_field(text, "entity_type")
+            cells = [f"[[{name}]]", one, et, tags]
         else:
-            cells = [f"[[{name}]]", sem[0], sem[1]]
+            cov = get_fm_field(text, "coverage")
+            cells = [f"[[{name}]]", one, cov, tags]
         rows.append("| " + " | ".join(cells) + " |")
     return "\n".join(rows)
 

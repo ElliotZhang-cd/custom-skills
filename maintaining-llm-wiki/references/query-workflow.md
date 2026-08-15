@@ -2,6 +2,12 @@
 
 # Query 查询流程
 
+## 会话 Orientation（新会话首次操作前）
+
+1. 读 `README.md`
+2. 读 `index.md`
+3. 读 `log.md` 最近 20-30 条
+
 ## 检索预算（公共前置）
 
 按序执行，命中足够即停：
@@ -9,8 +15,9 @@
 1. 定位页面（WSL: `grep -in "关键词" /mnt/c/Users/<用户名>/Documents/LLMWiki/index.md`；Windows: `Select-String -Path "$env:USERPROFILE\Documents\LLMWiki\index.md" -Pattern "关键词"`）— 表格过滤定位页面
 2. 精搜（WSL: `grep -rn "关键词" /mnt/c/Users/<用户名>/Documents/LLMWiki/wiki/ --include='*.md'`；Windows: `Get-ChildItem "$env:USERPROFILE\Documents\LLMWiki\wiki" -Recurse -Filter *.md \| Select-String "关键词"`）— 限定 wiki/ 目录精搜
 3. 命中 >10 页 → 回 index.md 按标签收敛，再精读
-4. `raw/` 不做全文检索；仅当需要溯源验证 wiki 断言时，按 index 登记路径精读单个文件
-5. `log.md` 排除出检索对象（操作记录，非知识内容）
+4. 100+ 页时，额外全库 grep，避免 index 遗漏
+5. `raw/` 不做全文检索；仅当需要溯源验证 wiki 断言时，按 index 登记路径精读单个文件
+6. `log.md` 排除出检索对象（操作记录，非知识内容）
 
 ## 三分支
 
@@ -23,7 +30,14 @@
 ### 综合分析
 
 - 步骤：多页交叉精读 → 对比/综合 → 标注全部 `[[wikilink]]` 来源
-- 回存：多源综合/对比分析/新发现 → 简述摘要 → 用户确认 → 写入 wiki → 执行 Ingest 步骤 3 起的写入流程
+- 回存标准：**是否产生了 wiki 中不存在的新编译知识？**
+  - 多页综合形成新结论
+  - 对比多个来源/方案
+  - 发现新的跨页关联
+  - 形成可复用决策依据
+  - 对故障复盘/团队入职有长期价值
+- 满足任一条件 → 简述摘要 → 用户确认 → 写入 wiki → 执行 Ingest 步骤 3 起的写入流程
+- 简单事实/已有内容复述 → 不回存
 
 ### 外部产出（基于知识库制作 PPT/报告/总结等）
 

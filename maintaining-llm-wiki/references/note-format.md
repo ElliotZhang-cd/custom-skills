@@ -42,9 +42,16 @@
 ```yaml
 ---
 type: concept | entity | synthesis
-tags: []
-created: YYYY-MM-DD
-sources: []     # 与正文「来源」段对应（本字段由 scripts/sync_sources.py 自动生成，请勿手写）
+tags: []                 # 不能为空
+created: YYYY-MM-DD      # 首次创建日期，不随更新刷新
+sources: []              # 与正文「来源」段对应（由 scripts/sync_sources.py 自动生成，请勿手写）
+# entity 专用
+entity_type: tool | plugin | service | company | guide | product | role
+# synthesis 专用
+coverage: "Agent 工程 / 环境配置 / Prompt 最佳实践"
+# 可选
+contested: true
+status: incomplete | deprecated
 ---
 ```
 
@@ -53,6 +60,15 @@ sources: []     # 与正文「来源」段对应（本字段由 scripts/sync_sou
 > created = **首次创建日期**，页面后续更新不刷新；"最近更新"以 git 为准。（2026-08-12 lint：created 早于正文日期断言属正常，非矛盾）
 
 > ⛔ 时间敏感断言（版本号、状态、"最新/当前"）必须带**日期锚点**——"截至 YYYY-MM-DD 为 vX.Y.Z"、"YYYY-MM 复盘"，禁止裸写"最新/当前"。（2026-08-12 lint 根除，Hermes v0.16.0 等曾裸写）
+
+## 「一句话」规则（index 摘要唯一真相源）
+
+- 每个页面必须有可解析的「一句话」引用块，写法二选一：
+  - `## 一句话` 标题 + `> ...`
+  - 或 `> 一句话：...`
+- 长度 ≤ 100 字，超长必须重写。
+- index 的简述列由 `gen_index_tables.py` 从「一句话」自动提取，禁止手工维护 index 摘要。
+- 它同时是定义锚点，要求能独立理解。
 
 ## 来源段格式（当前约定）
 
@@ -99,4 +115,7 @@ sources: []     # 与正文「来源」段对应（本字段由 scripts/sync_sou
 
 ## 文件命名
 
-kebab-case 英文，专有名词保留大小写。
+- kebab-case 英文，专有名词保留大小写。
+- 使用稳定全称，不用易变缩写：`model-context-protocol`，而不是 `mcp`。
+- 名称不含版本号：`hermes-agent`，而不是 `hermes-v0.16`。
+- 消歧基于稳定概念边界：`graph-engineering` vs `graph-engineering-practical-guide`。
