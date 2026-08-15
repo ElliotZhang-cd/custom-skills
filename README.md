@@ -11,9 +11,10 @@
 | `analyzing-bigfive` | BFI-2 大五人格分析，生成来访者视角 HTML 报告 |
 | `analyzing-cognitive-functions` | 荣格八维认知功能分析、MBTI 推断、依恋类型、恋爱适配/情侣报告 |
 | `analyzing-complex-systems` | 复杂适应系统分析：反馈回路、涌现行为、战略博弈、临界转变 |
-| `maintaining-llm-wiki` | LLM Wiki 知识库维护：入库、查询、lint、派生同步 |
 | `defining-products` | 产品定义框架：初衷分类 + 定位四问 + 不可能三角 + 迁移成本三层（cangjie 蒸馏） |
 | `researching-user-costs` | 成本视角用户研究：以用户付出的真实成本为证据，识别口头反馈失真（cangjie 蒸馏） |
+
+> ⚠️ `maintaining-llm-wiki` 已于 2026-08-16 迁出本仓库，迁移至 `LLMWiki/skills/maintaining-llm-wiki`。本仓库不再维护该 skill。
 
 ## 常用第三方技能（`npx skills` 管理）
 
