@@ -96,6 +96,7 @@ KNOWN_UNREFERENCED_RAW = frozenset({
     "raw/logs/llm-wiki-setup-log.md",  # 初始化日志
     "raw/projects/karpathy-skills/README.zh.md",  # 翻译副本，已有英文版被引用
     "raw/reference/opencode-omo-tutorial.md",  # 历史教程，已被实体页覆盖
+    "raw/logs/archive-2026-08.md",  # 日志归档
 })
 
 errors, infos = [], []
