@@ -63,7 +63,7 @@ KNOWN_ORPHAN = frozenset({
     "stanford-ai-index-2026-analysis",
     "world-model",
     "zhipu-ai",
-    # 2026-08-15 lint：08-14 入库 DSH 簇长尾页（补回链后入链 1，同 2026-08-04 裁定）
+    # 2026-08-15 lint：DSH 簇回链补齐后长尾页（入链 1-2），同 2026-08-04 裁定
     "a-programming-paradigm-for-spatiotemporal-composability",
     "dsh-mcp-server-integration",
 })
