@@ -33,7 +33,7 @@ description: 维护 LLM Wiki 知识库（入库/查询/lint/派生同步/生命�
 
 ## 硬约束
 
-1. **raw 只读，且只存 Markdown** — 不修改、不删除 raw；非 Markdown 先转 Markdown 再入库
+1. **raw 只读，且只存 Markdown** — 不修改、不删除 raw
 2. **用户内容不碰** — 删除/归档/重命名必须用户确认
 3. **事实有来源** — 核心断言要链接到 raw 或外部 URL
 4. **变更后更新 index + 追加 log** — 纯读操作除外

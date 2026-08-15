@@ -6,7 +6,6 @@
 
 1. **捕获来源**
    - 外部 URL / 文本 → 尽量保存为 raw Markdown。
-   - 非 Markdown 资料 → 先转 Markdown 再入库。
    - raw 不引入 frontmatter；来源 URL 写在 wiki `sources` 或 raw 正文首部。
    - 无法保存 raw 的外部 URL → 在来源段注明“未存档”。
 
