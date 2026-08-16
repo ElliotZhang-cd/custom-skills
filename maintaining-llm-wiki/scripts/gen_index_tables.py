@@ -22,7 +22,6 @@ TYPE_MAP = {
     "logs": "logs",
     "webpages": "webpages",
     "projects": "projects",
-    "hermes-agent-orange-book": "reference",
     "README.md": "meta",
 }
 

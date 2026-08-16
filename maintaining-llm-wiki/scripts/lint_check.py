@@ -49,7 +49,6 @@ KNOWN_ORPHAN = frozenset({
     "academic-research-skills",
     "cc-switch",
     "claude-code-web-fetch-preflight",
-    "hermes-agent-orange-book",
     "playwright-cli",
     "winget",
     "world-model-survey",

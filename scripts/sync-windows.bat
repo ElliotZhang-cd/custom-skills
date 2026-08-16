@@ -2,7 +2,7 @@
 chcp 65001 >nul
 rem ============================================================
 rem sync-windows.bat - sync custom-skills on Windows side
-rem Source of truth: GitHub -> this script (pull + distribute to workbuddy; hermes reads repo directly)
+rem Source of truth: GitHub -> this script (pull + distribute to workbuddy)
 rem Usage: double-click, or schedule in Task Scheduler
 rem NOTE: comments MUST stay ASCII-only. Chinese rem lines + chcp 65001 trigger
 rem   cmd's multi-byte misparse; an ASCII "->" in a comment got split and its
@@ -12,7 +12,7 @@ rem ============================================================
 setlocal enabledelayedexpansion
 set "REPO=%USERPROFILE%\custom-skills"
 set "WB_SKILLS=%USERPROFILE%\.workbuddy\skills"
-set "HERMES_CFG=%USERPROFILE%\AppData\Local\hermes\config.yaml"
+
 
 if not exist "%REPO%\.git" (
     echo [sync] 仓库不存在，首次使用请先执行:
@@ -21,7 +21,7 @@ if not exist "%REPO%\.git" (
     exit /b 1
 )
 
-echo [1/3] pulling latest from GitHub...
+echo [1/2] pulling latest from GitHub...
 cd /d "%REPO%"
 set "DIRTY="
 git status --porcelain | findstr /R "." >nul
@@ -41,7 +41,7 @@ if !errorlevel! neq 0 (
 )
 for /f "delims=" %%v in ('git log -1 --oneline') do echo [sync] 当前版本: %%v
 
-echo [2/3] 分发自建 skill 到 workbuddy...
+echo [2/2] 分发自建 skill 到 workbuddy...
 for %%s in (analyzing-bigfive analyzing-cognitive-functions analyzing-complex-systems maintaining-llm-wiki defining-products researching-user-costs) do (
     if exist "%REPO%\%%s\SKILL.md" (
         if not exist "%WB_SKILLS%\%%s" mkdir "%WB_SKILLS%\%%s"
@@ -56,21 +56,5 @@ for %%s in (analyzing-bigfive analyzing-cognitive-functions analyzing-complex-sy
     )
 )
 
-echo [3/3] 校验 hermes 配置...
-if exist "%HERMES_CFG%" (
-    if exist "%REPO%\maintaining-llm-wiki\SKILL.md" (
-        findstr /I /C:"custom-skills" "%HERMES_CFG%" >nul
-        if !errorlevel! equ 0 (
-            echo   [hermes] external_dirs 已配置，直接读取 %REPO%（无需复制，避免旧版遮蔽）
-        ) else (
-            echo   [hermes] 警告: external_dirs 未指向当前仓库，请检查 %HERMES_CFG%
-        )
-    ) else (
-        echo   [hermes] 警告: 仓库内容不完整（缺 SKILL.md）
-    )
-) else (
-    echo   [hermes] 警告: 未找到 config.yaml
-)
-
-echo [sync] 完成。hermes 直接读仓库已最新；workbuddy 已分发。下次启动即生效。
+echo [sync] 完成。workbuddy 已分发。下次启动即生效。
 pause

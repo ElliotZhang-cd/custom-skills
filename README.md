@@ -80,10 +80,9 @@ git -c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY push origin master
 bash scripts/sync-wsl.sh        # 脏树守卫 → git pull --ff-only → 自动建/删两级符号链接 → 刷新 AGENTS.md 表格
 ```
 
-### Windows 侧同步（hermes / workbuddy）
+### Windows 侧同步（workbuddy）
 
 - 机制：GitHub 中转（两端都是 clone，不软链接）
-- push 后 → Windows 运行 `sync-custom-skills.bat`（转发到本仓库 `scripts/sync-windows.bat`，一键：git pull 到 `C:\Users\elliot\custom-skills` + 自动分发到 workbuddy + 校验 hermes 配置）
-- hermes：`skills.external_dirs: ["C:/Users/elliot/custom-skills"]`（config.yaml）——直接读仓库，无需复制（local 优先，复制会遮蔽更新）
+- push 后 → Windows 运行 `sync-custom-skills.bat`（转发到本仓库 `scripts/sync-windows.bat`，一键：git pull 到 `C:\Users\elliot\custom-skills` + 自动分发到 workbuddy）
 - workbuddy：`C:\Users\elliot\.workbuddy\skills\` 由 bat 脚本 robocopy 分发（保留 `_user_meta.json`）
 - 脚本真相源：`scripts/sync-windows.bat`（已去敏感化，`%USERPROFILE%` 派生路径，不硬编码用户名）
