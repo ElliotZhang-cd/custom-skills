@@ -1,9 +1,9 @@
 ---
-name: elliot-skill-authoring
+name: authoring-skills
 description: Creates, reviews, and iterates on portable Agent Skills (SKILL.md packages) that follow open SKILL.md / AgentSkills conventions. Use when the user asks to write a new skill, improve an existing SKILL.md, review or refactor a skill, turn documentation or repetitive work into a skill, or validate a skill before sharing.
 ---
 
-# Elliot Skill Authoring
+# Authoring Skills
 
 ## Goal
 

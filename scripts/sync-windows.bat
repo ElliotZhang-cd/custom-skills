@@ -42,7 +42,7 @@ if !errorlevel! neq 0 (
 for /f "delims=" %%v in ('git log -1 --oneline') do echo [sync] 当前版本: %%v
 
 echo [2/2] 分发自建 skill 到 workbuddy...
-for %%s in (analyzing-bigfive analyzing-cognitive-functions analyzing-complex-systems maintaining-llm-wiki defining-products researching-user-costs elliot-skill-authoring) do (
+for %%s in (analyzing-bigfive analyzing-cognitive-functions maintaining-llm-wiki defining-products researching-user-costs authoring-skills) do (
     if exist "%REPO%\%%s\SKILL.md" (
         if not exist "%WB_SKILLS%\%%s" mkdir "%WB_SKILLS%\%%s"
         robocopy "%REPO%\%%s" "%WB_SKILLS%\%%s" /E /NFL /NDL /NJH /NJS /NP >nul
