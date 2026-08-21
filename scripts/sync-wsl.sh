@@ -3,7 +3,7 @@
 # sync-wsl.sh - WSL 侧同步 custom-skills（GitHub 为唯一真相源）
 # 架构: GitHub repo = 唯一真相源; WSL ~/custom-skills 与 Windows 均为 clone + 编辑入口
 # 用法: bash ~/custom-skills/scripts/sync-wsl.sh   （或 ~/.local/bin 软链后直接跑）
-# 流程: 脏树守卫(含 untracked) -> git pull --ff-only -> 同步两级符号链接 -> 刷新 AGENTS.md 技能表
+# 流程: 脏树守卫(含 untracked) -> git pull --ff-only -> 同步两级符号链接 -> 刷新 AGENTS.md 技能表 -> 分发对账
 # 注意: 自建 skill 绝不进入 skills CLI 锁文件; 编辑只发生在任一 clone, push 后他端 pull
 # ============================================================
 set -u
@@ -23,7 +23,7 @@ fail() {
 [ -d "$REPO/.git" ] || fail "仓库不存在: $REPO"
 cd "$REPO" || fail "无法进入 $REPO"
 
-# ---- [1/4] 脏树守卫（含 untracked，与 sync-windows.bat 对齐） ----
+# ---- [1/5] 脏树守卫（含 untracked，与 sync-windows.bat 对齐） ----
 if [ -n "$(git status --porcelain)" ]; then
     echo "[sync] 错误: 仓库有本地未提交修改，--ff-only pull 会被拒绝:"
     git status --short
@@ -31,11 +31,11 @@ if [ -n "$(git status --porcelain)" ]; then
     exit 1
 fi
 
-# ---- [2/4] pull ----
+# ---- [2/5] pull ----
 git pull --ff-only "$ORIGIN" "$BRANCH" || fail "pull 失败（已排除本地修改干扰），请检查网络/代理"
 echo "[sync] 当前版本: $(git log -1 --oneline)"
 
-# ---- [3/4] 同步两级符号链接 ----
+# ---- [3/5] 同步两级符号链接 ----
 # 仓库根目录含 SKILL.md 的目录 = 自建 skill（真相源）
 mapfile -t SKILLS < <(find "$REPO" -maxdepth 2 -name SKILL.md -printf "%h\n" | sed "s|$REPO/||" | sort)
 
@@ -67,9 +67,15 @@ for link in "$AGENTS_DIR"/* "$CLAUDE_DIR"/*; do
     esac
 done
 
-# ---- [4/4] 刷新 AGENTS.md 技能表 ----
+# ---- [4/5] 刷新 AGENTS.md 技能表 ----
 if [ -f "$TABLE_SCRIPT" ]; then
     python3 "$TABLE_SCRIPT"
+fi
+
+# ---- [5/5] 分发对账（四面: .agents/.claude/workbuddy/TRAE；缺口退出码 1 但不中断） ----
+AUDIT_SCRIPT="$REPO/scripts/check_distribution.py"
+if [ -f "$AUDIT_SCRIPT" ]; then
+    python3 "$AUDIT_SCRIPT" || true
 fi
 
 echo "[sync] 完成。符号链接即改即生效；新/变更 skill 已在 ~/AGENTS.md 技能表中。"
