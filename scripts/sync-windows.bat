@@ -17,6 +17,7 @@ rem Change 2026-08-21: hand list removed; TRAE added; mllw second source;
 rem   end-to-end audit appended.
 rem ============================================================
 setlocal enabledelayedexpansion
+set "PYTHONUTF8=1"
 set "REPO=%USERPROFILE%\custom-skills"
 set "WB_SKILLS=%USERPROFILE%\.workbuddy\skills"
 set "TRAE_SKILLS=%USERPROFILE%\.trae-cn\skills"

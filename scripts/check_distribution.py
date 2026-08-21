@@ -53,8 +53,12 @@ def win_homes():
 
 def surfaces():
     home = Path.home()
-    out = [("~/.agents/skills", home / ".agents" / "skills"),
-           ("~/.claude/skills", home / ".claude" / "skills")]
+    out = []
+    if os.name == "posix":
+        # 符号链接面是 WSL 侧机制；Windows 原生 %USERPROFILE%\.agents 是
+        # skills CLI 的第三方安装位，不归本体系管，不审计
+        out += [("~/.agents/skills", home / ".agents" / "skills"),
+                ("~/.claude/skills", home / ".claude" / "skills")]
     for wh in win_homes():
         out.append((f"[win:{wh.name}] .workbuddy/skills", wh / ".workbuddy" / "skills"))
         out.append((f"[win:{wh.name}] .trae-cn/skills", wh / ".trae-cn" / "skills"))
