@@ -1,0 +1,10 @@
+{
+  "_comment": "custom-skills 分发白名单（封闭投影面），唯一配置源。sync 脚本与 check_distribution.py 共同消费。新增工具目录必须先在此显式登记。expect 字段控制该面 expected 包含的来源：selfbuilt / mllw / thirdparty。",
+  "version": 1,
+  "surfaces": [
+    {"id": "agents", "platform": "posix", "relpath": [".agents", "skills"], "expect": ["selfbuilt", "mllw", "thirdparty"], "role": "storage"},
+    {"id": "claude", "platform": "posix", "relpath": [".claude", "skills"], "expect": ["selfbuilt", "mllw", "thirdparty"], "role": "link"},
+    {"id": "workbuddy", "platform": "win", "relpath": [".workbuddy", "skills"], "expect": ["selfbuilt", "mllw"], "role": "robocopy", "note": "含 skillhub/openskills 历史残留，仅报告不删除"},
+    {"id": "trae", "platform": "win", "relpath": [".trae-cn", "skills"], "expect": ["selfbuilt", "mllw"], "role": "robocopy", "note": "含 TRAE 平台自带 skill，非本体系，仅报告不删除"}
+  ]
+}
