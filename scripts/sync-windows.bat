@@ -42,9 +42,13 @@ if defined DIRTY (
 )
 git pull --ff-only origin master
 if !errorlevel! neq 0 (
-    echo [sync] pull 失败（已排除本地修改干扰），请检查网络/代理
-    pause
-    exit /b 1
+    echo [sync] pull via proxy failed, retrying direct...
+    git -c http.proxy= -c https.proxy= pull --ff-only origin master
+    if !errorlevel! neq 0 (
+        echo [sync] pull 失败（代理与直连均不可达），请检查网络
+        pause
+        exit /b 1
+    )
 )
 for /f "delims=" %%v in ('git log -1 --oneline') do echo [sync] 当前版本: %%v
 
