@@ -6,15 +6,19 @@ rem Source of truth: GitHub -> this script (pull + distribute + audit)
 rem Usage: double-click, or schedule in Task Scheduler
 rem Targets: workbuddy + TRAE (skills auto-discovered by SKILL.md,
 rem          the repo IS the list - no hand-maintained names)
+rem ZCode  : .zcode\skills is junctions to this repo + LLMWiki (push-and-done,
+rem          no distribution needed there); audited via manual-skills.md ledger
 rem Second source: maintaining-llm-wiki from Documents\LLMWiki repo
 rem Audit: scripts\check_distribution.py runs at the end and reports
-rem        MISSING / EXTRA / BROKEN across all surfaces
+rem        MISSING / EXTRA / UNKNOWN / BROKEN / CONFLICT across all surfaces
 rem NOTE: comments MUST stay ASCII-only. Chinese rem lines + chcp 65001 trigger
 rem   cmd's multi-byte misparse; an ASCII "->" in a comment got split and its
 rem   ">" became a redirection, creating a stray 0-byte file on every run
 rem   (investigated 2026-08-13). Chinese is safe in echo lines only.
 rem Change 2026-08-21: hand list removed; TRAE added; mllw second source;
 rem   end-to-end audit appended.
+rem Change 2026-09-03: ZCode surface registered (junctions + manual ledger);
+rem   v5 audit upgraded with manual pool and junction dead-link detection.
 rem ============================================================
 setlocal enabledelayedexpansion
 set "PYTHONUTF8=1"
