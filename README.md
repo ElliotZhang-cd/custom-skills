@@ -1,4 +1,4 @@
-# agent-skills
+# custom-skills
 
 [![skills.sh](https://skills.sh/b/ElliotZhang-cd/custom-skills)](https://skills.sh/ElliotZhang-cd/custom-skills)
 
@@ -8,6 +8,7 @@
 
 | 技能 | 用途 |
 |---|---|
+| `authoring-skills` | 创建、评审、迭代可移植 Agent Skills（SKILL.md 包，遵循 open SKILL.md / AgentSkills 规范） |
 | `analyzing-bigfive` | BFI-2 大五人格分析，生成来访者视角 HTML 报告 |
 | `analyzing-cognitive-functions` | 荣格八维认知功能分析、MBTI 推断、依恋类型、恋爱适配/情侣报告 |
 | `analyzing-complex-systems` | 复杂适应系统分析：反馈回路、涌现行为、战略博弈、临界转变 |
@@ -48,7 +49,9 @@
 ### 架构
 
 - GitHub remote（`ElliotZhang-cd/custom-skills`）= **唯一真相源**（唯一账本）；WSL `~/custom-skills/` 与 Windows `C:\Users\elliot\custom-skills` 均为 clone + 编辑入口，任一端改完 push，他端 pull
-- 分发：WSL 侧 `~/.agents/skills/` → `~/.claude/skills/` 全为符号链接，pull 后即全局生效
+- 分发：WSL 侧 `~/.agents/skills/` → `~/.claude/skills/` 全为符号链接；Windows 侧 workbuddy / TRAE 由 bat「repo 即列表」自动遍历分发（新增/改名零列表维护）
+- 分发面白名单：`scripts/distribution-targets.json` 为唯一配置源（封闭投影面，新增工具目录须先在此显式登记）
+- 对账闭环：`scripts/check_distribution.py` 由白名单驱动四面对账，输出 MISSING / EXTRA / UNKNOWN / BROKEN / CONFLICT（前四类缺失退出码 1，不中断同步）
 - 冲突纪律：改前先 pull；两端同时改同一文件会产生 git 冲突，手动解决（sync 脚本用 `--ff-only` 保护，绝不自动覆盖）
 
 ### 铁律
@@ -78,12 +81,13 @@ git -c http.proxy=$HTTPS_PROXY -c https.proxy=$HTTPS_PROXY push origin master
 ### WSL 侧同步（一键）
 
 ```bash
-bash scripts/sync-wsl.sh        # 脏树守卫 → git pull --ff-only → 自动建/删两级符号链接 → 刷新 AGENTS.md 表格
+bash scripts/sync-wsl.sh        # 脏树守卫 → git pull --ff-only → 自动建/删两级符号链接 → 刷新 AGENTS.md 表格 → 分发对账 → 锁文件快照备份
 ```
 
-### Windows 侧同步（workbuddy）
+### Windows 侧同步（workbuddy + TRAE）
 
 - 机制：GitHub 中转（两端都是 clone，不软链接）
-- push 后 → Windows 运行 `sync-custom-skills.bat`（转发到本仓库 `scripts/sync-windows.bat`，一键：git pull 到 `C:\Users\elliot\custom-skills` + 自动分发到 workbuddy）
+- push 后 → Windows 运行 `sync-custom-skills.bat`（转发到本仓库 `scripts/sync-windows.bat`，一键：git pull 到 `C:\Users\elliot\custom-skills` + 自动分发到 workbuddy / TRAE）
 - workbuddy：`C:\Users\elliot\.workbuddy\skills\` 由 bat 脚本 robocopy 分发（保留 `_user_meta.json`）
+- TRAE：`C:\Users\elliot\.trae-cn\skills\` 同由 bat 分发（TRAE 平台自带 skill 非本体系，对账仅报告不删除）
 - 脚本真相源：`scripts/sync-windows.bat`（已去敏感化，`%USERPROFILE%` 派生路径，不硬编码用户名）
