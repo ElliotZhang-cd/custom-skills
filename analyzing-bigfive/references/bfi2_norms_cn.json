@@ -1,0 +1,359 @@
+{
+  "metadata": {
+    "source": "Zhang, B., Li, Y. M., Li, J., Luo, J., Ye, Y., Yin, L., Chen, Z., Soto, C. J., & John, O. P. (2022). The Big Five Inventory-2 in China: A comprehensive psychometric evaluation in four diverse samples. Assessment, 29(6), 1262-1284. https://doi.org/10.1177/10731911211008245",
+    "table": "Table 1（PDF 第 41 页，accepted manuscript）",
+    "extraction": "pdftotext -layout 逐行解析 + 锚点断言（13 处三点锚 + 值域检查 + 与 bfi2_chinese.json 既有 norms_cn_college 20 行全值比对一致）；样本档案 N/性别/年龄逐项在方法学页（PDF 第 10、23 页）原文确认",
+    "scale": "1-5 Likert 条目均值（反向题已反转）。z = (score - M) / SD",
+    "direction_note": "negative_emotionality 为负性情绪/神经质方向（高=更负面）；本管线按情绪稳定性方向翻转：M'=6-M，z 取反",
+    "excluded": "CN-Substance use 样本（n=765）未收录：物质滥用治疗临床人群、监督性纸笔施测存在社会赞许偏差、部分子维度信度过低（Intellectual Curiosity α=.28），不适用于一般来访者",
+    "selection_guide": "17-28 在校/大学生 → cn_college；25+ 在职成人 → cn_employee；15-17 高中生 → cn_adolescent（仅维度层稳妥，子维度 α 偏低需谨慎）。三者之外的中国来访者按年龄就近选择并注明样本局限",
+    "caveats": "三个常模均为便利样本、非全国代表性；无分性别/分年龄段常模（论文未提供）；中国样本 SD 系统性小于美国样本（作答更保守）。美国常模已从管线移除",
+    "verified_at": "2026-09-03"
+  },
+  "norms": {
+    "cn_college": {
+      "sample_profile": {
+        "description": "中国大学生样本 (CN-College)",
+        "sample_size": 1194,
+        "age_range": "17-28 岁 (M = 19.46, SD = 1.46)",
+        "gender": "470 男 / 724 女",
+        "recruitment": "遍布中国 200+ 城市、50+ 个专业（滚雪球）",
+        "reference": "PDF 第 10 页方法学 + Table 1 第 2 列"
+      },
+      "domains": {
+        "extraversion": {
+          "M": 3.19,
+          "SD": 0.66,
+          "alpha": 0.87
+        },
+        "agreeableness": {
+          "M": 3.69,
+          "SD": 0.47,
+          "alpha": 0.79
+        },
+        "conscientiousness": {
+          "M": 3.29,
+          "SD": 0.59,
+          "alpha": 0.85
+        },
+        "negative_emotionality": {
+          "M": 2.96,
+          "SD": 0.67,
+          "alpha": 0.87
+        },
+        "open_mindedness": {
+          "M": 3.57,
+          "SD": 0.59,
+          "alpha": 0.84
+        }
+      },
+      "facets": {
+        "sociability": {
+          "M": 3.14,
+          "SD": 0.89,
+          "alpha": 0.85
+        },
+        "assertiveness": {
+          "M": 3.05,
+          "SD": 0.73,
+          "alpha": 0.7
+        },
+        "energy_level": {
+          "M": 3.39,
+          "SD": 0.75,
+          "alpha": 0.75
+        },
+        "compassion": {
+          "M": 3.75,
+          "SD": 0.61,
+          "alpha": 0.66
+        },
+        "respectfulness": {
+          "M": 3.8,
+          "SD": 0.54,
+          "alpha": 0.6
+        },
+        "trust": {
+          "M": 3.51,
+          "SD": 0.62,
+          "alpha": 0.59
+        },
+        "organization": {
+          "M": 3.26,
+          "SD": 0.77,
+          "alpha": 0.76
+        },
+        "productiveness": {
+          "M": 3.02,
+          "SD": 0.73,
+          "alpha": 0.75
+        },
+        "responsibility": {
+          "M": 3.59,
+          "SD": 0.66,
+          "alpha": 0.74
+        },
+        "anxiety": {
+          "M": 3.31,
+          "SD": 0.75,
+          "alpha": 0.73
+        },
+        "depression": {
+          "M": 2.86,
+          "SD": 0.77,
+          "alpha": 0.74
+        },
+        "emotional_volatility": {
+          "M": 2.7,
+          "SD": 0.87,
+          "alpha": 0.85
+        },
+        "intellectual_curiosity": {
+          "M": 3.53,
+          "SD": 0.68,
+          "alpha": 0.65
+        },
+        "aesthetic_sensitivity": {
+          "M": 3.67,
+          "SD": 0.85,
+          "alpha": 0.82
+        },
+        "creative_imagination": {
+          "M": 3.5,
+          "SD": 0.73,
+          "alpha": 0.82
+        }
+      }
+    },
+    "cn_employee": {
+      "sample_profile": {
+        "description": "中国在职员工样本 (CN-Employee)",
+        "sample_size": 486,
+        "age_range": "18-80 岁 (M = 29.38, SD = 8.88)",
+        "gender": "195 男 / 291 女",
+        "recruitment": "41 个不同组织的在职员工",
+        "reference": "PDF 第 10 页方法学 + Table 1 第 3 列"
+      },
+      "domains": {
+        "extraversion": {
+          "M": 3.24,
+          "SD": 0.6,
+          "alpha": 0.85
+        },
+        "agreeableness": {
+          "M": 3.81,
+          "SD": 0.49,
+          "alpha": 0.81
+        },
+        "conscientiousness": {
+          "M": 3.68,
+          "SD": 0.57,
+          "alpha": 0.86
+        },
+        "negative_emotionality": {
+          "M": 2.72,
+          "SD": 0.61,
+          "alpha": 0.86
+        },
+        "open_mindedness": {
+          "M": 3.52,
+          "SD": 0.57,
+          "alpha": 0.83
+        }
+      },
+      "facets": {
+        "sociability": {
+          "M": 3.12,
+          "SD": 0.8,
+          "alpha": 0.81
+        },
+        "assertiveness": {
+          "M": 3.15,
+          "SD": 0.66,
+          "alpha": 0.67
+        },
+        "energy_level": {
+          "M": 3.44,
+          "SD": 0.72,
+          "alpha": 0.73
+        },
+        "compassion": {
+          "M": 3.85,
+          "SD": 0.6,
+          "alpha": 0.65
+        },
+        "respectfulness": {
+          "M": 3.94,
+          "SD": 0.55,
+          "alpha": 0.62
+        },
+        "trust": {
+          "M": 3.65,
+          "SD": 0.65,
+          "alpha": 0.63
+        },
+        "organization": {
+          "M": 3.65,
+          "SD": 0.73,
+          "alpha": 0.77
+        },
+        "productiveness": {
+          "M": 3.55,
+          "SD": 0.7,
+          "alpha": 0.73
+        },
+        "responsibility": {
+          "M": 3.85,
+          "SD": 0.6,
+          "alpha": 0.7
+        },
+        "anxiety": {
+          "M": 3.01,
+          "SD": 0.7,
+          "alpha": 0.68
+        },
+        "depression": {
+          "M": 2.63,
+          "SD": 0.66,
+          "alpha": 0.67
+        },
+        "emotional_volatility": {
+          "M": 2.52,
+          "SD": 0.81,
+          "alpha": 0.83
+        },
+        "intellectual_curiosity": {
+          "M": 3.51,
+          "SD": 0.64,
+          "alpha": 0.6
+        },
+        "aesthetic_sensitivity": {
+          "M": 3.42,
+          "SD": 0.86,
+          "alpha": 0.8
+        },
+        "creative_imagination": {
+          "M": 3.62,
+          "SD": 0.68,
+          "alpha": 0.8
+        }
+      }
+    },
+    "cn_adolescent": {
+      "sample_profile": {
+        "description": "中国青少年样本 (CN-Adolescent, T1 基线)",
+        "sample_size": 315,
+        "age_range": "15-16 岁 (M = 16.20, SD = 0.61)",
+        "gender": "152 男 / 163 女",
+        "recruitment": "单一城市高中（便利样本、范围受限）",
+        "retest": "3 个月重测（T2 数值与 T1 接近）；重测信度：E .80 A .70 C .73 N .76 O .74",
+        "facet_warning": "子维度 α 偏低：Intellectual Curiosity .39、Respectfulness .47、Trust .52、Assertiveness .56——青少年解释以维度层为主，子维度仅供粗略参考",
+        "reference": "PDF 第 23 页方法学 + Table 1 第 5 列（T1）"
+      },
+      "domains": {
+        "extraversion": {
+          "M": 3.19,
+          "SD": 0.7,
+          "alpha": 0.83
+        },
+        "agreeableness": {
+          "M": 3.56,
+          "SD": 0.53,
+          "alpha": 0.75
+        },
+        "conscientiousness": {
+          "M": 3.17,
+          "SD": 0.63,
+          "alpha": 0.81
+        },
+        "negative_emotionality": {
+          "M": 3.15,
+          "SD": 0.72,
+          "alpha": 0.82
+        },
+        "open_mindedness": {
+          "M": 3.28,
+          "SD": 0.62,
+          "alpha": 0.75
+        }
+      },
+      "facets": {
+        "sociability": {
+          "M": 3.19,
+          "SD": 0.99,
+          "alpha": 0.82
+        },
+        "assertiveness": {
+          "M": 2.93,
+          "SD": 0.76,
+          "alpha": 0.56
+        },
+        "energy_level": {
+          "M": 3.45,
+          "SD": 0.79,
+          "alpha": 0.61
+        },
+        "compassion": {
+          "M": 3.76,
+          "SD": 0.66,
+          "alpha": 0.59
+        },
+        "respectfulness": {
+          "M": 3.49,
+          "SD": 0.61,
+          "alpha": 0.47
+        },
+        "trust": {
+          "M": 3.42,
+          "SD": 0.71,
+          "alpha": 0.52
+        },
+        "organization": {
+          "M": 3.27,
+          "SD": 0.85,
+          "alpha": 0.73
+        },
+        "productiveness": {
+          "M": 2.83,
+          "SD": 0.73,
+          "alpha": 0.6
+        },
+        "responsibility": {
+          "M": 3.41,
+          "SD": 0.74,
+          "alpha": 0.65
+        },
+        "anxiety": {
+          "M": 3.42,
+          "SD": 0.79,
+          "alpha": 0.59
+        },
+        "depression": {
+          "M": 3.03,
+          "SD": 0.85,
+          "alpha": 0.63
+        },
+        "emotional_volatility": {
+          "M": 3.01,
+          "SD": 1.02,
+          "alpha": 0.8
+        },
+        "intellectual_curiosity": {
+          "M": 3.37,
+          "SD": 0.71,
+          "alpha": 0.39
+        },
+        "aesthetic_sensitivity": {
+          "M": 3.13,
+          "SD": 1.0,
+          "alpha": 0.73
+        },
+        "creative_imagination": {
+          "M": 3.34,
+          "SD": 0.8,
+          "alpha": 0.73
+        }
+      }
+    }
+  }
+}

@@ -8,7 +8,7 @@
 :root {
   --bg: #fafaf8; --text: #1a1a1a; --muted: #5a5a5a; --border: #d0d0cc; --accent: #2c3e50;
   --extraversion: #e67e22; --agreeableness: #27ae60; --conscientiousness: #2980b9;
-  --neuroticism: #c0392b; --openness: #8e44ad;
+  --emotional-stability: #c0392b; --openness: #8e44ad;
   --highlight: #f9f3e8; --card-bg: #ffffff;
 }
 body {
@@ -68,7 +68,7 @@ h3 { font-size:1.1em; margin-top:24px; }
 <body>
 
 <div class="meta-header">
-  示例样本 SAMPLE-01（合成数据，非真实来访者）· 测评日期：2026-01-15 · 报告日期：2026-01-15 · 量表来源：BFI-2 中文修订版
+  示例样本 SAMPLE-01（合成数据，非真实来访者）· 测评日期：2026-01-15 · 报告日期：2026-01-15 · 量表来源：BFI-2 中文修订版 · 常模：中国大学生样本（Zhang et al., 2022）
 </div>
 
 <div class="guide-box">
@@ -97,119 +97,121 @@ h3 { font-size:1.1em; margin-top:24px; }
 <div class="summary-card" id="s0">
   <h3>一页速览</h3>
   <div class="chart-box">
-    <svg viewBox="0 0 300 300" width="280" height="280" role="img" aria-label="五维度雷达图">
+    <svg viewBox="0 0 360 330" width="280" height="280" role="img" aria-label="五维度雷达图">
       <!-- 参考线圈 -->
-      <circle cx="150" cy="150" r="24" fill="none" stroke="#ddd" stroke-width="0.5" stroke-dasharray="3,3"/>
-      <circle cx="150" cy="150" r="60" fill="none" stroke="#ddd" stroke-width="0.5" stroke-dasharray="3,3"/>
-      <circle cx="150" cy="150" r="96" fill="none" stroke="#ddd" stroke-width="0.5" stroke-dasharray="3,3"/>
-      <circle cx="150" cy="150" r="120" fill="none" stroke="#ccc" stroke-width="0.8"/>
+      <circle cx="180" cy="170" r="60" fill="none" stroke="#999" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <circle cx="180" cy="170" r="120" fill="none" stroke="#ccc" stroke-width="0.8"/>
+      <text x="176" y="106" text-anchor="end" font-size="8" fill="#999">同龄人平均（z=0）</text>
+      <text x="254" y="74" text-anchor="start" font-size="8" fill="#999">很突出</text>
       <!-- 5 轴 -->
-      <line x1="150" y1="150" x2="150" y2="30" stroke="#ccc" stroke-width="0.8"/>
-      <line x1="150" y1="150" x2="264" y2="99" stroke="#ccc" stroke-width="0.8"/>
-      <line x1="150" y1="150" x2="221" y2="243" stroke="#ccc" stroke-width="0.8"/>
-      <line x1="150" y1="150" x2="79" y2="243" stroke="#ccc" stroke-width="0.8"/>
-      <line x1="150" y1="150" x2="36" y2="99" stroke="#ccc" stroke-width="0.8"/>
+      <line x1="180" y1="170" x2="180" y2="50" stroke="#ccc" stroke-width="0.8"/>
+      <line x1="180" y1="170" x2="294" y2="119" stroke="#ccc" stroke-width="0.8"/>
+      <line x1="180" y1="170" x2="251" y2="263" stroke="#ccc" stroke-width="0.8"/>
+      <line x1="180" y1="170" x2="109" y2="263" stroke="#ccc" stroke-width="0.8"/>
+      <line x1="180" y1="170" x2="66" y2="119" stroke="#ccc" stroke-width="0.8"/>
       <!-- 轴端标签 -->
-      <text x="150" y="22" text-anchor="middle" font-size="10" fill="var(--extraversion)" font-weight="700">外向性</text>
-      <text x="150" y="14" text-anchor="middle" font-size="8" fill="#777">+0.80</text>
-      <text x="272" y="96" text-anchor="start" font-size="10" fill="var(--agreeableness)" font-weight="700">宜人性</text>
-      <text x="272" y="107" text-anchor="start" font-size="8" fill="#777">-0.40</text>
-      <text x="228" y="250" text-anchor="start" font-size="10" fill="var(--conscientiousness)" font-weight="700">尽责性</text>
-      <text x="228" y="261" text-anchor="start" font-size="8" fill="#777">+1.10</text>
-      <text x="72" y="250" text-anchor="end" font-size="10" fill="var(--neuroticism)" font-weight="700">情绪稳定性</text>
-      <text x="72" y="261" text-anchor="end" font-size="8" fill="#777">+0.50</text>
-      <text x="28" y="96" text-anchor="end" font-size="10" fill="var(--openness)" font-weight="700">开放性</text>
-      <text x="28" y="107" text-anchor="end" font-size="8" fill="#777">-0.90</text>
+      <text x="180" y="42" text-anchor="middle" font-size="10" fill="var(--extraversion)" font-weight="700">外向性</text>
+      <text x="180" y="34" text-anchor="middle" font-size="8" fill="#777">+0.97</text>
+      <text x="302" y="116" text-anchor="start" font-size="10" fill="var(--agreeableness)" font-weight="700">宜人性</text>
+      <text x="302" y="127" text-anchor="start" font-size="8" fill="#777">-1.04</text>
+      <text x="302" y="139" text-anchor="start" font-size="8" fill="#757575">▼ 最靠后</text>
+      <text x="258" y="270" text-anchor="start" font-size="10" fill="var(--conscientiousness)" font-weight="700">尽责性</text>
+      <text x="258" y="281" text-anchor="start" font-size="8" fill="#777">+1.66</text>
+      <text x="258" y="293" text-anchor="start" font-size="8" fill="#2e7d32">▲ 最突出</text>
+      <text x="102" y="270" text-anchor="end" font-size="10" fill="var(--emotional-stability)" font-weight="700">情绪稳定性</text>
+      <text x="102" y="281" text-anchor="end" font-size="8" fill="#777">+0.39</text>
+      <text x="58" y="116" text-anchor="end" font-size="10" fill="var(--openness)" font-weight="700">开放性</text>
+      <text x="58" y="127" text-anchor="end" font-size="8" fill="#777">-0.75</text>
       <!-- 来访者多边形 -->
       <!-- z 分映射: r = (z+3)/6 * 120 -->
-      <!-- 外向性(z=+0.80): r=70, 角度=90°(上), x=150, y=150-70=80 -->
-      <!-- 宜人性(z=-0.40): r=52, 角度=18°, x=150+52*cos(18°)=199.5, y=150-52*sin(18°)=133.9 -->
-      <!-- 尽责性(z=+1.10): r=72, 角度=306°, x=150+72*cos(306°)=193.4, y=150-72*sin(306°)=219.7 -->
-      <!-- 情绪稳定性(z=+0.50): r=70, 角度=234°, x=150+70*cos(234°)=109.9, y=150-70*sin(234°)=206.4 -->
-      <!-- 开放性(z=-0.90): r=34, 角度=162°, x=150+34*cos(162°)=117.7, y=150-34*sin(162°)=139.5 -->
-      <polygon points="150,80 199.5,133.9 193.4,219.7 109.9,206.4 117.7,139.5"
+      <!-- 外向性(z=+0.97): r=79.4, 角度=90°(上), x=180, y=170-79.4=90.6 -->
+      <!-- 宜人性(z=-1.04): r=39.2, 角度=18°, x=180+39.2*cos(18°)=217.3, y=170-39.2*sin(18°)=157.9 -->
+      <!-- 尽责性(z=+1.66): r=93.2, 角度=306°, x=180+93.2*cos(306°)=234.8, y=170-93.2*sin(306°)=245.4 -->
+      <!-- 情绪稳定性(z=+0.39): r=67.8, 角度=234°, x=180+67.8*cos(234°)=140.1, y=170-67.8*sin(234°)=224.9 -->
+      <!-- 开放性(z=-0.75): r=45.0, 角度=162°, x=180+45.0*cos(162°)=137.2, y=170-45.0*sin(162°)=156.1 -->
+      <polygon points="180.0,90.6 217.3,157.9 234.8,245.4 140.1,224.9 137.2,156.1"
                fill="rgba(44,62,80,0.15)" stroke="var(--accent)" stroke-width="2"/>
       <!-- 数据点 -->
-      <circle cx="150" cy="80" r="4" fill="var(--accent)"/>
-      <circle cx="199.5" cy="133.9" r="4" fill="var(--accent)"/>
-      <circle cx="193.4" cy="219.7" r="4" fill="var(--accent)"/>
-      <circle cx="109.9" cy="206.4" r="4" fill="var(--accent)"/>
-      <circle cx="117.7" cy="139.5" r="4" fill="var(--accent)"/>
+      <circle cx="180.0" cy="90.6" r="4" fill="var(--accent)"/>
+      <circle cx="217.3" cy="157.9" r="4" fill="var(--accent)"/>
+      <circle cx="234.8" cy="245.4" r="4" fill="var(--accent)"/>
+      <circle cx="140.1" cy="224.9" r="4" fill="var(--accent)"/>
+      <circle cx="137.2" cy="156.1" r="4" fill="var(--accent)"/>
     </svg>
   </div>
-  <p><strong>最显著的特征：</strong>你是一个做事有计划、对自己负责的人（尽责性偏高），多数时候情绪比较平稳（情绪稳定性略高于平均），社交偏好偏主动（外向性略高于平均）。你不太追求抽象理论和"新体验"（开放性偏低），但对美——音乐、自然、画面——有特别的感受力。</p>
-  <p><strong>一个可以探索的方向：</strong>你的开放性子维度并不一致：审美高、好奇和想象偏低。你被"美"打动的能力，比你被"想法"打动的能力更强，可以试着把这部分释放出来。</p>
+  <p><strong>最显著的特征：</strong>你是一个做事有计划、对自己负责的人（尽责性偏高），多数时候情绪比较平稳（情绪稳定性接近平均），社交偏好偏主动（外向性中等偏高）。你不太追求抽象理论和"新体验"（开放性中等偏低），但对美——音乐、自然、画面——有特别的感受力。</p>
+  <p><strong>一个可以探索的方向：</strong>你的开放性子维度并不一致：审美偏高、好奇和想象偏低。你被"美"打动的能力，比你被"想法"打动的能力更强，可以试着把这部分释放出来。</p>
 </div>
 
 <!-- ═══ 第 1 章 ═══ -->
 <h1 id="s1">1 · 你的五维度长什么样 <span class="ev-tag ev-research">✅</span></h1>
 
-<p>下面这张图从五个方向展示了你和"平均水平"之间的距离。圆心代表平均值（z=0），往外圈代表偏离平均值的程度。你可以一眼看出哪些维度是你的"突出特征"，哪些更接近大多数。</p>
+<p>下图展示你的五个维度相对同龄人的位置。<strong>圆心 = 远低于同龄人平均</strong>；<strong>加粗虚线圈 = 同龄人平均（z=0）</strong>，越往外越高；五边形越往外鼓，该维度越突出。轴端的 ▲ / ▼ 标出你最突出和最靠后的维度。</p>
 
 <div class="bar-container">
   <span class="bar-label" style="color:var(--extraversion)">外向性</span>
   <span class="bar-track">
-    <span class="bar-zone low" style="width:16%"></span>
-    <span class="bar-zone mid" style="width:68%"></span>
-    <span class="bar-zone high" style="width:16%"></span>
-    <span class="bar-marker" style="left:63%">● +0.80</span>
+    <span class="bar-zone low" style="width:33.3%"></span>
+    <span class="bar-zone mid" style="width:33.3%"></span>
+    <span class="bar-zone high" style="width:33.4%"></span>
+    <span class="bar-marker" style="left:66%">● +0.97</span>
   </span>
-  <span class="bar-score">中等偏高</span>
+  <span class="bar-score">3.83/5（平均 3.19）· 中等偏高</span>
 </div>
 <div class="bar-container">
   <span class="bar-label" style="color:var(--agreeableness)">宜人性</span>
   <span class="bar-track">
-    <span class="bar-zone low" style="width:16%"></span>
-    <span class="bar-zone mid" style="width:68%"></span>
-    <span class="bar-zone high" style="width:16%"></span>
-    <span class="bar-marker" style="left:43%">● -0.40</span>
+    <span class="bar-zone low" style="width:33.3%"></span>
+    <span class="bar-zone mid" style="width:33.3%"></span>
+    <span class="bar-zone high" style="width:33.4%"></span>
+    <span class="bar-marker" style="left:33%">● -1.04</span>
   </span>
-  <span class="bar-score">中</span>
+  <span class="bar-score">3.20/5（平均 3.69）· 低</span>
 </div>
 <div class="bar-container">
   <span class="bar-label" style="color:var(--conscientiousness)">尽责性</span>
   <span class="bar-track">
-    <span class="bar-zone low" style="width:16%"></span>
-    <span class="bar-zone mid" style="width:68%"></span>
-    <span class="bar-zone high" style="width:16%"></span>
-    <span class="bar-marker" style="left:68%">● +1.10</span>
+    <span class="bar-zone low" style="width:33.3%"></span>
+    <span class="bar-zone mid" style="width:33.3%"></span>
+    <span class="bar-zone high" style="width:33.4%"></span>
+    <span class="bar-marker" style="left:78%">● +1.66</span>
   </span>
-  <span class="bar-score">高</span>
+  <span class="bar-score">4.27/5（平均 3.29）· 高</span>
 </div>
 <div class="bar-container">
-  <span class="bar-label" style="color:var(--neuroticism)">情绪稳定性</span>
+  <span class="bar-label" style="color:var(--emotional-stability)">情绪稳定性</span>
   <span class="bar-track">
-    <span class="bar-zone low" style="width:16%"></span>
-    <span class="bar-zone mid" style="width:68%"></span>
-    <span class="bar-zone high" style="width:16%"></span>
-    <span class="bar-marker" style="left:58%">● +0.50</span>
+    <span class="bar-zone low" style="width:33.3%"></span>
+    <span class="bar-zone mid" style="width:33.3%"></span>
+    <span class="bar-zone high" style="width:33.4%"></span>
+    <span class="bar-marker" style="left:57%">● +0.39</span>
   </span>
-  <span class="bar-score">中等偏高</span>
+  <span class="bar-score">3.30/5（平均 3.04）· 中</span>
 </div>
 <div class="bar-container">
   <span class="bar-label" style="color:var(--openness)">开放性</span>
   <span class="bar-track">
-    <span class="bar-zone low" style="width:16%"></span>
-    <span class="bar-zone mid" style="width:68%"></span>
-    <span class="bar-zone high" style="width:16%"></span>
-    <span class="bar-marker" style="left:35%">● -0.90</span>
+    <span class="bar-zone low" style="width:33.3%"></span>
+    <span class="bar-zone mid" style="width:33.3%"></span>
+    <span class="bar-zone high" style="width:33.4%"></span>
+    <span class="bar-marker" style="left:38%">● -0.75</span>
   </span>
-  <span class="bar-score">中等偏低</span>
+  <span class="bar-score">3.13/5（平均 3.57）· 中等偏低</span>
 </div>
 
-<h3>外向性 <span class="fn-code">Extraversion</span>：中等偏高（z = +0.80）<span class="ev-tag ev-research">✅</span></h3>
+<h3>外向性 <span class="fn-code">Extraversion</span>：中等偏高（z = +0.97）<span class="ev-tag ev-research">✅</span></h3>
 <p>更可能从与人的互动中获得能量，独处太久反而觉得没劲。比如让你一个人在家待一整天，你可能会觉得闷，想找人说说话。你的外向性主要体现在做事时主动、敢做决定的果断上，而不是特别偏好嘈杂的群体场合。</p>
 
-<h3>宜人性 <span class="fn-code">Agreeableness</span>：中（z = -0.40）<span class="ev-tag ev-research">✅</span></h3>
+<h3>宜人性 <span class="fn-code">Agreeableness</span>：低（z = -1.04）<span class="ev-tag ev-research">✅</span></h3>
 <p>更倾向于直接表达自己的想法和需求，不太习惯迁就他人。你可能会被认为"有主见"或"不太好说话"，但在需要坚持立场的时候，你通常能做到。你不是不善良，只是优先级会先把"我自己怎么想"摆出来。</p>
 
-<h3>尽责性 <span class="fn-code">Conscientiousness</span>：高（z = +1.10）<span class="ev-tag ev-research">✅</span></h3>
+<h3>尽责性 <span class="fn-code">Conscientiousness</span>：高（z = +1.66）<span class="ev-tag ev-research">✅</span></h3>
 <p>做事有计划、有条理，对自己认定的任务会负责到底。你可能会被认为"靠谱"或"靠谱得有点较真"。月计划、周计划、待办清单这类工具对你来说不费力，反而是稳定感的来源。你需要留意的是：当周围人达不到你的节奏时，你可能比对方更先焦虑。</p>
 
-<h3>情绪稳定性 <span class="fn-code">Neuroticism (reverse-scored)</span>：中等偏高（z = +0.50）<span class="ev-tag ev-research">✅</span></h3>
+<h3>情绪稳定性 <span class="fn-code">Neuroticism (reverse-scored)</span>：中（z = +0.39）<span class="ev-tag ev-research">✅</span></h3>
 <p>情绪比较稳定，不太容易因为外界的事情大起大落。你可能会被评价"心态好"或"遇事沉稳"。这并不意味着你不会难过或紧张，只是这些情绪出现后，你恢复到原来状态的速度比较快。</p>
 
-<h3>开放性 <span class="fn-code">Openness to Experience</span>：中等偏低（z = -0.90）<span class="ev-tag ev-research">✅</span></h3>
+<h3>开放性 <span class="fn-code">Openness to Experience</span>：中等偏低（z = -0.75）<span class="ev-tag ev-research">✅</span></h3>
 <p>更偏好熟悉和实际的事物，对抽象理论或新奇体验兴趣不大。你可能会被认为"务实"或"接地气"。但下面我们会看到，你的开放性有一个有"选择"的部分——你对"美"这件事反而很敏感。</p>
 
 <!-- ═══ 第 2 章 ═══ -->
@@ -225,86 +227,86 @@ h3 { font-size:1.1em; margin-top:24px; }
   </div>
   <div class="facet-card" style="border-left-color:var(--extraversion)">
     <div class="facet-name">果断</div>
-    <div class="facet-score">z = +1.20 · 高</div>
+    <div class="facet-score">z = +1.58 · 高</div>
     <div class="facet-desc">在需要拍板的时候你能站出来，不害怕承担决定。</div>
   </div>
   <div class="facet-card" style="border-left-color:var(--extraversion)">
     <div class="facet-name">活力</div>
-    <div class="facet-score">z = +0.80 · 中等偏高</div>
+    <div class="facet-score">z = +0.55 · 中等偏高</div>
     <div class="facet-desc">行动速度不慢，喜欢有节奏的忙碌。</div>
   </div>
 
   <div class="facet-card" style="border-left-color:var(--agreeableness)">
     <div class="facet-name">同情</div>
-    <div class="facet-score">z = -0.10 · 中</div>
+    <div class="facet-score">z = -0.25 · 中</div>
     <div class="facet-desc">能感受到他人的情绪，但不轻易被牵着走。</div>
   </div>
   <div class="facet-card" style="border-left-color:var(--agreeableness)">
     <div class="facet-name">谦恭</div>
-    <div class="facet-score">z = -0.50 · 中</div>
+    <div class="facet-score">z = -1.48 · 低</div>
     <div class="facet-desc">意见不合时不太习惯退让，更习惯直说。</div>
   </div>
   <div class="facet-card" style="border-left-color:var(--agreeableness)">
     <div class="facet-name">信任</div>
-    <div class="facet-score">z = -0.60 · 中</div>
+    <div class="facet-score">z = -0.82 · 中等偏低</div>
     <div class="facet-desc">对人保留观察，要看到行动才肯信。</div>
   </div>
 
   <div class="facet-card" style="border-left-color:var(--conscientiousness)">
     <div class="facet-name">条理</div>
-    <div class="facet-score">z = +1.30 · 高</div>
+    <div class="facet-score">z = +1.48 · 高</div>
     <div class="facet-desc">东西有自己固定的位置，计划比临场发挥更让你安心。</div>
   </div>
   <div class="facet-card" style="border-left-color:var(--conscientiousness)">
     <div class="facet-name">效率</div>
-    <div class="facet-score">z = +1.00 · 高</div>
+    <div class="facet-score">z = +1.62 · 高</div>
     <div class="facet-desc">一旦开始就能持续推进，拖延对你不是大问题。</div>
   </div>
   <div class="facet-card" style="border-left-color:var(--conscientiousness)">
     <div class="facet-name">负责</div>
-    <div class="facet-score">z = +1.00 · 高</div>
+    <div class="facet-score">z = +0.92 · 中等偏高</div>
     <div class="facet-desc">答应下来的事会做完，不太做事做一半。</div>
   </div>
 
-  <div class="facet-card" style="border-left-color:var(--neuroticism)">
+  <div class="facet-card" style="border-left-color:var(--emotional-stability)">
     <div class="facet-name">焦虑</div>
-    <div class="facet-score">z = +0.10 · 中</div>
+    <div class="facet-score">z = -0.68 · 中等偏低</div>
     <div class="facet-desc">对未来偶有担心，但不至于让你动不了。</div>
   </div>
-  <div class="facet-card" style="border-left-color:var(--neuroticism)">
+  <div class="facet-card" style="border-left-color:var(--emotional-stability)">
     <div class="facet-name">抑郁</div>
-    <div class="facet-score">z = -1.10 · 中等偏低</div>
+    <div class="facet-score">z = -1.12 · 低</div>
     <div class="facet-desc">情绪低落期较短，遇到挫折恢复较快。</div>
   </div>
-  <div class="facet-card" style="border-left-color:var(--neuroticism)">
+  <div class="facet-card" style="border-left-color:var(--emotional-stability)">
     <div class="facet-name">易变</div>
-    <div class="facet-score">z = +0.60 · 中等偏高</div>
+    <div class="facet-score">z = +0.69 · 中等偏高</div>
     <div class="facet-desc">一天里情绪切换次数偏多一点，但不剧烈。</div>
   </div>
 
   <div class="facet-card" style="border-left-color:var(--openness)">
     <div class="facet-name">好奇 <span class="facet-flag">差异大</span></div>
-    <div class="facet-score">z = -1.50 · 低</div>
+    <div class="facet-score">z = -1.51 · 低</div>
     <div class="facet-desc">对抽象概念和"为什么"兴趣不大，更喜欢具体的事。</div>
   </div>
   <div class="facet-card" style="border-left-color:var(--openness)">
     <div class="facet-name">审美 <span class="facet-flag">差异大</span></div>
-    <div class="facet-score">z = +1.10 · 高</div>
+    <div class="facet-score">z = +0.74 · 中等偏高</div>
     <div class="facet-desc">被音乐、绘画、自然之美打动是常有的事。</div>
   </div>
   <div class="facet-card" style="border-left-color:var(--openness)">
     <div class="facet-name">想象 <span class="facet-flag">差异大</span></div>
-    <div class="facet-score">z = -1.20 · 低</div>
+    <div class="facet-score">z = -1.23 · 低</div>
     <div class="facet-desc">思维偏实际，不太做"如果……会怎样"的脑内演练。</div>
   </div>
 </div>
 
 <h3>开放性的子维度矛盾 <span class="ev-tag ev-theory">🔶</span></h3>
-<p>你在开放性方面，整体得分中等偏低（z = -0.90）。但拆开来看，你的三个子维度表现并不一致：</p>
+<p>你在开放性方面，整体得分中等偏低（z = -0.75）。但拆开来看，你的三个子维度表现并不一致：</p>
 <ul>
-  <li><strong>好奇</strong>：低（z = -1.50）→ 对抽象概念和理论兴趣不大</li>
-  <li><strong>审美</strong>：高（z = +1.10）→ 对音乐、绘画、自然之美有特别的感受力</li>
-  <li><strong>想象</strong>：低（z = -1.20）→ 思维偏着陆，不太做天马行空的联想</li>
+  <li><strong>好奇</strong>：低（z = -1.51）→ 对抽象概念和理论兴趣不大</li>
+  <li><strong>审美</strong>：中等偏高（z = +0.74）→ 对音乐、绘画、自然之美有特别的感受力</li>
+  <li><strong>想象</strong>：低（z = -1.23）→ 思维偏着陆，不太做天马行空的联想</li>
 </ul>
 <p>这说明：你不太喜欢抽象理论或新奇的体验，但对音乐、绘画、自然之美有特别的感受力。你的开放性是有"选择"的——你不被想法吸引，但被画面、声音、风景吸引。一个可能的具体场景是：你会因为一段旋律循环听一下午，但别人聊哲学你听不进去五分钟。这不是"你不够开放"，而是你的开放走的是感官这条路径，而不是概念这条路。<span class="ev-tag ev-hypothesis">⚪</span></p>
 
@@ -321,7 +323,7 @@ h3 { font-size:1.1em; margin-top:24px; }
 
 <p>与此同时，你对"美"这部分体验是开放的——一首曲子、一片晚霞都能让你停一会儿。这部分是你身上不太容易被"务实"标签覆盖掉的部分，值得保护。<span class="ev-tag ev-hypothesis">⚪</span></p>
 
-<p>宜人性中等偏低意味着你在合群这件事上不靠"迁就别人"换认同，靠的是"靠谱"换信任——也就是说，别人跟你合作不是因为你好说话，而是因为你答应的事能成。这个组合让你在团队里更像是"被信任的执行者"，而不是"救火队员"。<span class="ev-tag ev-theory">🔶</span></p>
+<p>宜人性偏低意味着你在合群这件事上不靠"迁就别人"换认同，靠的是"靠谱"换信任——也就是说，别人跟你合作不是因为你好说话，而是因为你答应的事能成。这个组合让你在团队里更像是"被信任的执行者"，而不是"救火队员"。<span class="ev-tag ev-theory">🔶</span></p>
 
 <!-- ═══ 第 4 章 ═══ -->
 <h1 id="s4">4 · 你在工作中可能的样子 <span class="ev-tag ev-research">✅</span></h1>
@@ -342,7 +344,7 @@ h3 { font-size:1.1em; margin-top:24px; }
 
 <p>你面对压力的时候，<strong>已经拥有的优势</strong>是：</p>
 <ul>
-  <li><strong>情绪稳定性偏高</strong>（z = +0.50）：核心韧性——遇到挫折后恢复速度不慢，不容易被一次失败拖很久。</li>
+  <li><strong>情绪稳定性接近平均</strong>（z = +0.39）：情绪恢复速度不拖后腿，不容易被一次失败拖很久。</li>
   <li><strong>尽责性高</strong>：通过制定计划获得掌控感。."/出现一次问题"对你来说不是"完了"的信号，而是"我需要再排一份计划"的信号。</li>
 </ul>
 
@@ -359,7 +361,7 @@ h3 { font-size:1.1em; margin-top:24px; }
 
 <p>一个可能的具体场景：伴侣跟你抱怨今天在公司的烦心事。你的本能反应是分析"这事怎么办"，但你伴侣那刻其实只是想听你说"今天辛苦了"。你可以记住一个顺序——情绪先、方案后——而不是直接进方案模式。<span class="ev-tag ev-hypothesis">⚪</span></p>
 
-<p>在<strong>普通社交</strong>中，你不主动迁就没太多人，主动跟你说话的多是冲着你的靠谱来的。社交对你来说不耗电，但你也不会为了社交而社交，回到家里要有一段独处时间回血。这部分在你的外向性 z = +0.80（中等偏高）但社交子维度 z = +0.40（中）里能看到——你的外向偏主动做事，不偏热闹。</p>
+<p>在<strong>普通社交</strong>中，你不主动迁就没太多人，主动跟你说话的多是冲着你的靠谱来的。社交对你来说不耗电，但你也不会为了社交而社交，回到家里要有一段独处时间回血。这部分在你的外向性 z = +0.97（中等偏高）但社交子维度 z = +0.40（中）里能看到——你的外向偏主动做事，不偏热闹。</p>
 
 <!-- ═══ 第 7 章 ═══ -->
 <h1 id="s7">7 · 给你的成长建议 <span class="ev-tag ev-theory">🔶</span></h1>
@@ -376,7 +378,7 @@ h3 { font-size:1.1em; margin-top:24px; }
 <h2>附录A 术语表</h2>
 <ul>
   <li><strong>z 分</strong>：一种标准化分数，用来表示你的得分距离"平均水平"有多远。z=0 表示刚好在平均线上，正数表示高于平均，负数表示低于平均。</li>
-  <li><strong>常模</strong>：用来比较的参考群体。这份报告的常模来自美国大学生与网络样本（N ≈ 2,000+）。<span class="ev-tag ev-research">✅</span></li>
+  <li><strong>常模</strong>：用来比较的参考群体。这份报告的常模来自中国大学生样本（Zhang et al., 2022）。<span class="ev-tag ev-research">✅</span></li>
   <li><strong>子维度</strong>：每个大维度下面的更具体的小维度。比如"外向性"下面有"社交""果断""活力"三个子维度。</li>
   <li><strong>RIASEC</strong>：霍兰德职业兴趣代码，把人分成六种职业倾向类型（现实型、研究型、艺术型、社会型、企业型、常规型）。</li>
   <li><strong>效应量</strong>：衡量一个因素对另一个因素"影响有多大"的指标。效应量越大，影响越强。</li>
@@ -386,8 +388,8 @@ h3 { font-size:1.1em; margin-top:24px; }
 <!-- ═══ 附录B ═══ -->
 <div class="appendix" id="appb">
 <h2>附录B 这份报告的局限</h2>
-<p>本报告基于 BFI-2 测评数据的理论分析，不构成临床诊断，不作为任何重大决定的依据。测试分数反映的是你作答时的自我认知，可能受当时状态影响。人格特质只能预测关系满意度的约 10-15% 变异，关系质量更多取决于沟通技巧和一起面对困难的态度。</p>
-<p>常模参考自美国常模（Soto & John, 2017）。不同文化背景下的人群在某些人格维度上存在一定差异，你的分数更适合与身边同龄人的表现对照理解，而非绝对化的"高低"判断。<span class="ev-tag ev-research">✅</span></p>
+<p>本报告基于这份测试分数的理论分析，不构成临床诊断，不作为任何重大决定的依据。测试分数反映的是你作答时的自我认知，可能受当时状态影响。报告同时呈现两层信息：你相对同龄人的位置（z 分相对报告标注的常模人群），和你自身的内部格局（自比）。常模样本有其局限，分数更适合与身边同龄人对照理解，而非绝对化的"高低"判断。人格特质只能解释关系满意度的一部分，关系质量更多取决于沟通技巧和一起面对困难的态度。</p>
+<p>常模参考自中国常模（Zhang et al., 2022，中国大学生样本）。常模为便利样本、非全国代表性，不同文化背景下的人群在某些人格维度上存在一定差异，你的分数更适合与身边同龄人的表现对照理解，而非绝对化的"高低"判断。<span class="ev-tag ev-research">✅</span></p>
 <p><strong>结论依据构成：</strong> ✅ 研究支持 × 12 处 · 🔶 理论推断 × 7 处 · ⚪ 探索性假设 × 7 处</p>
 </div>
 
