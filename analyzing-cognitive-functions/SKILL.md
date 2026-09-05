@@ -1,13 +1,13 @@
 ---
 name: analyzing-cognitive-functions
-description: Analyzes Jungian 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, Si) and generates client-ready HTML personality reports — pure Jungian analysis with MBTI type inference, attachment inference (transitional module), personality portrait, growth advice — plus couple compatibility reports. Also exports a reusable score JSON. Use when the user provides 8-function scores from the local interactive test page (copied score text or results JSON), or asks for 荣格/八维/认知功能/人格分析, 依恋类型, 恋爱适配, 情侣分析, mbti 报告.
+description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, Si) and generates client-ready HTML personality reports — post-Jungian typology analysis (Jung's four functions × two attitudes, developed into the 8-function score model and eight-position stack by Myers-era typology and Beebe; not Jung's own original formulation) with MBTI type inference, attachment inference (transitional module), personality portrait, growth advice — plus couple compatibility reports. Also exports a reusable score JSON. Use when the user provides 8-function scores from the local interactive test page (copied score text or results JSON), or asks for 荣格/八维/认知功能/人格分析, 依恋类型, 恋爱适配, 情侣分析, mbti 报告.
 ---
 
 # Analyzing Cognitive Functions — 荣格八维人格分析与恋爱适配
 
 ## Goal
 
-以**荣格八维理论为地基**：四条功能轴（感知轴＝实感/直觉，判断轴＝思考/情感）＋ 内倾/外倾态度 ＋ 八位置原型（Beebe），把来访者的测试分数解读成一份「来访者看得懂、咨询师信得过」的 HTML 报告 + 一份可复用的得分 JSON。**MBTI 类型只是窄标签**：仅用于快速定位，并明示类型学的局限，不作为报告的组织框架。依恋推断为过渡模块（证据地位见 `references/attachment-inference.md`）。
+以**荣格八维理论为地基**：四条功能轴（感知轴＝实感/直觉，判断轴＝思考/情感）＋ 内倾/外倾态度 ＋ 八位置原型（Beebe），把来访者的测试分数解读成一份「来访者看得懂、咨询师可核对、可证伪」的 HTML 报告 + 一份可复用的得分 JSON。**冠名说明**：荣格本人只提出四种功能（感觉/直觉/思考/情感）× 两种态度（内倾/外倾）；本 skill 使用的"八维"——八个功能的分数框架、16 型功能栈与八位置原型——是荣格之后的发展（迈尔斯等人的类型学实践、Beebe 的八位置原型），并非荣格本人原创，报告中不得将八功能模型表述为荣格本人的原始模型。**MBTI 类型只是窄标签**：仅用于快速定位，并明示类型学的局限，不作为报告的组织框架。依恋推断为过渡模块（证据地位见 `references/attachment-inference.md`）。
 
 ## 角色与产物
 
@@ -71,7 +71,7 @@ description: Analyzes Jungian 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, N
 ### Phase 3: 验证（反馈循环，不通过则修复后重来）
 
 1. 运行 lint：`python3 scripts/lint_report.py <报告文件路径>`
-   - 检查：正文裸功能代码、禁用词、固定文本块缺失、meter-fill CSS、disclaimer
+   - 检查：正文裸功能代码、禁用词（含统计措辞：显著/概率/证实/证明/必然）、固定文本块、证据标签、meter-fill CSS、速览卡、打印样式；双人报告额外检查非预测承诺与伦理声明
    - 有 FAIL 项 → 修复 → 重新 lint，直到全部 PASS
 2. JSON 校验：得分 JSON 可解析、`scores` 8 键齐全且顺序为 `Ne,Ni,Fe,Fi,Te,Ti,Se,Si`、与报告中的分数一致
 3. 浏览器渲染检查：打开 HTML 确认视觉件（速览网格/象限图/表格）渲染正常、速览卡完整、目录锚点可跳转、打印预览无组件断裂
@@ -104,7 +104,7 @@ description: Analyzes Jungian 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, N
 遇到以下情况**停下询问，不擅自继续**：
 - 输入数据缺项/超界/解析失败 → 退回要求重发
 - 输入里没有用户代号 → 停下问一句让用户填写，绝不自动编
-- 目标目录已有同代号旧文件 → 问「加 -v2 还是覆盖」；选 -v2 时在咨询师备注报告旧新分数 Δ>8 项
+- 目标目录已有同代号旧文件 → 问「加 -v2 还是覆盖」；选 -v2 时在咨询师备注报告旧新分数变化超过 8 分的功能项（启发式提示，用于留意重测波动，不是统计判断）
 - 十分制疑似（8 项全 ≤10）→ 反问确认
 - 扁平剖面（全距 <10）→ 建议重测，所有推断降权
 - 双人场景仅一方数据 → 降级单人报告 + 一节"从你这方看到的关系模式"，禁止推测缺席方

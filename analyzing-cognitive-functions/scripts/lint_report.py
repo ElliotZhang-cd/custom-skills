@@ -3,6 +3,9 @@
 
 用法: python3 scripts/lint_report.py <报告文件.html>
 退出码: 0 = 全部通过; 1 = 存在 FAIL; 2 = 文件/参数错误
+
+检查项: 正文裸功能代码 / 禁用词（含统计措辞）/ 固定文本块 / 证据标签 /
+meter-fill CSS / 速览卡 / 打印样式 / 双人报告专项（非预测承诺 + 伦理声明）
 """
 import re
 import sys
@@ -26,9 +29,12 @@ FORBIDDEN_BODY = ["劣势功能", "主导功能", "Fi-Ni loop", "Fi-Ni Loop", "�
                   "意识位置", "在场感", "叙事", "价值标准", "价值判断", "内在安抚",
                   "自洽", "感官体验", "感官投入", "收拢",
                   # 报告正文禁止的外部关系导向
-                  "咨询师", "会谈", "咨询中"]
+                  "咨询师", "会谈", "咨询中",
+                  # 统计措辞（结论一律用倾向/方向 + 证据标签表达；置信度固定说明中的
+                  # "不是统计概率"在扫描前豁免，见 main 中的 neutralize）
+                  "显著", "证实", "证明", "概率"]
 # 任何位置都禁止（含附录；神经质为整体不涉及）
-FORBIDDEN_GLOBAL = ["你就是太", "你一定会", "你肯定会", "神经质", "情绪稳定性"]
+FORBIDDEN_GLOBAL = ["你就是太", "你一定会", "你肯定会", "神经质", "情绪稳定性", "必然"]
 
 REQUIRED_BLOCKS = {
     "阅读指南": "怎么读这份报告",
@@ -74,6 +80,8 @@ def main() -> int:
     ])
     # 去掉剩余标签，只留文本
     text = re.sub(r"<[^>]+>", " ", body)
+    # 豁免置信度固定说明（照录块，子串稳定）：其中的"不是统计概率"是否定用法
+    text = text.replace("不是统计概率", "非统计判断")
 
     # 1. 正文裸功能代码
     bare = []
@@ -92,6 +100,13 @@ def main() -> int:
     # 3. 固定文本块
     for name, needle in REQUIRED_BLOCKS.items():
         check(f"固定文本块存在: {name}", needle in html, f"未找到关键句「{needle}」")
+
+    # 3b. 双人报告专项（出现双人结构时检查）
+    if "p1-tag" in html or "这段关系可能会怎样发展" in html:
+        check("双人报告：非预测承诺存在", "不是对你们关系的预测" in html,
+              "未找到固定句「不是对你们关系的预测」（couple-dynamics.md §3.4）")
+        check("双人报告：伦理声明存在", "不是对这段关系的判决" in html,
+              "未找到固定句「不是对这段关系的判决」（couple-dynamics.md §6.2）")
 
     # 4. 证据标签至少使用一次
     check("使用证据标签(ev-tag)", bool(re.search(r"ev-(research|theory|hypothesis)", html)))
