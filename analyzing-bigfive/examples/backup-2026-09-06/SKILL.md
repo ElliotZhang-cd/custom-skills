@@ -75,8 +75,6 @@ description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做�
 
 - 章节结构、图表、组件 CSS、打印样式：严格按 `references/html-templates.md`
 - 语言：严格按 `references/writing-style.md`——学术名+白描命名、去 AI 味、证据三级标签
-- 跨维度组合结论（如"高尽责 × 低开放"式张力）必须用 `.combo-card` 承载：并排两个维度的实际档位 + z 值 + 大白话组合含义与一个典型场景，块头注明"从你的分数组合里读出来"并挂 🔶/⚪——禁止裸断言；档位词与正文一致，不得用与档位不符的简称
-- 双人报告：第 1 章 = `.snap` 人格快照双卡（白描唯一来源 scoring-interpretation §2.2 模板压缩）+ 重叠雷达图；第 2 章 = `.meters-table` 五维相似度对比表（五格条 + Δ + couple-dynamics §1.4 四档标签，按 Δ 降序）；对比表管差多少、雷达管整体形状，不重复画双人位置
 - 固定文本块（阅读指南/谦卑段落/局限声明）**照录，不得改写**；双人报告另加伦理声明（见 `references/couple-dynamics.md` §7）
 - 文件命名：单人 `bfi2_{代号}.html`，双人 `bfi2_{代号A}_{代号B}.html`（代号用你给的写法，如 zyh、A001，不带日期——文件系统自带时间戳）
 - 保存路径：默认 `C:/Users/elliot/Desktop/relations/BFI2/`；你指定时从其指定
@@ -85,7 +83,7 @@ description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做�
 ### Phase 3: 验证（反馈循环，不通过则修复后重来）
 
 1. 运行 lint：`python3 scripts/lint_report.py <报告文件路径>`
-   - 检查：禁用词（含全文档禁止的"咨询师/会谈/咨询中"）、固定文本块（阅读指南/局限声明/谦卑段）、必填容器（meta-header/guide-box/toc/chapter-head/summary-card/chart-box/bar-container/facet-grid/riasec-badge/ev-tag；双人另查 meters-table/meter/scard）、meter-fill CSS、disclaimer、**维度 z 分一致性**（每个维度在标题/雷达图注释/仪表条三处必须一致，防 chart/正文符号翻转）
+   - 检查：禁用词（含全文档禁止的"咨询师/会谈/咨询中"）、固定文本块（阅读指南/局限声明/谦卑段）、必填容器（meta-header/guide-box/toc/summary-card/chart-box/bar-container/facet-grid/riasec-badge/ev-tag）、meter-fill CSS、disclaimer、**维度 z 分一致性**（每个维度在标题/雷达图注释/仪表条三处必须一致，防 chart/正文符号翻转）
    - 有 FAIL 项 → 修复 → 重新 lint，直到全部 PASS
 2. 浏览器渲染检查：打开 HTML 确认雷达图/仪表条可见、速览卡完整、目录锚点可跳转、打印预览无组件断裂
 3. 全部通过才允许交付
@@ -136,8 +134,6 @@ description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做�
 - 术语裸用：首次出现专业名词不附白描 → 读者卡壳
 - 图表数据与正文不一致：雷达图 z 分和文字描述对不上 → 信任度崩塌
 - 双人报告只有一方数据：仍按双人模板写 → 必须降级处理或等待另一方数据
-- 雷达图顶点坐标与 z 标注不符：手算坐标出错 → 图形和数字对不上，信任度崩塌；先按 r=(z+3)/6×半径 逐维度写注释再画点，交付前浏览器放大核对
-- 组合卡写成裸断言："最核心的张力是 A 和 B"这类句子没有档位、没有推导、没有证据标签 → 读者不知道它从哪来
 
 ## References
 

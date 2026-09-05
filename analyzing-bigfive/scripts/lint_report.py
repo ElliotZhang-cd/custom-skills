@@ -39,12 +39,16 @@ REQUIRED_CONTAINERS = [
     ("meta-header", "页眉"),
     ("guide-box", "阅读指南"),
     ("toc", "目录"),
-    ("summary-card", "速览卡"),
+    ("chapter-head", "章节头"),
     ("chart-box", "图表容器"),
+    ("ev-tag", "证据标签"),
+]
+# 仅单人报告必查（双人报告结构不同，见 html-templates.md §3.2）
+SINGLE_ONLY_CONTAINERS = [
+    ("summary-card", "速览卡"),
     ("bar-container", "仪表条"),
     ("facet-grid", "子维度网格"),
     ("riasec-badge", "RIASEC 代码标签"),
-    ("ev-tag", "证据标签"),
 ]
 
 # BFI-2 五个维度的合法报告称谓（writing-style.md §2 唯一合法称呼）
@@ -128,8 +132,15 @@ def lint(filepath: str) -> list[str]:
         if snippet not in html:
             fails.append(f"FAIL: missing required block '{label}' (expected snippet: '{snippet}')")
 
-    # ── 3. Required containers ──
+    # ── 3. Required containers（按报告类型拆分：双人无速览卡/定位条/子维度网格/RIASEC）──
+    is_couple = len(os.path.basename(filepath).split("_")) > 2  # bfi2_A_B.html：_ 保留作双人分隔符
     for cls, label in REQUIRED_CONTAINERS:
+        if f'class="{cls}' not in html and f"class='{cls}" not in html:
+            fails.append(f"FAIL: missing required container '{label}' (.{cls})")
+    extra = [("meters-table", "五维相似度对比表"),
+             ("meter", "五格水平条"),
+             ("scard", "人格快照卡")] if is_couple else SINGLE_ONLY_CONTAINERS
+    for cls, label in extra:
         if f'class="{cls}' not in html and f"class='{cls}" not in html:
             fails.append(f"FAIL: missing required container '{label}' (.{cls})")
 
@@ -192,12 +203,16 @@ def lint(filepath: str) -> list[str]:
 
     # ── 9. 章节结构完整性（html-templates.md §3） ──
     basename = os.path.basename(filepath)
-    is_couple = len(basename.split("_")) > 2  # bfi2_A_B.html：_ 保留作双人分隔符
     if is_couple:
         if "p1-tag" not in html or "p2-tag" not in html:
             fails.append("FAIL: 双人报告须同时含 .p1-tag 与 .p2-tag 人物标签")
         if "这份报告基于双方的人格测评数据分析" not in html:
             fails.append("FAIL: 双人报告缺少伦理声明（couple-dynamics.md §7 固定块）")
+        for cls, label in [("meters-table", "五维相似度对比表"),
+                           ("meter", "五格水平条"),
+                           ("scard", "人格快照卡")]:
+            if cls not in html:
+                fails.append(f"FAIL: 双人报告缺少 {label}（.{cls}）")
     else:
         for anchor, label in [("s4", "工作中"), ("s5", "压力下的你"),
                               ("s6", "与人相处"), ("s7", "成长建议")]:
