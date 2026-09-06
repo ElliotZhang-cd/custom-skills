@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 _user_meta.json
+
+# 头脑风暴工作文件（各 skill 目录内的临时 mockup 与会话状态）
+**/.superpowers/
