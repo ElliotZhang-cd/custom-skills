@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>荣格八维 · 人格坐标报告(示例样本 SAMPLE-02)</title>
+<style>
+:root {
+  --bg: #F7F5EF; --fg: #262419; --muted: #6E6A60; --border: #DCD6C8; --card: #FFFFFF;
+  --accent: #1F5F66; --accent-text: #1B4A50; --soft: #FAFAF6; --hairline: #B9B29F;
+  /* 八功能色(常量,不变) */
+  --fi: #c0392b; --ni: #8e44ad; --fe: #2980b9; --ti: #16a085;
+  --te: #d35400; --ne: #e67e22; --se: #27ae60; --si: #7f8c8d;
+  --font-heading: "Noto Serif SC","Source Han Serif SC","Songti SC",SimSun,serif;
+  --font-body: "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-heading); font-size: 16px; line-height: 2.0;
+  color: var(--fg); background-color: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  max-width: 680px; margin: 0 auto; padding: 0 20px 80px;
+}
+body p { text-align: justify; }
+strong { font-weight: 700; }
+.fn { font-family: var(--font-heading); font-weight: 600; font-style: normal; }
+
+/* ============ hero ============ */
+.hero { min-height: 86vh; display: flex; flex-direction: column; justify-content: center;
+  align-items: center; text-align: center; padding: 72px 0 24px; }
+.kicker { font-family: var(--font-body); font-size: .72em; letter-spacing: .42em;
+  color: var(--muted); text-transform: uppercase; padding-left: .42em; }
+.hero h1 { font-family: var(--font-heading); font-weight: 700; font-size: 2.55em;
+  line-height: 1.35; margin: 14px 0 16px; letter-spacing: .02em; }
+.hero h1 em { font-style: normal; color: transparent;
+  background: linear-gradient(120deg, var(--accent), var(--ni));
+  -webkit-background-clip: text; background-clip: text; }
+.lede { font-family: var(--font-body); font-size: .92em; color: var(--muted);
+  line-height: 2.0; max-width: 26em; margin-bottom: 26px; text-align: center; }
+.hero .radar-box { width: 100%; max-width: 380px; margin: 0 auto; }
+.hero .radar-box svg { width: 100%; height: auto; display: block; }
+.scrollhint { font-family: var(--font-body); font-size: .75em; color: var(--muted);
+  letter-spacing: .2em; margin-top: 18px; }
+
+/* 图注 */
+.chart-note { font-family: var(--font-body); font-size: .8em; color: var(--muted);
+  margin: 10px auto 0; line-height: 1.7; text-align: left; max-width: 560px; }
+
+/* ============ sections ============ */
+section { border-top: 1px solid var(--border); margin-top: 56px; padding-top: 40px; }
+.sec-num { font-family: var(--font-heading); font-size: .8em; letter-spacing: .3em;
+  color: var(--muted); margin-bottom: 10px; }
+h2 { font-family: var(--font-heading); font-weight: 700; font-size: 1.62em;
+  line-height: 1.6; margin-bottom: 16px; letter-spacing: .01em; }
+h3 { font-family: var(--font-heading); font-weight: 700; font-size: 1.15em; margin: 34px 0 10px; }
+h4 { font-family: var(--font-body); font-size: .82em; font-weight: 700;
+  letter-spacing: .1em; margin-bottom: 6px; }
+section p { margin-bottom: 14px; }
+p.lead { font-size: 1.02em; }
+.muted { color: var(--muted); font-size: .9em; }
+
+/* 表格式平面件(替代卡框):与盲区表同款 hairline 风格 */
+.lt th:first-child, .lt td:first-child { width: 12em; }
+.duo-t th { font-size: .88em; letter-spacing: .04em; }
+.duo-t td { width: 50%; font-size: .9em; line-height: 1.85; }
+.pc-t ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.pc-t li { position: relative; padding-left: 20px; font-size: .92em; line-height: 1.75; }
+.pc-t td:first-child li::before { content: "✦"; position: absolute; left: 0; color: var(--accent); }
+.pc-t td:last-child li::before { content: "◇"; position: absolute; left: 0; color: var(--hairline); }
+
+/* 01 柱状图 */
+.bar-box { margin: 14px 0 0; }
+.bar-box svg { width: 100%; height: auto; display: block; }
+
+/* 表格 */
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .9em; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border);
+  vertical-align: top; }
+th { font-family: var(--font-body); color: var(--muted); font-weight: 700;
+  font-size: .78em; letter-spacing: .08em; }
+td .fn { font-size: 1em; }
+.hl { background: linear-gradient(180deg, transparent 60%, rgba(31,95,102,.20) 60%);
+  padding: 0 .08em; border-radius: 2px; }
+
+/* 02 天平图 */
+.beam { margin: 24px 0 4px; }
+.beam svg { width: 100%; max-width: 640px; height: auto; display: block; margin: 0 auto; }
+.beam figcaption { font-family: var(--font-body); font-size: .8em; color: var(--muted);
+  text-align: center; margin-top: 0; }
+
+/* 场景块(线型:仅左竖线,无底色) */
+.scene { border-left: 3px solid var(--accent); padding: 6px 0 6px 20px; margin: 22px 0; }
+.scene b { display: block; font-family: var(--font-body); font-size: .74em;
+  letter-spacing: .16em; color: var(--muted); margin-bottom: 4px; }
+.scene p { font-family: var(--font-heading); font-size: .98em; margin: 0; }
+
+/* 05 rel 定义列表 */
+.relg { display: grid; grid-template-columns: 8.5em 1fr; font-size: .94em; margin: 18px 0; }
+.relg div { padding: 12px 12px; border-bottom: 1px solid var(--border); }
+.relg .k { font-family: var(--font-body); font-weight: 700; font-size: .88em;
+  color: var(--muted); }
+.relg div:nth-child(4n+1), .relg div:nth-child(4n+2) { background: rgba(255,255,255,.6); }
+@media (max-width: 640px) { .relg { grid-template-columns: 1fr; }
+  .relg .k { border-bottom: none; padding-bottom: 0; } }
+
+/* 07 边界 */
+.bound-list { list-style: none; display: flex; flex-direction: column; gap: 8px;
+  font-family: var(--font-body); font-size: .86em; color: var(--muted);
+  line-height: 1.9; margin: 14px 0 0; }
+
+/* footer */
+.footer { border-top: 1px solid var(--border); margin-top: 64px; padding: 26px 0 0;
+  text-align: center; }
+.meta-line { font-family: var(--font-body); font-size: .74em; color: var(--muted);
+  letter-spacing: .04em; margin-bottom: 10px; }
+.disc { font-family: var(--font-body); font-size: .8em; color: var(--muted);
+  line-height: 2.0; max-width: 40em; margin: 0 auto; }
+
+@page { size: A4; margin: 16mm 15mm; }
+@media print {
+  body { background: #fff; background-image: none; max-width: none; padding: 0 10mm; }
+  .hero { min-height: auto; padding: 20px 0 6px; }
+  .scrollhint { display: none; }
+  section { margin-top: 40px; padding-top: 28px; }
+  .beam, .scene, table, .relg { break-inside: avoid; }
+  tr { break-inside: avoid; }
+  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="hero">
+  <div class="kicker">Jungian Cognitive Functions · 人格坐标报告</div>
+  <h1>用<em>内心价值</em>导航<br>用<em>远见</em>生活</h1>
+  <p class="lede">荣格八维理论——提供对意识运作机理的深层内在解释力</p>
+  <div class="radar-box">
+    <svg viewBox="0 0 380 380" role="img" aria-label="八功能雷达图:形状只表示相对高低">
+      <!-- 参考环(无刻度含义) -->
+      <polygon points="190,58 283.3,96.7 322,190 283.3,283.3 190,322 96.7,283.3 58,190 96.7,96.7" fill="none" stroke="#DCD6C8" stroke-width="1"/>
+      <polygon points="190,91 260,120 289,190 260,260 190,289 120,260 91,190 120,120" fill="none" stroke="#DCD6C8" stroke-width="1"/>
+      <polygon points="190,124 236.7,143.3 256,190 236.7,236.7 190,256 143.3,236.7 124,190 143.3,143.3" fill="none" stroke="#DCD6C8" stroke-width="1"/>
+      <polygon points="190,157 213.3,166.7 223,190 213.3,213.3 190,223 166.7,213.3 157,190 166.7,166.7" fill="none" stroke="#DCD6C8" stroke-width="1"/>
+      <g stroke="#DCD6C8" stroke-width="1">
+        <line x1="190" y1="190" x2="190" y2="58"/><line x1="190" y1="190" x2="283.3" y2="96.7"/>
+        <line x1="190" y1="190" x2="322" y2="190"/><line x1="190" y1="190" x2="283.3" y2="283.3"/>
+        <line x1="190" y1="190" x2="190" y2="322"/><line x1="190" y1="190" x2="96.7" y2="283.3"/>
+        <line x1="190" y1="190" x2="58" y2="190"/><line x1="190" y1="190" x2="96.7" y2="96.7"/>
+      </g>
+      <!-- 数据多边形(相对高低) -->
+      <polygon points="190,58 277.5,102.5 250.5,190 218.4,218.4 190,273 161.4,218.6 119.2,190 173.2,173.2"
+        fill="rgba(31,95,102,.10)" stroke="#1F5F66" stroke-width="1.6"/>
+      <!-- 顶点圆点 = 功能身份色 -->
+      <circle cx="190" cy="58" r="3.4" fill="#c0392b"/><circle cx="277.5" cy="102.5" r="3.4" fill="#8e44ad"/>
+      <circle cx="250.5" cy="190" r="3.4" fill="#d35400"/><circle cx="218.4" cy="218.4" r="3.4" fill="#27ae60"/>
+      <circle cx="190" cy="273" r="3.4" fill="#2980b9"/><circle cx="161.4" cy="218.6" r="3.4" fill="#e67e22"/>
+      <circle cx="119.2" cy="190" r="3.4" fill="#16a085"/><circle cx="173.2" cy="173.2" r="3.4" fill="#7f8c8d"/>
+      <!-- 外圈标签 -->
+      <g font-family="Noto Serif SC,Source Han Serif SC,Songti SC,serif" font-size="14" font-weight="600"
+         text-anchor="middle" dominant-baseline="middle" paint-order="stroke" stroke="#F7F5EF" stroke-width="3">
+        <text x="190" y="30" fill="#c0392b">Fi</text><text x="303.1" y="76.9" fill="#8e44ad">Ni</text>
+        <text x="350" y="190" fill="#d35400">Te</text><text x="303.1" y="303.1" fill="#27ae60">Se</text>
+        <text x="190" y="350" fill="#2980b9">Fe</text><text x="76.9" y="303.1" fill="#e67e22">Ne</text>
+        <text x="30" y="190" fill="#16a085">Ti</text><text x="76.9" y="76.9" fill="#7f8c8d">Si</text>
+      </g>
+    </svg>
+  </div>
+  <p class="chart-note" style="text-align:center;max-width:30em">形状只看相对高低:凸出来的是用得最顺的,凹进去的是最费力的;分差小的时候形状接近正八边形,这也是诚实的读数。每个字母是一种做事方式,下一章逐个认识它们。</p>
+  <div class="scrollhint">↓ 往下读</div>
+</header>
+
+<!-- ============ 01 OVERVIEW ============ -->
+<section id="s1">
+  <div class="sec-num">01 · OVERVIEW</div>
+  <h2>你的总览:四个关键词</h2>
+
+  <table class="lt">
+    <tr><th>关键词</th><th>功能 · 分数 · 排名</th><th>一句话</th></tr>
+    <tr><td><strong style="color:var(--fi)">价值驱动</strong></td><td><span class="fn" style="color:var(--fi)">Fi</span> 67.9 · 全维最高</td><td>先问"我认不认同"</td></tr>
+    <tr><td><strong style="color:var(--ni)">远见型</strong></td><td><span class="fn" style="color:var(--ni)">Ni</span> 65.5 · 全维第二</td><td>用"将会怎样"看现在</td></tr>
+    <tr><td><strong style="color:var(--fe)">柔性社交</strong></td><td><span class="fn" style="color:var(--fe)">Fe</span> 53.9 · 居中</td><td>在意氛围,但不过度消耗自己</td></tr>
+    <tr><td><strong style="color:var(--si)">身体缺席</strong></td><td><span class="fn" style="color:var(--si)">Si</span> 37.1 · 全维最低</td><td>当下与存档都在后台</td></tr>
+  </table>
+
+  <h3>八维得分</h3>
+  <div class="bar-box">
+    <svg viewBox="0 0 680 380" role="img" aria-label="八维得分柱状图,0 到 100 分标尺,按分数降序">
+      <g stroke="#DCD6C8" stroke-width="1">
+        <line x1="30" y1="26" x2="672" y2="26"/><line x1="30" y1="84.8" x2="672" y2="84.8"/>
+        <line x1="30" y1="143.6" x2="672" y2="143.6"/><line x1="30" y1="202.4" x2="672" y2="202.4"/>
+        <line x1="30" y1="261.2" x2="672" y2="261.2"/>
+      </g>
+      <line x1="30" y1="320" x2="672" y2="320" stroke="#B9B29F" stroke-width="1"/>
+      <g font-family="Noto Sans SC,Microsoft YaHei,PingFang SC,sans-serif" font-size="10.5" fill="#6E6A60" text-anchor="end">
+        <text x="22" y="29.5">100</text><text x="22" y="88.3">80</text><text x="22" y="147.1">60</text>
+        <text x="22" y="205.9">40</text><text x="22" y="264.7">20</text>
+      </g>
+      <!-- 8 柱:降序 Fi Ni Fe Ti Te Ne Se Si -->
+      <g>
+        <rect x="30" y="120.5" width="55.75" height="199.5" rx="3" fill="#c0392b"/>
+        <rect x="113.75" y="127.3" width="55.75" height="192.7" rx="3" fill="#8e44ad"/>
+        <rect x="197.5" y="161.4" width="55.75" height="158.6" rx="3" fill="#2980b9"/>
+        <rect x="281.25" y="171.7" width="55.75" height="148.3" rx="3" fill="#16a085"/>
+        <rect x="365" y="180.2" width="55.75" height="139.8" rx="3" fill="#d35400"/>
+        <rect x="448.75" y="196.9" width="55.75" height="123.1" rx="3" fill="#e67e22"/>
+        <rect x="532.5" y="197.2" width="55.75" height="122.8" rx="3" fill="#27ae60"/>
+        <rect x="616.25" y="210.9" width="55.75" height="109.1" rx="3" fill="#7f8c8d"/>
+      </g>
+      <g font-family="Noto Sans SC,Microsoft YaHei,PingFang SC,sans-serif" font-size="11.5" fill="#262419" text-anchor="middle">
+        <text x="57.9" y="111.5">67.9</text><text x="141.6" y="118.3">65.5</text>
+        <text x="225.4" y="152.4">53.9</text><text x="309.1" y="162.7">50.5</text>
+        <text x="392.9" y="171.2">47.6</text><text x="476.6" y="187.9">41.9</text>
+        <text x="560.4" y="188.2">41.8</text><text x="644.1" y="201.9">37.1</text>
+      </g>
+      <g font-family="Noto Serif SC,Source Han Serif SC,Songti SC,serif" font-size="13" font-weight="600" text-anchor="middle">
+        <text x="57.9" y="346" fill="#c0392b">Fi</text><text x="141.6" y="346" fill="#8e44ad">Ni</text>
+        <text x="225.4" y="346" fill="#2980b9">Fe</text><text x="309.1" y="346" fill="#16a085">Ti</text>
+        <text x="392.9" y="346" fill="#d35400">Te</text><text x="476.6" y="346" fill="#e67e22">Ne</text>
+        <text x="560.4" y="346" fill="#27ae60">Se</text><text x="644.1" y="346" fill="#7f8c8d">Si</text>
+      </g>
+    </svg>
+    <p class="chart-note">柱高 = 实测分(0–100);一种功能一种颜色,后文所有图沿用同一套颜色。</p>
+  </div>
+
+  <h3>最接近的类型:INFP 或 INFJ(仅供参考)</h3>
+  <table>
+    <tr><th>候选</th><th>栈序</th><th>命中</th></tr>
+    <tr><td><strong>INFP</strong></td>
+      <td><span class="fn" style="color:var(--fi)">Fi</span> → <span class="fn" style="color:var(--ne)">Ne</span> → <span class="fn" style="color:var(--si)">Si</span> → <span class="fn" style="color:var(--te)">Te</span></td>
+      <td><span class="hl">Fi、Si、Te 全命中</span>(Fi 主导 · Si 盲区 · Te 批评者);只有辅助功能 Ne 没兑现——它在你这里退居后排,让位给了 Ni</td></tr>
+    <tr><td><strong>INFJ</strong></td>
+      <td><span class="fn" style="color:var(--ni)">Ni</span> → <span class="fn" style="color:var(--fe)">Fe</span> → <span class="fn" style="color:var(--ti)">Ti</span> → <span class="fn" style="color:var(--se)">Se</span></td>
+      <td><span class="hl">Ni、Se 命中</span>,Fe 略超;Ti 与 Se 只差 8~10 分,不算硬伤</td></tr>
+  </table>
+  <p class="muted">四个字母只是参考地图,<strong>请别把任何标签当身份证</strong>——真正有信息量的,是下面四组"一强一弱、或两头都偏弱"的对照。</p>
+</section>
+
+<!-- ============ 02 YOUR TRADE-OFFS ============ -->
+<section id="s2">
+  <div class="sec-num">02 · YOUR TRADE-OFFS</div>
+  <h2>四组对照:每个强项都带着它的另一面</h2>
+  <p class="lead">荣格学派的类型学把八个功能看成<strong>四组对照</strong>——同一种能力的两个版本。这不代表它们此消彼长,而是提醒:一项功能显不显,常取决于它对面那个在不在场。每组像一架小天平——分高的一端更重,沉在下面;两端接近时,天平放平。下面每组,你看自己更偏哪一头,有时两头都偏弱——很多"优势与代价",其实来自同一处。</p>
+
+  <table>
+    <tr><th>对照</th><th>你这一组的情况</th></tr>
+    <tr><td>看未来的方式</td><td><span class="fn" style="color:var(--ni)">Ni</span> 收敛 <span style="color:var(--muted)">/ Ne 发散</span></td></tr>
+    <tr><td>与当下的关系</td><td><span class="fn" style="color:var(--se)">Se</span>/<span class="fn" style="color:var(--si)">Si</span> 都在后台</td></tr>
+    <tr><td>怎么下判断</td><td><span class="fn" style="color:var(--fi)">Fi</span> 价值 <span style="color:var(--muted)">/ Te 效率</span></td></tr>
+    <tr><td>对人对理</td><td><span class="fn" style="color:var(--fe)">Fe</span> 与 <span class="fn" style="color:var(--ti)">Ti</span> 均衡</td></tr>
+  </table>
+
+  <!-- A1 -->
+  <h3>取舍一 · <span class="fn" style="color:var(--ni)">Ni</span> 预见 vs <span class="fn" style="color:var(--ne)">Ne</span> 发散</h3>
+  <figure class="beam">
+    <svg viewBox="0 0 640 210" role="img" aria-label="Ni 与 Ne 对照天平:更常露面的是 Ni">
+      <path d="M320 142 l-13 20 h26 z" fill="#B9B29F"/>
+      <line x1="80.5" y1="104.1" x2="559.5" y2="135.9" stroke="#1F5F66" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="80.5" cy="104.1" r="7" fill="#e67e22" opacity="0.32"/>
+      <circle cx="80.5" cy="104.1" r="12" fill="none" stroke="#e67e22" opacity="0.10" stroke-width="1.5"/>
+      <circle cx="559.5" cy="135.9" r="7" fill="#8e44ad" opacity="0.89"/>
+      <circle cx="559.5" cy="135.9" r="12" fill="none" stroke="#8e44ad" opacity="0.28" stroke-width="1.5"/>
+      <text x="80.5" y="136.1" text-anchor="middle" font-family="Noto Serif SC,Songti SC,serif" font-size="15" font-weight="600" fill="#e67e22">Ne · 41.9</text>
+      <text x="80.5" y="154.1" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="11.5" fill="#6E6A60">发散可能</text>
+      <text x="559.5" y="167.9" text-anchor="middle" font-family="Noto Serif SC,Songti SC,serif" font-size="15" font-weight="600" fill="#8e44ad">Ni · 65.5</text>
+      <text x="559.5" y="185.9" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="11.5" fill="#6E6A60">预见收敛</text>
+      <text x="320" y="200" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="12.5" fill="#6E6A60">在这组里,更常露面的显然是 <tspan style="fill:#8e44ad;font-weight:700">Ni</tspan>。</text>
+    </svg>
+    <figcaption></figcaption>
+  </figure>
+  <table class="duo-t">
+    <tr><th style="color:var(--ni)">强端:Ni 65.5</th><th style="color:var(--ne)">代价:Ne 41.9</th></tr>
+    <tr>
+      <td>你不靠一件件试来认识世界,你靠<strong>预见</strong>:各种信息在脑子里自动归拢、互相印证,最后汇成一个很确定的判断——"事情会往这个方向走"。你说不清推理过程,但结果往往是对的。</td>
+      <td>点子密度偏低。别人头脑风暴时,你还在等那个"对的答案"成形——<strong>开会时显得慢</strong>;也容易<strong>只认一种未来</strong>:如果那种未来是坏的,焦虑会提前住进来。</td>
+    </tr>
+  </table>
+  <div class="scene">
+    <b>你是不是也这样</b>
+    <p>别人说"再想想还有别的办法",你嘴上应着,心里已经看到结局。你不是没有选项,你只是<strong>只有一个选项让你睡得着觉</strong>。</p>
+  </div>
+
+  <!-- A2 -->
+  <h3>取舍二 · <span class="fn" style="color:var(--se)">Se</span> 体验 vs <span class="fn" style="color:var(--si)">Si</span> 存档</h3>
+  <figure class="beam">
+    <svg viewBox="0 0 640 210" role="img" aria-label="Se 与 Si 对照天平:这组两头都偏弱">
+      <path d="M320 142 l-13 20 h26 z" fill="#B9B29F"/>
+      <line x1="80.0" y1="123.1" x2="560.0" y2="116.9" stroke="#1F5F66" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="80.0" cy="123.1" r="7" fill="#27ae60" opacity="0.31"/>
+      <circle cx="80.0" cy="123.1" r="12" fill="none" stroke="#27ae60" opacity="0.10" stroke-width="1.5"/>
+      <circle cx="560.0" cy="116.9" r="7" fill="#7f8c8d" opacity="0.18"/>
+      <circle cx="560.0" cy="116.9" r="12" fill="none" stroke="#7f8c8d" opacity="0.06" stroke-width="1.5"/>
+      <text x="80.0" y="155.1" text-anchor="middle" font-family="Noto Serif SC,Songti SC,serif" font-size="15" font-weight="600" fill="#27ae60">Se · 41.8</text>
+      <text x="80.0" y="173.1" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="11.5" fill="#6E6A60">体验当下</text>
+      <text x="560.0" y="148.9" text-anchor="middle" font-family="Noto Serif SC,Songti SC,serif" font-size="15" font-weight="600" fill="#7f8c8d">Si · 37.1</text>
+      <text x="560.0" y="166.9" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="11.5" fill="#6E6A60">存档与熟路</text>
+      <text x="320" y="200" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="12.5" fill="#6E6A60">这组两头都偏弱——它不是你的主场。</text>
+    </svg>
+    <figcaption></figcaption>
+  </figure>
+  <table class="duo-t">
+    <tr><th style="color:var(--se)">Se 41.8:身体缺席</th><th style="color:var(--si)">Si 37.1:档案柜未上锁</th></tr>
+    <tr>
+      <td>当下的声音、食物、天气常常"不进脑子"。别人说"现在就走",你还要想一个出发的理由。<strong>走神是默认状态</strong>——眼前发生的事,你只当素材,很少当目的地。</td>
+      <td>全维最低分。报销、体检、纪念日、回消息这类<strong>重复性事务,每件都在持续消耗你</strong>。你不靠过去的经验过日子,注意力几乎都在"以后",很少回头看。</td>
+    </tr>
+  </table>
+  <table class="pc-t">
+    <tr><th>双弱带来的好处</th><th>双弱的代价</th></tr>
+    <tr>
+      <td><ul>
+        <li>几乎不被经验绑架,转向比守成型的人快</li>
+        <li>不会"以前都是这么干的"式地拒绝新可能</li>
+        <li>很少反复回想过去的不愉快</li>
+      </ul></td>
+      <td><ul>
+        <li>忽略身体信号,累了不知道,病了才惊觉</li>
+        <li>作息、财务、健康这些生活底盘,常常疏于打理</li>
+        <li>时间感差,deadline 是第一生产力也是唯一生产力</li>
+      </ul></td>
+    </tr>
+  </table>
+  <div class="scene">
+    <b>你是不是也这样</b>
+    <p>手机里存着一百个"以后再说",身体已经亮过几次黄灯。<strong>你和自己相处,一直是"改天再说"</strong>——直到某天身体直接罢工。</p>
+  </div>
+
+  <!-- A3 -->
+  <h3>取舍三 · <span class="fn" style="color:var(--fi)">Fi</span> 价值 vs <span class="fn" style="color:var(--te)">Te</span> 推进</h3>
+  <figure class="beam">
+    <svg viewBox="0 0 640 210" role="img" aria-label="Fi 与 Te 对照天平:更常露面的显然是 Fi">
+      <path d="M320 142 l-13 20 h26 z" fill="#B9B29F"/>
+      <line x1="80.4" y1="133.6" x2="559.6" y2="106.4" stroke="#1F5F66" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="80.4" cy="133.6" r="7" fill="#c0392b" opacity="0.95"/>
+      <circle cx="80.4" cy="133.6" r="12" fill="none" stroke="#c0392b" opacity="0.30" stroke-width="1.5"/>
+      <circle cx="559.6" cy="106.4" r="7" fill="#d35400" opacity="0.45"/>
+      <circle cx="559.6" cy="106.4" r="12" fill="none" stroke="#d35400" opacity="0.14" stroke-width="1.5"/>
+      <text x="80.4" y="165.6" text-anchor="middle" font-family="Noto Serif SC,Songti SC,serif" font-size="15" font-weight="600" fill="#c0392b">Fi · 67.9</text>
+      <text x="80.4" y="183.6" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="11.5" fill="#6E6A60">忠于内核</text>
+      <text x="559.6" y="138.4" text-anchor="middle" font-family="Noto Serif SC,Songti SC,serif" font-size="15" font-weight="600" fill="#d35400">Te · 47.6</text>
+      <text x="559.6" y="156.4" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="11.5" fill="#6E6A60">推进结果</text>
+      <text x="320" y="200" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="12.5" fill="#6E6A60">在这组里,更常露面的显然是 <tspan style="fill:#c0392b;font-weight:700">Fi</tspan>。</text>
+    </svg>
+    <figcaption></figcaption>
+  </figure>
+  <table class="duo-t">
+    <tr><th style="color:var(--fi)">强端:Fi 67.9</th><th style="color:var(--te)">代价:Te 47.6</th></tr>
+    <tr>
+      <td>全维最高。你有一套<strong>不外包的价值罗盘</strong>:什么是真的、什么值得、什么不能换。它是你的尊严来源——你难被收买,也难被说服做违心的事。深度的自我觉察,让你对"言不由衷"有天然的警惕。</td>
+      <td>把想法拆成任务、排进计划、硬着头皮推进——这些事你能做,但<strong>要比多数人多花力气才启动得起来</strong>。更微妙的是:你常常知道"该做什么",却迟迟不动——因为还没做,可能性就还在。</td>
+    </tr>
+  </table>
+  <div class="scene">
+    <b>你是不是也这样</b>
+    <p>你可以为一件"对"的小事耗一整个下午,也可以为一次"值"的大项目等三年。<strong>别人用划算不划算做决定,你用值得不值得做决定</strong>——这是你的风格,也是你多付的那部分力气。</p>
+  </div>
+
+  <!-- A4 -->
+  <h3>取舍四 · <span class="fn" style="color:var(--fe)">Fe</span> 氛围 vs <span class="fn" style="color:var(--ti)">Ti</span> 逻辑</h3>
+  <figure class="beam">
+    <svg viewBox="0 0 640 210" role="img" aria-label="Fe 与 Ti 对照天平:两者接近">
+      <path d="M320 142 l-13 20 h26 z" fill="#B9B29F"/>
+      <line x1="80.0" y1="122.3" x2="560.0" y2="117.7" stroke="#1F5F66" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="80.0" cy="122.3" r="7" fill="#2980b9" opacity="0.61"/>
+      <circle cx="80.0" cy="122.3" r="12" fill="none" stroke="#2980b9" opacity="0.20" stroke-width="1.5"/>
+      <circle cx="560.0" cy="117.7" r="7" fill="#16a085" opacity="0.53"/>
+      <circle cx="560.0" cy="117.7" r="12" fill="none" stroke="#16a085" opacity="0.17" stroke-width="1.5"/>
+      <text x="80.0" y="154.3" text-anchor="middle" font-family="Noto Serif SC,Songti SC,serif" font-size="15" font-weight="600" fill="#2980b9">Fe · 53.9</text>
+      <text x="80.0" y="172.3" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="11.5" fill="#6E6A60">回应他人</text>
+      <text x="560.0" y="149.7" text-anchor="middle" font-family="Noto Serif SC,Songti SC,serif" font-size="15" font-weight="600" fill="#16a085">Ti · 50.5</text>
+      <text x="560.0" y="167.7" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="11.5" fill="#6E6A60">自洽建模</text>
+      <text x="320" y="200" text-anchor="middle" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="12.5" fill="#6E6A60">两者接近——这一组没有明显的赢家。</text>
+    </svg>
+    <figcaption></figcaption>
+  </figure>
+  <table class="duo-t">
+    <tr><th style="color:var(--fe)">Fe 53.9:读得懂氛围</th><th style="color:var(--ti)">Ti 50.5:够用的逻辑刀</th></tr>
+    <tr>
+      <td>你能读懂房间的氛围,会照顾"我们"的感受。但 Fe 并不特别突出:你的温度是<strong>策略性的善良</strong>,不是以他人为生的燃烧。</td>
+      <td>你讲得起理,但不会为"体系自洽"熬夜。两者几乎平手,意味着<strong>这一组没有招牌,也没有短板</strong>——你既不是情绪的人质,也不是逻辑的苦行僧。</td>
+    </tr>
+  </table>
+  <p class="muted">均衡的另一面:<strong>两头都够用,两头都不锋利</strong>。当你需要成为焦点式的领袖或深度专家时,这一轴不会替你加分。</p>
+  <div class="scene">
+    <b>你是不是也这样</b>
+    <p>你能同时共情对立的两个人——然后被两边说"你到底是哪边的"。你不是墙头草,你只是<strong>两边都看得懂</strong>。</p>
+  </div>
+</section>
+
+<!-- ============ 03 STRENGTHS ============ -->
+<section id="s3">
+  <div class="sec-num">03 · STRENGTHS</div>
+  <h2>你的优势:什么场合最值钱</h2>
+  <table class="lt">
+    <tr><th>优势</th><th>适合的场合</th></tr>
+    <tr><td><strong style="color:var(--fi)">意义感的定海神针</strong></td><td>在一个什么都能包装成卖点的世界里,你是那个会问"这是真的吗"的人。内容创作、品牌与故事、助人职业、任何需要"作者性"的事。</td></tr>
+    <tr><td><strong style="color:var(--ni)">迷雾里认方向</strong></td><td>信息过载时代最稀缺的是收敛能力。你能在众声喧哗里说出"方向是那个"。策略、研究、产品判断、长期规划。</td></tr>
+    <tr><td><strong style="color:var(--fe)">跨阵营翻译官</strong></td><td>Fe 与 Ti 的均衡让你能在感性者和逻辑者之间来回传话。协调角色、团队粘合、需求与技术的中间人。</td></tr>
+    <tr><td><strong style="color:var(--si)">不守旧,能转向</strong></td><td>Si 弱,做日常琐事要比别人多花力气;但在变化里反而是优势:你对"过去一直这样"没有执念。转型期团队、需要放下沉没成本的决定。</td></tr>
+  </table>
+</section>
+
+<!-- ============ 04 BLIND SPOTS ============ -->
+<section id="s4">
+  <div class="sec-num">04 · BLIND SPOTS</div>
+  <h2>你的盲区:不是缺陷,是成本</h2>
+  <p class="lead">以下每一项都不是"你不行",而是<strong>"你做这件事,要比别人多花力气"</strong>。诚实的读法是给它们配一套省力的做法,而不是逼自己变成别人。</p>
+  <table>
+    <tr><th>盲区</th><th>真实成本</th><th>可以怎么做</th></tr>
+    <tr><td><span class="fn" style="color:var(--si)">Si</span> 37.1</td><td>作息、财务、健康和身体信号,长期疏于打理</td><td>靠提醒,不靠自律:把重要的事固定在固定时间,全部交给日历提醒</td></tr>
+    <tr><td><span class="fn" style="color:var(--se)">Se</span> 41.8</td><td>现场感薄,机会"就在眼前"时容易错过</td><td>每周一次不带耳机的身体活动:做饭、散步、运动,任何"只发生在此刻"的事</td></tr>
+    <tr><td><span class="fn" style="color:var(--ne)">Ne</span> 41.9</td><td>决定前缺少备选方案,押错时没有 Plan B</td><td>重大选择前,强制自己列"另外两种可能",或拉一个点子多的朋友一起想</td></tr>
+    <tr><td><span class="fn" style="color:var(--te)">Te</span> 47.6</td><td>知道 ≠ 做到;启动慢、拆解弱、不擅硬扛</td><td>两分钟启动法:把"目标"拆成"下一个具体动作",只做两分钟,并设一个要交代给别人的截止时间</td></tr>
+  </table>
+</section>
+
+<!-- ============ 05 INTIMATE RELATIONSHIPS ============ -->
+<section id="s5">
+  <div class="sec-num">05 · INTIMATE RELATIONSHIPS</div>
+  <h2>亲密关系:你的爱的语法</h2>
+  <p class="lead">你的功能组合决定了一件残酷又温柔的事:<strong>你付出的和你想要的,经常不是同一种东西。</strong>看懂自己的语法,才听得懂对方的。</p>
+  <div class="relg">
+    <div class="k">你给出的</div><div>深而稳。Fi 的爱是"我看见真正的你"——不喧哗,但一旦认定,你是极少数进入你内核的人。</div>
+    <div class="k">你索取的</div><div>被真正看见,而不是被热闹陪伴。你需要的是"懂",不是"多"——所以低质量的陪伴对你等于消耗。</div>
+    <div class="k">你的摩擦点</div><div>Ni 容易爱上<strong>自己预见到的对方版本</strong>,而非眼前的人;当现实的人偏离你预见的剧本时,失望比争执先到。Se/Si 双弱,意味着仪式感、纪念日、生活照料不是你的本能——<strong>这不是不爱,是你表达爱的方式,和对方想要的不一样</strong>。</div>
+    <div class="k">关系里的你</div><div>表面 Fe 温和好说话,内核有一道只属于 Fi 的门。能进门的很少,但门内的东西很真。</div>
+  </div>
+
+  <h3>兼容地图:没有对错,只有磨合</h3>
+  <table class="lt">
+    <tr><th>对方类型</th><th>互补与摩擦</th><th>解法</th></tr>
+    <tr><td><strong>与 Te/Si 强的人(执行型/守成型)</strong></td><td>互补:对方递梯子,你负责方向。<strong>摩擦</strong>:你会觉得被推着走,对方觉得你"想太多不做"。</td><td>把"我需要先想清楚"说成一句可执行的话,比如"给我三天,周五给你答复"。</td></tr>
+    <tr><td><strong>与 Fi/Ni 强的人(同类)</strong></td><td>共鸣:第一次遇到不用翻译的人。<strong>摩擦</strong>:两个人都在等对方先开口,都在用预见审判关系,容易一起内耗。</td><td>约定"说出来才算存在",把直觉外化成语言。</td></tr>
+    <tr><td><strong>与 Se 强的人(体验型)</strong></td><td>对方把你的身体从精神里捞出来,你给对方一个更大的世界。<strong>摩擦</strong>:对方觉得你"不在场",你觉得被拉去"无意义"。</td><td>给体验赋予意义("这次旅行是我在记录我们")。</td></tr>
+    <tr><td><strong>与 Fe 极强的人(照顾型)</strong></td><td>对方照顾全场,你记得对方真实的样子。<strong>摩擦</strong>:你习惯接受而不表达需求,对方误读你的沉默为不满。</td><td>把"没事"翻译成"我需要一个人待一会儿"。</td></tr>
+  </table>
+
+  <div class="scene">
+    <b>三句值得直接背下来的句式</b>
+    <p>① "我现在需要的是你听,不是建议。"<br>② "我不说,不代表我没感觉,代表我还没整理好。"<br>③ "我看的是我们的三年后——这不是悲观,是我表达在乎的方式。"</p>
+  </div>
+</section>
+
+<!-- ============ 06 DEVELOPMENT ============ -->
+<section id="s6">
+  <div class="sec-num">06 · DEVELOPMENT</div>
+  <h2>发展建议:先护强项,再帮短板省力</h2>
+  <p class="lead">一条反直觉但重要的原则:<strong>对成年人来说,护强项的回报远高于补短板。</strong>Si、Se 练到天亮也变不了体验派,合理目标是"别让它拖后腿",不是"变成别人"。</p>
+  <table class="lt">
+    <tr><th>方向</th><th>做法</th></tr>
+    <tr><td><strong style="color:var(--ni)">护强 · 把直觉外化</strong></td><td>定期把"我看到了什么"写下来、讲出来,变成可检验的预测。直觉最危险的时刻是它从不出错的时候——<strong>它也可能只是把悲观提前当成了结论</strong>。</td></tr>
+    <tr><td><strong style="color:var(--fi)">护强 · 给内核找出口</strong></td><td>Fi 强而没有表达渠道,会变成内耗。写作、深度对话、创作——任何一个"把感受变成作品"的事,都是你的排气阀。</td></tr>
+    <tr><td><strong style="color:var(--te)">补弱 · 两分钟启动法</strong></td><td>给 Te 用的办法:任何目标先拆成"下一个具体动作",只要求做两分钟。启动是最难的一步,启动之后你比想象中稳。</td></tr>
+    <tr><td><strong style="color:var(--si)">补弱 · 靠提醒,不靠自律</strong></td><td>Si 弱的人别练"自律":体检、账单、纪念日全部进日历并设提前提醒——让手机替你记,而不是让愧疚催你。</td></tr>
+  </table>
+  <div class="scene">
+    <b>写在最后</b>
+    <p>你不需要变成另一个人。你只需要<strong>找到让自己顺利启动、持续发力的方式</strong>——方向,你已经比很多人看得更清了。</p>
+  </div>
+</section>
+
+<!-- ============ 07 BOUNDARIES ============ -->
+<section id="s7">
+  <div class="sec-num">07 · BOUNDARIES</div>
+  <h2>边界声明:报告是镜子,不是判决书</h2>
+  <ul class="bound-list">
+    <li>· 得分来自你的自陈问卷,换算方式详见附录;<strong>分数会波动</strong>——状态、心境、人生阶段都会改变它。</li>
+    <li>· 八维模型是理解自我的透镜之一,<strong>不是诊断工具</strong>,不能预测成就,更不能给人定性。</li>
+    <li>· 任何"你应该是 XX 类型"的结论都不重要;<strong>这些对照是帮你理解自己的透镜,不是判决书。</strong></li>
+    <li>· 如果这份报告让你更宽容地看待自己,它就完成了使命。如果没有——它只是一张图,你比图大。</li>
+  </ul>
+  <h3>附录 · 得分明细</h3>
+  <table style="font-size:.85em">
+    <tr><th>功能</th><th>得分</th><th>所属对照</th><th>这一组里更常露面</th><th>角色(按第一候选排位近似)</th></tr>
+    <tr><td><span class="fn" style="color:var(--fi)">Fi</span> 内倾情感</td><td>67.86</td><td>Fi–Te</td><td><strong>Fi</strong></td><td>主导 · 自我罗盘</td></tr>
+    <tr><td><span class="fn" style="color:var(--ni)">Ni</span> 内倾直觉</td><td>65.54</td><td>Ne–Ni</td><td><strong>Ni</strong></td><td>第二驱动 · 预见</td></tr>
+    <tr><td><span class="fn" style="color:var(--fe)">Fe</span> 外倾情感</td><td>53.94</td><td>Fe–Ti</td><td>Fe(与 Ti 均衡)</td><td>社交界面</td></tr>
+    <tr><td><span class="fn" style="color:var(--ti)">Ti</span> 内倾思维</td><td>50.46</td><td>Fe–Ti</td><td>(同上)</td><td>备用逻辑刀</td></tr>
+    <tr><td><span class="fn" style="color:var(--te)">Te</span> 外倾思维</td><td>47.56</td><td>Fi–Te</td><td>(退居其后)</td><td>批评者 · 启动最费力</td></tr>
+    <tr><td><span class="fn" style="color:var(--ne)">Ne</span> 外倾直觉</td><td>41.86</td><td>Ne–Ni</td><td>(退居其后)</td><td>退居后排的发散</td></tr>
+    <tr><td><span class="fn" style="color:var(--se)">Se</span> 外倾感觉</td><td>41.76</td><td>Se–Si</td><td>Se(与 Si 皆弱)</td><td>盲点 · 当下体验</td></tr>
+    <tr><td><span class="fn" style="color:var(--si)">Si</span> 内倾感觉</td><td>37.12</td><td>Se–Si</td><td>(同上)</td><td>盲区 · 经验与熟路</td></tr>
+  </table>
+</section>
+
+<footer class="footer">
+  <div class="meta-line">示例样本 SAMPLE-02(数据取自参考底稿)· 报告日期:2026-09-07 · 数据来源:八功能测试(自评,百分制 0–100)</div>
+  <div class="disc">荣格八维 · 人格坐标报告 — 由一组自陈得分生成。本报告基于这份测评分数的理论分析,不构成临床诊断。数据是快照,不是宿命;类型是地图,不是领土。</div>
+</footer>
+
+</body>
+</html>

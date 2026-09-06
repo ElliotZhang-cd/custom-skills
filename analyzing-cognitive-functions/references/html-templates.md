@@ -1,176 +1,278 @@
 # HTML 输出模板
 
-所有报告 = 来访者直接阅读的终端产品，默认保存到 `/c/Users/elliot/Desktop/relations/MBTI/`（Git Bash 路径）。语言规范见 writing-style.md。
+所有报告 = 来访者直接阅读的终端产品,默认保存到 `/c/Users/elliot/Desktop/relations/MBTI/`(Git Bash 路径)。语言规范见 writing-style.md。
+
+> **2026-09-07 版**(用户批复落地):**单人报告 = 参考正文 hero 式**(结构完全以 `jung-8-function-report.html` 为准,纸感令牌 + 静态 SVG + 全件表格化)。单人视觉事实源 = `examples/mbti_sample.html`(lint PASS)——改任何视觉规则前,先看样例实际长什么样。
+>
+> **双人报告本轮冻结**:沿用 2026-09-06 基线(卡框系 CSS 底),结构与组件规范见 §5,双人视觉事实源 = `examples/mbti_sampleA_sampleB.html`;单人规范不适用于双人,双人不迁移(迁移另立项)。设计沿革存档:`docs/2026-09-06-reskin-design.md`、`docs/2026-09-07-reference-content-plan.md`。
 
 ## Contents
-- §1 CSS 基础体系（变量 / 排版 / 组件类 / 打印样式）
-- §2 图表与布局（降序条形图 / 功能速览网格 / 三轴极性图 / 排位剖面图 / 依恋象限图 / 类型栈图）
-- §3 报告结构模板（单人 / 双人，含各章深度要求）
-- §4 输出规范（命名 / 声明 / 交付前验证）
+- §1 单人报告基础(令牌 / 排版 / 组件类 / 打印样式)
+- §2 单人视觉件(雷达 / 柱状图 / 天平图 / 表格件总表 / 场景块等)
+- §3 单人报告结构模板(hero + 01–07 章 + footer)
+- §4 输出规范与交付前验证
+- §5 双人报告(2026-09-06 基线,冻结)
 
-## 1. CSS 基础体系
+## 1. 单人报告基础
 
-### 1.1 CSS 变量（颜色方案）
+### 1.1 设计令牌(纸感系,与样例逐字一致)
+
 ```css
 :root {
-  --bg: #fafaf8; --text: #1a1a1a; --muted: #5a5a5a; --border: #d0d0cc; --accent: #2c3e50;
-  --fi: #c0392b; --ni: #8e44ad; --fe: #2980b9; --ti: #16a085; --te: #d35400;
-  --ne: #e67e22; --se: #27ae60; --si: #7f8c8d;
-  --highlight: #f9f3e8; --card-bg: #ffffff;
+  --bg: #F7F5EF; --fg: #262419; --muted: #6E6A60; --border: #DCD6C8; --card: #FFFFFF;
+  --accent: #1F5F66; --accent-text: #1B4A50; --soft: #FAFAF6; --hairline: #B9B29F;
+  /* 八功能色(常量,不变) */
+  --fi: #c0392b; --ni: #8e44ad; --fe: #2980b9; --ti: #16a085;
+  --te: #d35400; --ne: #e67e22; --se: #27ae60; --si: #7f8c8d;
+  --font-heading: "Noto Serif SC","Source Han Serif SC","Songti SC",SimSun,serif;
+  --font-body: "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;
 }
 ```
-八个功能的颜色分配为常量，不可修改。双人报告新增 --p1-color（紫）和 --p2-color（绿）。
 
-### 1.2 基础排版
-- 字体：`"Noto Serif SC","Source Han Serif SC","Songti SC",Georgia,serif`
-- 行高：`1.85`；最大宽度：单人 860px，双人 900px
-- 响应式：`@media (max-width: 640px)` 双栏降为单栏，目录转块级
-- 代码括注样式 `.fn-code`：`font-size:0.75em; color:var(--muted); font-weight:400`（灰色小字）
+- 八功能色 = 功能身份,一种功能一种颜色,全书沿用(柱状图、天平圆点、表格首列定性词、代码字色)。
+- 功能代码(Fi/Ni/…)可**裸用**于正文(参考式):`<span class="fn" style="color:var(--fi)">Fi</span>`——衬线 600 + 功能色即身份标识;`.fn-code` 灰色括注体系退役。
 
-### 1.3 核心组件类
+### 1.2 排版
+
+- `body`:衬线 `16px / line-height 2.0 / color:var(--fg)` + 噪点纹理背景(data URI feTurbulence,16%,与样例同款);`max-width:680px; margin:0 auto; padding:0 20px 80px`;`body p { text-align:justify }`
+- **hero 首屏**(`header.hero#hero`):`min-height:86vh` 居中纵排——`.kicker`(黑体 .72em、letter-spacing .42em、大写)→ `h1` 定位句(衬线 700 2.55em,`<em>` 渐变字 accent→ni)→ `.lede`(一句,黑体 .92em muted 居中)→ `.radar-box`(≤380px)→ 图注 → `.scrollhint`(「↓ 往下读」)
+- 正文区:`section`(`border-top:1px solid var(--border); margin-top:56px; padding-top:40px`)+ `.sec-num`(衬线 .8em、letter-spacing .3em、muted,格式「01 · OVERVIEW」)→ `h2`(衬线 700 1.62em)→ `h3`(衬线 700 1.15em)
+- 字号刻度:小注 .74–.8em / 正文 16 / lead 1.02em / h3 1.15em / h2 1.62em / hero h1 2.55em;行高正文 2.0,表格与卡内 1.75–1.85
+
+### 1.3 组件类总表(关键属性照抄样例 `<style>` 块)
 
 | 类名 | 用途 | CSS 关键属性 |
 |------|------|-------------|
-| `.meta-header` | 页眉（日期/编号/量表来源） | `font-size:0.85em; color:var(--muted); border-bottom:1px solid var(--border)` |
-| `.guide-box` | 阅读指南 | `background:var(--highlight); border-radius:8px; padding:18px 22px` |
-| `.chapter-key` | 章一句话结论框 | `background:var(--highlight); border-left:4px solid var(--accent); padding:10px 16px; border-radius:4px; margin:10px 0 18px; font-weight:600` |
-| `.summary-card` | 一页速览卡 | `background:#fff; border:2px solid var(--accent); border-radius:10px; padding:22px 26px` |
-| `.ev-tag` | 证据标签基类 | `display:inline-block; font-size:0.72em; padding:2px 8px; border-radius:3px; vertical-align:middle; margin-left:6px` |
-| `.ev-research` / `.ev-theory` / `.ev-hypothesis` | ✅绿 / 🔶橙 / ⚪灰 | 背景 #e8f5e9 字 #2e7d32 / 背景 #fff3e0 字 #e65100 / 背景 #f0f0ee 字 #757575 |
-| `.toc` | 锚点目录 | `background:#fff; border:1px solid var(--border); border-radius:8px; padding:16px 22px; font-size:0.9em` |
-| `.appendix` | 附录区块 | `border-top:2px dashed var(--border); margin-top:48px; padding-top:24px` |
-| `.faq-item` | FAQ 条目 | `margin-bottom:18px` |
-| `.callout` | 强调框 | `background:#fff; border:1px solid var(--border); border-radius:8px; box-shadow` |
-| `.scene-box` | 场景对话框 | `border:1px solid #e0e0dc; border-radius:6px; padding:16px 20px; margin:12px 0; background:#fff` |
-| `.dual-col` | 双栏布局 | `display:grid; grid-template-columns: 1fr 1fr; gap:24px` |
-| `.dialogue` | 对话文本 | `padding-left:16px; border-left:2px solid #e0e0dc` |
-| `.chart-box` | 图表容器 | `background:#fff; border:1px solid var(--border); border-radius:8px; padding:18px; margin:14px 0; text-align:center` |
-| `.stack-box` | 功能栈标签（附录/类型栈图） | `display:inline-block; padding:3px 10px; border-radius:3px; font-weight:700; color:#fff` |
-| `.meter-bar` / `.meter-track` / `.meter-fill` | 适配性评分条 | `display:flex; height:20px; .meter-fill 必须 display:block; min-width:4px` |
-| `.conflict-header` | 冲突统计标签 | `display:flex; gap:16px; flex-wrap:wrap; font-size:0.9em` |
-| `.match-yes` / `.match-no` / `.match-ok` | 类型匹配标记 | 绿 ✓ / 红 ✗ / 橙 ≈ |
-| `.p1-tag` / `.p2-tag` | 双人报告人物标签 | 紫色/绿色 inline-block 标签 |
-| `.fn-grid` | 功能速览两列网格 | `display:grid; grid-template-columns: 1fr 1fr; gap:12px; font-size:0.92em; margin:14px 0` |
-| `.fn-grid-item` | 网格项 | `display:flex; align-items:center; gap:10px; padding:8px 12px; background:#fff; border:1px solid var(--border); border-radius:6px` |
-| `.fn-grid-bar` | 网格内迷你色条 | `width:4px; height:28px; border-radius:2px; flex-shrink:0` |
+| `.kicker` | hero 眉题 | 黑体 .72em;letter-spacing:.42em;text-transform:uppercase;color:var(--muted);padding-left:.42em |
+| `.hero h1`(+`em`) | 定位句大标题(从前两位功能生成,规则见 writing-style §10.8) | 衬线 700 2.55em;line-height 1.35;`em{font-style:normal;color:transparent;background:linear-gradient(120deg,var(--accent),var(--ni));-webkit-background-clip:text}` |
+| `.lede` | hero 一句话(固定文本,照录) | 黑体 .92em muted;line-height 2.0;居中;max-width 26em |
+| `.radar-box` / `.scrollhint` | 雷达容器 / 下滑提示 | radar-box ≤380px 居中,svg width 100%;scrollhint 黑体 .75em muted letter-spacing .2em |
+| `.chart-note` | 图注(每图一条) | 黑体 .8em muted;line-height 1.7;text-align:left;max-width 560px |
+| `table` 默认 | **平面表格 = 全篇统一件型**(与盲区表同款) | `width:100%;border-collapse:collapse;font-size:.9em`;`th,td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}`;`th{font-family:var(--font-body);color:var(--muted);font-weight:700;font-size:.78em;letter-spacing:.08em}`——无外框、无竖线、无底色、无圆角 |
+| `.lt` | 列表型表格首列限宽 | `.lt th:first-child,.lt td:first-child{width:12em}`(关键词总表/优势表/兼容表/建议表) |
+| `.duo-t` | 强端·代价表(每轴一张) | `th{font-size:.88em;letter-spacing:.04em}`(th 内联功能色);`td{width:50%;font-size:.9em;line-height:1.85}` |
+| `.pc-t` | 双弱福利·代价表(条件件) | `ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}`;`li{position:relative;padding-left:20px;font-size:.92em;line-height:1.75}`;`td:first-child li::before{content:"✦";color:var(--accent)}`、`td:last-child li::before{content:"◇";color:var(--hairline)}` |
+| `.hl` | 表格内命中高亮 | `background:linear-gradient(180deg,transparent 60%,rgba(31,95,102,.20) 60%);padding:0 .08em` |
+| `.beam`(+figcaption) | 天平图容器 | `figure{margin:24px 0 4px}`;svg `width:100%;max-width:640px;display:block;margin:0 auto`;figcaption 黑体 .8em muted 居中(caption 直接画进 svg 时可留空) |
+| `.scene` | 场景块(**线型:仅左竖线,无底色**) | `border-left:3px solid var(--accent);padding:6px 0 6px 20px;margin:22px 0`;`b` 黑体 .74em muted letter-spacing .16em 做小标签;`p` 衬线 .98em |
+| `.relg` | 亲密关系定义列表 | `display:grid;grid-template-columns:8.5em 1fr;font-size:.94em`;`div{padding:12px;border-bottom:1px solid var(--border)}`;`.k` 黑体 700 .88em muted;`div:nth-child(4n+1),(4n+2)` 斑马纹 `rgba(255,255,255,.6)`;≤640px 单列 |
+| `.bound-list` | 07 边界声明列表 | `list-style:none;gap:8px;黑体 .86em muted;line-height 1.9` |
+| `.footer`(+#hero 对应) | 页脚 | `border-top:1px solid var(--border);margin-top:64px;padding:26px 0 0;text-align:center`;`.meta-line` 黑体 .74em muted(报告日期 · 用户代号 · 数据来源);`.disc` 黑体 .8em muted max-width 40em(含临床句) |
+| `.fn` / `.muted` / `p.lead` | 彩色代码 / 弱化小字 / 章引言 | `.fn{衬线 600}`;`.muted{color:var(--muted);font-size:.9em}`;`.lead{font-size:1.02em}` |
 
-### 1.4 打印样式（必须有——来访者会打印或导 PDF）
+**卡框禁用清单(出现即 lint FAIL,防回流)**:`.card`、`.grid2`、`.ov-grid`、`.procon`(2026-09-07 全件表格化);单人报告同时禁用旧结构件:`chapter-head`、`pull`、`epigraph`、`summary-card`、`fnchart/.fn-*`、`axis-block/.axis-*`、`combo-card`、`type-cards`、`meta-header`、`guide-box`、`toc`、剖面图/依恋象限图/类型栈打分表(见 §2.7 废弃清单)。
+
+### 1.3 打印样式(必须有——来访者会打印或导 PDF)
+
+逐字使用(与样例一致):
+
 ```css
+@page { size: A4; margin: 16mm 15mm; }
 @media print {
-  body { background:#fff; }
-  .summary-card, .callout, .scene-box, .guide-box, .chart-box, .col-box { break-inside: avoid; }
-  .toc { display: none; }
+  body { background: #fff; background-image: none; max-width: none; padding: 0 10mm; }
+  .hero { min-height: auto; padding: 20px 0 6px; }
+  .scrollhint { display: none; }
+  section { margin-top: 40px; padding-top: 28px; }
+  .beam, .scene, table, .relg { break-inside: avoid; }
+  tr { break-inside: avoid; }
   * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
 ```
 
-## 2. 图表与布局
+## 2. 单人视觉件(全部内联 SVG/CSS,零 JS 依赖,打印安全)
 
-> **图的分工**：第 1 章降序条形图（分数模样）＋ 功能速览网格（每个维度的解释）；第 3 章三轴极性图（两条功能轴的倒向）＋ 排位剖面图（八位置的形状）；第 6 章依恋象限图；附录 A 类型栈对照。禁用面积/大小编码（气泡图）——窄分数段下不可读。数据细节由网格与图表承载，正文只说倾向与场景。
+> **分工纪律**:雷达管形状总览(相对高低)/ 柱状图管精确分数 / 天平图管四组对照与强弱 / 表格件管内容 / scene 管收束。一图一职,互不复读。**零 JS**:图表全部为手写内联 SVG(坐标按下述公式预算),不做滚动动画。
 
-### 2.1 降序条形图（第 1 章「分数模样」）
-- 八条功能色条按分数降序排列，条内标分数；一眼看出谁高谁低
-- 禁用面积/大小编码（气泡图）
+### 2.1 hero 雷达图(SVG)
 
-### 2.2 功能速览两列网格（第 1 章「每个维度的解释」）
-- 用 `.fn-grid` 把八个功能排成两列卡片
-- 每张卡片：左侧 4px 色条（功能色）+ 学术名 + 一句白描 + 右侧分数
-- 轴结构用**文字**逐轴讲（writing-style.md §2.1 模板）：每条轴一段——两端是谁、倒向哪端、意味着什么；每条轴必须有具体化支撑
+- `viewBox 0 0 380 380`,圆心 (190,190),R=132;顶点序 `Fi, Ni, Te, Se, Fe, Ne, Ti, Si`——对角(1-5/2-6/3-7/4-8)恰为四组同能力对照:Fi–Fe、Ni–Ne、Te–Ti、Se–Si;顶点角度 = −90° 起、每 45°
+- 半径 = **相对归一化** `0.18 + 0.82 × (分−min)/(max−min)`(不读绝对分);4 层参考环(r = R×25%/50%/75%/100%,八边形折线,无刻度含义)+ 8 根辐条
+- 数据多边形:`fill:rgba(31,95,102,.10)`,`stroke:var(--accent)` 1.6px;顶点圆点 r=3.4 功能色;外圈标签 = 代码(衬线 600 14px 功能色,`paint-order:stroke` 3px 纸色描边光晕,标签半径 R+28)
+- 图注(必配):「形状只看相对高低:凸出来的是用得最顺的,凹进去的是最费力的;分差小的时候形状接近正八边形,这也是诚实的读数。每个字母是一种心理功能,下一章逐个认识它们。」
 
-### 2.3 三轴极性图（第 3 章「两条功能轴」）
-- 三行：态度轴（内倾四项合计 ↔ 外倾四项合计）/ 感知轴（实感侧 ↔ 直觉侧）/ 判断轴（思考侧 ↔ 情感侧）
-- 每行中轴两侧各一条，**长度＝分数（线性映射）**——三条轴的倾斜全部肉眼可见；**禁用位置标记滑轨**（50 附近的偏移量视觉上无信息）
-- 条内标分数；条端上方标两极名；行末读数结论（偏内倾 / 偏直觉 / 偏情感）
-- 数字由图承载，正文只说倾向（"直觉侧明显长于实感侧"），不罗列数值
+### 2.2 第 1 章柱状图(SVG)
 
-### 2.4 排位剖面图（第 3 章「八位置原型」）
-- 八条横条按排位（第一至八位）排列，**不按分数排序**——条长＝该位置的功能分数
-- 深色＝平时的你（第一至四位），浅色＝阴影里的你（第五至八位，同色淡化 50%）
-- 50 分虚线参照；异常位（如第六位全场最高）行末标注
-- 一眼读出栈形状：哪里强、哪里凹、哪里尖峰
+- `viewBox 0 0 680 380`;margin L30/R8/T26/B60;网格线 0/20/40/60/80/100(0–100 绝对标尺,20 一格;0 线 #B9B29F,其余 #DCD6C8;刻度字只标 20–100)
+- 8 柱按实测分**降序**;柱宽 ≈55.75(gap 28);柱色 = 功能身份色(rx=3);柱顶数值(--fg 11.5px 黑体);柱底代码(衬线 600 13px 功能色,y=346)
+- 图注(必配):「柱高 = 实测分(0–100);一种功能一种颜色,后文所有图沿用同一套颜色。」
 
-### 2.5 依恋象限图（第 6 章）
-- SVG `viewBox="0 0 300 260"`：横轴"对他人的看法（消极 ←→ 积极）"，纵轴"对自己的看法（消极 ←→ 积极）"
-- 四象限标注：安全型（右下）/ 痴迷型（右上）/ 疏离型（左下）/ 恐惧型（左上）
-- 推测位置用**虚线圆**表示不确定性；若结论对分数波动敏感，虚线圆跨相邻象限边界
-- 恋爱关系与家人关系各占一张小图
+### 2.3 天平图 ×4(02 章,SVG,每轴一张)
 
-### 2.6 类型栈对比图（附录 A）
-- 两个候选类型并排，各画 8 级阶梯：每级一个色块（功能色）标注"位置 学术名"，右侧标实测分 + ✓/≈/✗
-- 阴影位（5-8）色块加 `opacity:0.55`
+- `viewBox 0 0 640 210`;支点三角 `M320 142 l-13 20 h26 z`(fill #B9B29F)+ 梁(半长 240,stroke var(--accent) 4px 圆头,圆心 (320,120))
+- **倾角 = clamp(−4°, +4°, (右分−左分)×0.16°/分)**——**分高的一端更重、往下沉**;两端接近时天平放平(2026-09-07 用户批示:与参考报告「强端翘起」方向相反)
+- 两端圆点 r7(功能色)+ 外环 r12(同色,透明度 = 点透明度×0.32,stroke 1.5);**点透明度 = 相对高低** `(分−min)/(max−min)×0.75+0.2`
+- 点旁标注两行:①「Ni · 65.5」(衬线 600 功能色 15px,**含精确分**;y = 点 y+32)②轴词一句(黑体 11.5px muted;y = 点 y+50):发散可能↔预见收敛 / 体验当下↔存档与熟路 / 忠于内核↔推进结果 / 回应他人↔自洽建模——**不用昵称层**(2026-09-07 评审废弃)
+- **caption 四分支(固定文案,按分差自动选用;X 用 `<tspan>` 功能色强调,y=196 居中)**:
 
-## 3. 报告结构模板
+| 条件 | 文案 |
+|------|------|
+| 双弱(两端实测分均列全维后三位) | 「这组两头都偏弱——它不是你的主场。」 |
+| \|差\| ≥ 12 | 「在这组里,更常露面的显然是 X。」 |
+| \|差\| ≥ 5 | 「更常露面的是 X。」 |
+| \|差\| < 5 | 「两者接近——这一组没有明显的赢家。」 |
 
-### 3.1 单人报告（来访者终端产品，6000-8500 字；结构含原型章与成长方向章时取上限）
+- 02 章引言必须含天平读法句(照录):「每组像一架小天平——分高的一端更重,沉在下面;两端接近时,天平放平。」
 
-**理论主线：荣格八维是地基，类型只是窄标签。** 全报告围绕四条轴、8 位置原型展开；MBTI 类型仅在第二章作为快速定位出现，并明示其局限。
+### 2.4 表格件总表(六张,全 hairline 平面件)
 
-```
-页眉 .meta-header：测评日期 · 报告日期 · 量表来源 · 用户代号
-阅读指南 .guide-box（照录 writing-style.md §9.2）
-目录 .toc（锚点导航）
-各章（第 0 章除外）h2 后加「一句话结论」框 .chapter-key（模板见 writing-style.md §5）
+| 表 | 落位 | 列头(照录) | 行数与规则 |
+|----|------|-----------|-----------|
+| 关键词总表 `.lt` | 01 开头 | 关键词 / 功能 · 分数 · 排名 / 一句话 | 4 行;首列定性词功能色衬线粗体;行序 = 最高 / 第二 / 居中代表 / 最低 |
+| 对照总表 | 02 引言后 | 对照 / 你这一组的情况 | 4 行;弱端侧用 muted 小字 |
+| 强端·代价表 `.duo-t` ×4 | 02 每轴天平图后 | 强端:X n / 代价:Y n(表头内联功能色;双弱轴两格均为定性名,如「Si 37.1:档案柜未上锁」) | 每轴 1 张,共 4 张 |
+| 福利·代价表 `.pc-t` | 02 双弱轴后(**条件件**:两端均列全维后三位才出现) | 双弱带来的好处 / 双弱的代价 | 单行双格,各含 `<ul>`(✦/◇ 项目符);福利列 = 不被该能力绑定的自由,代价列 = 日常多花的力气 |
+| 盲区表 | 04 | 盲区 / 真实成本 / 可以怎么做 | 行 = 费力功能(含分数);成本列 = 具体代价;「可以怎么做」列 = 可执行动作(含频次/场景) |
+| 兼容表 `.lt` | 05 | 对方类型 / 互补与摩擦 / 解法 | **必配 4 行**:执行型(Te/Si 强)/ 同类(Fi/Ni 强)/ 体验型(Se 强)/ 照顾型(Fe 极强);互补一句、摩擦一句(成本措辞,禁评价词)、解法一句(可执行) |
+| 优势表 `.lt` | 03 | 优势 / 适合的场合 | 3–4 行;首列 = 白话标题(功能色) |
+| 建议表 `.lt` | 06 | 方向 / 做法 | 4 行;护强 ×2 + 补弱 ×2;「护强项回报 > 补短板」原则句为章引言必备 |
 
-0  一页速览卡 .summary-card
-   （最擅长的事 + 三件最不费劲的事 + 两件要留意的事 + 恋爱一句话）
-1  你的分数长什么样 + 每种活动是什么
-   ［章结论框］
-   ［降序条形图（§2.1）——分数模样］
-   ［功能速览两列网格：学术名+白描+分数——每个维度的解释］
-   （感知/判断大类的定义由网格白描与第 3 章 §3.2 承载，本段不再重复）
-2  你最可能是哪种类型（双候选 + 主观置信度 + 置信度说明 + 「类型只是名字」固定说明；🔶；附录 A 打分对照表）
-   深度要求：每个候选写清"匹配什么 / 解释不了什么 / 需要什么额外假设"；偏离只述现象、不编归因
-3  按荣格理论，你的分数在说什么（核心章；🔶；声明理论模型无实证常模）——四个小节：
-   ［章结论框＋本章三句话摘要框］
-   ［3.1 态度：内倾 vs 外倾（能量方向）］
-   ［3.2 两条功能轴：感知轴/判断轴的倒向与含义＋三轴极性图（§2.3）；数字由图承载，正文说倾向与场景；各配一个假设场景］
-   ［3.3 意识、阴影与八位置原型：补偿原则＋排位剖面图（§2.4）＋白话框架＋排位表＋如实呈现含异常位］
-   ［3.4 核心张力 1-2 条，完整段落展开］
+候选类型表(01 章内):`候选 / 栈序 / 命中` 三列,2 行;标题格式「最接近的类型:X 或 Y(仅供参考)」;命中列内用 `.hl` 高亮;栈序用彩色 `.fn` + 箭头。
 
-附录A（.appendix .appendix-tech）可选阅读：类型是怎么推出来的（8 位置 ✓/≈/✗ 打分对照表 + 位置参考表）
-附录B（.appendix）这份报告的局限（照录 §9.3 + 结论依据构成统计）
-附录C（.appendix）你可能想问的（.faq-item × 4-6 条）
-```
+### 2.5 亲密关系与收束件
 
-### 3.2 双人报告（来访者终端产品）
+- **rel 定义列表 `.relg`**(05 必配):四键 = 你给出的 / 你索取的 / 你的摩擦点 / 关系里的你;每键一段大白话。
+- **场景块 `.scene`**(线型):小标签(`b`)取「你是不是也这样 / 写在最后 / 三句值得直接背下来的句式」;每轴一条「你是不是也这样」(第二人称 ≤60 字,落在具体行为,不引入新结论);06 章末「写在最后」= 全篇收束。
+- **边界声明 `.bound-list`**(07 照录 writing-style §9.3 参考口径 4 条)+ `h3 附录 · 得分明细` 表(功能 / 得分 / 所属对照 / 这一组里更常露面 / 角色(按八维功能栈近似))。
+
+### 2.6 分工纪律(评审查)
+
+雷达管形状总览 / 柱状图管精确分数 / 天平图管四组对照与强弱 / 表格件管内容 / scene 管收束——**一图一职,互不复读**;正文不复述图表读法(语言密度规则见 writing-style §10.4)。
+
+### 2.7 已废弃件清单(勿再生成;出现即 lint FAIL——单人)
+
+速览卡 / 题记 / 三结论卡 / 恋爱一句话 / 目录 toc / 阅读指南框 / chapter-head / chapter-sub / pull 锐评 / 八彩条形图 / 轴对立合并图 / 排位剖面图 / 依恋象限图 / 类型栈打分表 / 组合卡 / 证据标签(ev-tag)/ meta-header 页眉 / 卡框类(.card/.grid2/.ov-grid/.procon)/ 进度条 / 首字下沉。
+
+## 3. 单人报告结构模板(2800–4000 字)
 
 ```
-页眉 .meta-header（含双方数据来源 + 双方代号）
-伦理声明 .guide-box（照录 couple-dynamics.md §6.2，含证据标签图例句）
-目录 .toc
-
-1  你们各自是怎样的人（双栏卡片，纯八维结构）
-2  你们在这 8 件事上的合拍程度（每维度：评分条 + 分析 + 📋 具体场景）
-3  这段关系自带的天赋（3-5 项）
-4  总体来看，你们的关系长什么样（8 条评分条汇总 + 综合评估）
-5  这段关系可能会怎样发展（⚪；开头照录 couple-dynamics.md §3.4 非预测承诺；四阶段推演不含时间，含场景 + 阶段三逻辑检验）
-6  你们最容易在哪几件事上卡住（4+ 冲突，含场景对话 + 频次/破坏性/可解性标签）
-7  需要留意的几个风险（3-5 个，含升级路径 + 预警信号）
-8  具体可以怎么做（5 类方法，含成功对话示例 + 适用条件）
-9  结语（大白话：零术语、零代码、零类型标签）
-
-附录：这份报告的局限（照录 §9.3 + 伦理声明重申 + 结论依据构成统计）
+hero(#hero)  kicker「Jungian Cognitive Functions · 人格坐标报告」
+             + h1 定位句(从前两位功能生成,两句、每句 ≤10 字,em 渐变字;规则 writing-style §10.8)
+             + lede 固定句(照录 writing-style §9.2)
+             + 雷达图(SVG,§2.1)+ 图注 + 「↓ 往下读」
+01 总览(01 · OVERVIEW)      你的总览:四个关键词
+             关键词总表(.lt)+ h3 八维得分 + 柱状图(§2.2)+ 图注
+             + h3 最接近的类型(候选表,.hl 命中)+ 「别把任何标签当身份证」固定句(§9.4)
+02 四组对照(02 · YOUR TRADE-OFFS)
+             引言(照录冠名修正句 + 天平读法句)+ 对照总表
+             + 取舍一~四,每组:h3(Ni 预见 vs Ne 发散 式短对)
+               → 天平图(§2.3)→ 强端·代价表(.duo-t)
+               → [双弱时:福利·代价表 .pc-t] → 「你是不是也这样」场景块
+03 优势(03 · STRENGTHS)      h2 你的优势:什么场合最值钱 + 优势表
+04 盲区(04 · BLIND SPOTS)    引言(照录 §9.5)+ 盲区表(盲区/真实成本/可以怎么做)
+05 亲密关系(05 · INTIMATE RELATIONSHIPS)
+             引言(照录:你付出的和你想要的,经常不是同一种东西)
+             + rel 定义列表 + h3 兼容地图:没有对错,只有磨合 + 兼容表
+             + 「三句值得直接背下来的句式」场景块
+06 发展(06 · DEVELOPMENT)    h2 发展建议:先护强项,再帮短板省力
+             + 引言(护强项回报 > 补短板原则句)+ 建议表 + 「写在最后」场景块
+07 边界(07 · BOUNDARIES)     h2 边界声明:报告是镜子,不是判决书
+             + 边界声明 ul(照录 §9.3)+ h3 附录 · 得分明细表
+footer       .meta-line(报告日期 · 用户代号 · 数据来源)+ .disc(参考收束句 + 临床句)
 ```
+
+结构规则:
+
+- **章节恰 7 个**(sec-num 01–07;hero 不算章),锚点 id = s1–s7 + hero;无目录、无页眉(meta 进 footer)。
+- 取舍组内顺序固定:天平图 → 强端·代价表 →(双弱时)福利·代价表 → 场景块;轴序按参考口径:一 = 看未来(Ni–Ne)/ 二 = 与当下(Se–Si)/ 三 = 下判断(Fi–Te)/ 四 = 对人对理(Fe–Ti)。
+- **双弱判定** = 两端实测分均列全维后三位;此时天平 caption 用双弱分支,且组内加福利·代价表(无双弱轴则全报告无 .pc-t,正常)。
+- caption 四分支、关键定性词(价值驱动/迷雾里认方向 等)措辞见 writing-style;**比喻收缩原则**最高优先(writing-style §4.1)。
+- 附录得分明细 = 8 行 × 5 列(功能[彩色代码+学术名] / 得分[两位小数] / 所属对照 / 这一组里更常露面 / 角色[按八维功能栈近似,白话、无原型名])。
+- 双人报告结构见 §5,不适用本节。
 
 ## 4. 输出规范
 
 ### 4.1 文件命名与保存
-- 单人：`mbti_<用户代号>.html` + `mbti_<用户代号>.json`
-- 双人：`mbti_<代号A>_<代号B>.html` + `mbti_<代号A>.json` + `mbti_<代号B>.json`（两份单人次 JSON）
-- 版本冲突（代号重复）时按 `input-parsing.md` §3 问 -v2/覆盖；v2 命名 `mbti_<代号>-v2.html/.json`
-- 用代号不用真名，保护来访者隐私；**日期不进文件名**，只出现在报告页眉 `.meta-header`
-- 保存路径：**默认 `/c/Users/elliot/Desktop/relations/MBTI/`**；用户另行指定时从其指定
+- 单人:`mbti_<用户代号>.html` + `mbti_<用户代号>.json`;双人:`mbti_<代号A>_<代号B>.html` + 两份单人次 JSON;v2 命名 `mbti_<代号>-v2.*`
+- 用代号不用真名;**日期不进文件名**,只出现在 footer `.meta-line`
+- 保存路径:默认 `/c/Users/elliot/Desktop/relations/MBTI/`;用户另行指定时从其指定
 - 得分 JSON 的 schema 与字段规则见 `input-parsing.md` §4
 
 ### 4.2 必须标注的声明
-- 阅读指南（报告开头，照录 writing-style.md §9.2）
-- 报告末尾："本报告基于认知功能测评数据的理论分析，不构成临床诊断。"
-- 依恋/成长环境章末：照录谦卑段落（§9.1）
-- 双人报告开头：照录伦理声明（couple-dynamics.md §6.2）
+- hero lede 固定句(照录 writing-style §9.2)
+- 01 章末「类型只是名字」固定句(照录 §9.4)
+- 07 边界声明(照录 §9.3,4 条)
+- footer `.disc` 收尾句(照录 §9.3 尾句,含「不构成临床诊断」)
+- 双人报告开头:照录伦理声明(couple-dynamics.md §6.2)
 
-### 4.3 交付前验证（强制）
-1. 运行 lint：`python3 scripts/lint_report.py <报告文件>`，全部 PASS
-2. JSON 校验：得分 JSON 可解析、`scores` 8 键齐全且顺序为 `Ne,Ni,Fe,Fi,Te,Ti,Se,Si`、与报告中的分数一致
-3. 浏览器打开检查：功能速览网格/象限图/表格渲染正常、速览卡完整、目录锚点可跳转、打印预览无组件断裂
-4. 数一遍 ✅🔶⚪ 实际数量，与附录 B 统计一致
+### 4.3 交付前验证(强制)
+
+> 环境注记:本机 `python3` 是 Windows Store stub——**命令一律用 `python`**。
+
+1. 运行 lint:`python scripts/lint_report.py <报告文件>`,输出「全部检查通过。」。单人检查项:
+   - hero(kicker + h1 定位句 + lede 固定句 + 雷达 svg);柱状图(rect ≥8);天平图 =4;关键词总表 / 对照总表 / 优势表 / 建议表 / 盲区表三列头;候选类型表;rel 四键;兼容表 ≥4 行;duo-t =4;三句句式;07 边界声明;footer 临床句 + meta 行
+   - 禁词(writing-style §6,含比喻收缩禁用系);卡框与已废弃件回流 = FAIL;`@page A4`、噪点、680px、@media print
+   - 双人报告走双人口径(§4.3 旧制:chapter-head=8、pull=8、fit-fill ≥16、非预测承诺、伦理声明),单人结构件自动跳过
+2. JSON 校验:得分 JSON 可解析、`scores` 8 键齐全且顺序为 `Ne,Ni,Fe,Fi,Te,Ti,Se,Si`、与报告中的分数一致
+3. 浏览器渲染检查:雷达形状与分数相对高低互证、柱状图数值、天平倾角(分高端在下)、caption 分支、表格 hairline、锚点可跳、打印预览(注意浏览器缓存——用带 `?v=时间戳` 的地址强制刷新)无组件断裂、纸纹不打印
+4. 基线样例回归:改过 lint 或 CSS 后先跑样例——`python scripts/lint_report.py examples/mbti_sample.html`(必须 PASS)
 5. 全部通过才允许交付
+
+## 5. 双人报告(2026-09-06 基线,冻结——本轮不迁移)
+
+**双人报告沿用 2026-09-06 视觉改造定稿,本节内容为冻结快照;除 lint 双人口径外,2026-09-07 单人改造不影响双人。** 双人 CSS 底 = 09-06 卡框系(纸感令牌 + chapter-head + pull),完整样式块见 `examples/mbti_sampleA_sampleB.html`;单人新基线(§1–§3)不适用于双人。
+
+### 5.0 结构模板(冻结)
+
+```
+页眉 .meta-header:报告日期 · 双方代号 · 数据来源(两人各自单独作答)
+伦理声明 .guide-box(照录 couple-dynamics.md §6.2「在读这份报告之前」,置于最前)
+阅读指南 .guide-box(「怎么读这份报告」,双人口径:模式作主语、无对错;末尾加粗附一行一句话总评)
+目录 .toc(01–08 章 + 结语 + 附录)
+
+01  你们各自是怎样的人 — 双栏卡 ×2(.person-cards:白卡 + border-top 3px 人物色;
+      每卡三段:①一句话画像(h4 白话定性)②关系里常见的一幕(两三句,含对话片段)
+      ③分数两行——最顺手一行、最费力一行,学术名+分数,八项齐全)
+02  你们在这 8 件事上的合拍程度 — 评分条 ×8 组(.fit-*,外包 .wide,组按分数降序;
+      条长 = 维度分×10%,双方各一条、同长同数,颜色 = 人;每组 .fit-head 右侧附中性
+      分工注 .fit-note——「这格谁在扛」,禁评价词禁红绿)
+      + .chart-note + 读图短评(章首写明双刻度换算:单人百分制 → 关系维度 1–10;
+      短评按「最长 / 最短 / 中间合并带过」组织,不逐维一段)
+03  这段关系自带的天赋 — .advice-card ×3–5(结构来源 / 具体表现 / 使用提示)
+04  总体来看,你们的关系长什么样 — .callout 固定说明(couple-dynamics §0.2)+ 综合段
+      (可含 h3「这段关系的短板长什么样」小节)
+05  这段关系可能会怎样发展 — 开头照录非预测承诺(couple-dynamics §3.4,不得改写);
+      四阶段每阶段 ≥1 个 .scene-box 场景(A: / B: 对话,内心独白斜体);全章 ⚪;
+      阶段三必须含逻辑检验(循环为何稳定 / 双方隐性满足 / 打破需要什么)
+06  你们最容易在哪几件事上卡住 — 冲突卡 ×2–3:标题 + 中性 chip 统计行(频次/破坏性/可解性,
+      §5.2 .chip-row)+ .scene-box 对话 + 分析(模式作主语,禁指责任何一方)
+07  需要留意的几个风险 — .caution-row ×2–4(等级 / 描述 / 会怎么变严重 / 前置信号)
+08  具体可以怎么做 — 章头标 🔶;.advice-card ×3–5,每条含目标 / 怎么做 / 对话示例 / 什么时候失灵
+
+结语(.epilogue:衬线居中、不编号、无锐评、无图表)
+附录 这份报告的局限(.appendix:局限声明双人口径改写 + 结论依据构成统计行)
+```
+
+结构规则(冻结,原文照录):
+
+- **双人报告为两个人读的同一份**:全程双向「你们」、对双方公平——不得出现偏问某一方的叙述框架(禁「作为 A 的你」式行文);理论分析严格以荣格八维理论为中心,机制解释一律落在功能轴、功能互动与内外倾上,伴侣研究/依恋研究等外部概念最多一句带过,不得作为分析框架
+- `.chapter-head` 恰 **8 个**(num 两位数 **01–08**),每章开头 `.chapter-head` + 一句 `.chapter-sub`;**第 1–8 章章末各一条 `.pull` 锐评(共 8 条,≤22 字)**,结语与附录不放
+- 锚点 `id`:c1–c8、epilogue、appb
+- 评分条:每维度一个**共同分**(couple-dynamics §1),每组两条同长、同数——颜色只负责把两个人都放进图里,`.chart-note` 必须写明这层读法;评分过程数字不进正文(writing-style R8)
+- 冲突 / 风险 / 阶段的描述一律"模式"作主语;场景、对话用 A: / B: 格式,内心独白用斜体
+- 证据统计行先数后写:三个 `ev-tag` 计数必须与附录「✅ × N 处 · 🔶 × N 处 · ⚪ × N 处」一致
+- 字数目标 **6000–9000**;文件命名与两份单人次 JSON 见 §4.1
+
+### 5.1 双人 CSS 底(09-06 版,冻结)
+
+双人报告 `<style>` = **09-06 单人基线全量复制** + 双人组件追加。关键类(逐字 CSS 见 `examples/mbti_sampleA_sampleB.html` 或 `examples/backup-2026-09-07/` 内旧样例):
+
+`.chapter-head`(+`.num` 00–08 式两位数,双细线 #B9B29F)、`.chapter-sub`、`.meta-header`、`.guide-box`、`.toc`、`.pull`(≤22 字锐评,大引号)、`.ev-tag` 三色 chip、`.fn-code`、`.callout`、`.rel-label`、`.scene-box`、`.advice-card`(+`.ac-num`)、`.caution-row`、`.appendix`(+`.term-list`/`.appb`/`.ev-stat`)、`.faq-card`、`.wide`(±90px 破格)、半透明卡清单(`rgba(255,255,255,.72)`)、`@media print`(break-inside 清单)。
+
+### 5.2 双人专属组件(冻结)
+
+**颜色铁律:颜色 = 人。** P1 紫 `--p1-color: #8E5EA2` / P2 绿 `--p2-color: #4F9D69`;人物标签、评分条、双栏卡从这两个变量取色;功能色只用于功能名文字标记(`.fn-code` 体系);不引入红绿档位色。
+
+| 类名 | 用途 | CSS 关键属性 |
+|------|------|-------------|
+| `.fit-group`(+`.fit-head`/`.fit-def`/`.fit-row`/`.fit-who`/`.fit-track`/`.fit-fill`/`.fit-num`/`.fit-note`) | 第 2 章评分条 ×8 组 | 每组 = 维度名 + 一句话定义 + 双方各一条横条(条长 = 维度分×10%,数值条末同人物色,track `#EFEDE5` 高 18px 圆角 5);`.fit-note` 组右端中性分工注(muted,「这格谁在扛」,禁评价词);8 组外包 `.wide`,组按分数降序;`.chart-note` 说明「分数属于两个人,两条只是把双方都放进图里,颜色只区分人,不分好坏」 |
+| `.person-cards` + `.person-card`(+`.cp1`/`.cp2`) | 第 1 章双栏卡 ×2 | grid `1fr 1fr` gap 14px(≤640px 单列);卡 = `rgba(255,255,255,.72)` + 1px var(--border) + 圆角 10 + `border-top:3px solid` 人物色;h4 .98em;p .86em/1.75 |
+| `.chip-row` + `.chip` | 第 6 章冲突统计行 | 行 `display:flex;gap:8px;flex-wrap:wrap`;chip `inline-block .74em/700 圆角 20 padding 2px 10px`,中性色 `#F1F1EA/#5F6B76`——高/中/低只靠文字,禁红绿 |
+| `.p1-tag` / `.p2-tag` | 双人人物标签(lint 必查两者并存) | `inline-block .75em padding 1px 9px 圆角 4 #fff/700`;底色 `var(--p1-color)`/`var(--p2-color)` |
+| `.dialogue` | 对话文本 | `padding-left:14px;border-left:2px solid var(--border);margin:8px 0`;说话人 b 用人物色,内心独白 `<em>` 斜体 |
+| `.epilogue` | 结语 | `border-top:2px dashed var(--border);margin-top:52px;padding-top:30px;text-align:center`;h2 衬线 1.3em;p 居中 |
+
+旧件(`.dual-col`/`.meter-bar` 系/`conflict-header` 红黄绿/`highlight-box`/`warn-box`/`stack-box`)勿再生成;`meter-fill` 向后兼容检查保留。
+
+### 5.3 双人口径 lint(冻结)
+
+chapter-head =8(01–08)、pull =8、评分条行 ≥16(.fit-fill)、p1/p2 标签并存、非预测承诺、伦理声明;单人口径计数(速览卡/题记/彩条图/轴对立图/hero/表格件)自动跳过。

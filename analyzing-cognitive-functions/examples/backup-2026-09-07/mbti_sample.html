@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>荣格八维分析报告 · 示例样本 SAMPLE-01</title>
+<style>
+:root {
+  --bg: #F7F5EF; --fg: #262419; --muted: #6E6A60; --border: #DCD6C8; --card: #FFFFFF;
+  --accent: #1F5F66; --accent-text: #1B4A50;
+  /* 八功能色（常量，不变） */
+  --fi: #c0392b; --ni: #8e44ad; --fe: #2980b9; --ti: #16a085;
+  --te: #d35400; --ne: #e67e22; --se: #27ae60; --si: #7f8c8d;
+  --p1-color: #8E5EA2; --p2-color: #4F9D69;
+  --font-heading: "Noto Serif SC","Source Han Serif SC","Songti SC",SimSun,serif;
+  --font-body: "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: var(--font-heading); font-size: 16px; line-height: 2.0;
+  color: var(--fg); background-color: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  max-width:680px; margin: 0 auto; padding: 40px 20px 80px;
+}
+body p { text-align: justify; }
+
+/* 章节头（双细线） */
+.chapter-head { display: flex; align-items: baseline; gap: 16px; margin: 48px 0 6px;
+  border-bottom: 3px double #B9B29F; padding-bottom: 12px; }
+.chapter-head:first-of-type { margin-top: 8px; }
+.chapter-head .num { font-family: var(--font-heading); font-size: 3.4em; font-weight: 700;
+  color: var(--accent); opacity: .3; line-height: 1; letter-spacing: -.02em; }
+.chapter-head h3 { font-family: var(--font-heading); font-size: 1.5em; font-weight: 700; margin: 0; }
+.chapter-sub { font-family: var(--font-heading); font-size: .85em; color: var(--muted); margin: 0 0 18px; }
+
+.meta-header { font-size: .78em; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 24px; }
+.guide-box { background: #FAFAF6; border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: 10px; padding: 16px 20px; margin: 20px 0; font-size: .92em; }
+.toc { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 22px; font-size: .88em; margin: 20px 0; }
+.toc strong { display: block; margin-bottom: 6px; }
+.toc ol { margin: 0; padding-left: 20px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; row-gap: 2px; }
+.toc a { color: var(--accent-text); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+
+/* 速览卡 + 题记 */
+.summary-card { background: var(--card); border: 1.5px solid rgba(31,95,102,.5); border-radius: 12px;
+  padding: 24px 26px 22px; margin: 8px 0 0; }
+.sum-grid { display: grid; grid-template-columns: 1fr; gap: 18px; align-items: start; }
+.epigraph { font-family: var(--font-heading); font-size: 1.3em; font-weight: 700; color: var(--accent-text);
+  line-height: 1.9; text-align: center; margin: 0; }
+.epigraph-src { font-size: .72em; color: var(--muted); text-align: center; margin: 4px 0 0; }
+
+.chart-box { margin: 0 auto; text-align: center; }
+.chart-note { font-size: .8em; color: var(--muted); margin: 10px 0 0; text-align: left; line-height: 1.6; }
+.chart-box svg { max-width: 100%; height: auto; }
+.find-card { background: #FAFAF6; border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 15px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; }
+.find-card:last-child { margin-bottom: 0; }
+.find-ico { flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: .9em; font-weight: 800; margin-top: 2px; }
+.find-card b { font-size: .88em; display: block; margin-bottom: 2px; }
+.find-card p { margin: 0; font-size: .84em; color: var(--muted); line-height: 1.65; }
+
+/* 证据标签（三色语义 chip，写死） */
+.ev-tag { display: inline-block; font-size: .72em; padding: 2px 9px; border-radius: 20px; vertical-align: middle; margin-left: 6px; white-space: nowrap; }
+.ev-research { background: #E0EBDD; color: #3E7257; }
+.ev-theory { background: #F6ECD9; color: #8A5A2B; }
+.ev-hypothesis { background: #EDEEE8; color: #64748B; }
+.fn-code { font-size: .75em; color: var(--muted); font-weight: 400; }
+
+/* 轴对立合并图（3.2）：条 + 条末数值 + 条下白描小字，按四条轴分组 */
+.axis-block { margin: 24px 0 28px; }
+.axis-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 0 0 10px; }
+.axis-head b { font-size: .98em; }
+.axis-verdict { font-size: .78em; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
+.axis-row { display: flex; align-items: center; gap: 10px; margin: 9px 0 0; }
+.axis-fn { width: 6.5em; flex-shrink: 0; font-weight: 700; font-size: .92em; }
+.axis-track { flex: 1; height: 18px; border-radius: 5px; background: #EFEDE5; position: relative; }
+.axis-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; background: var(--accent); }
+.axis-score { position: absolute; top: 50%; transform: translateY(-50%); font-size: .78em; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
+.axis-desc { margin: 4px 0 0; padding-left: calc(6.5em + 10px); font-size: .78em; color: var(--muted); line-height: 1.6; }
+
+/* 第 1 章 八彩条形图：颜色=功能身份，数值在条末，含义在条下 */
+.fnchart { margin: 18px 0; }
+.fn-row { display: flex; align-items: center; gap: 10px; margin: 9px 0 0; }
+.fn-name { width: 6.5em; flex-shrink: 0; font-weight: 700; font-size: .92em; }
+.fn-track { flex: 1; height: 18px; border-radius: 5px; background: #EFEDE5; position: relative; }
+.fn-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; }
+.fn-num { position: absolute; top: 50%; transform: translateY(-50%); font-size: .78em; font-weight: 700; white-space: nowrap; }
+.fn-desc { margin: 4px 0 0; padding-left: calc(6.5em + 10px); font-size: .78em; color: var(--muted); line-height: 1.6; }
+
+/* 破格宽幅件 */
+.wide { margin-left: -90px; margin-right: -90px; }
+@media (max-width: 900px) { .wide { margin-left: 0; margin-right: 0; } }
+
+/* 功能小节标题（按需使用） */
+.dim-block h3 { font-size: 1.12em; margin: 30px 0 8px; }
+.dim-block h3::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--dot); margin-right: 9px; vertical-align: 1px; }
+
+/* 第 2 章候选卡（两列，与正文同宽，不破格） */
+.type-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+@media (max-width: 640px) { .type-cards { grid-template-columns: 1fr; } }
+.type-card { background: rgba(255,255,255,.72); border: 1px solid var(--border); border-top: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; }
+.type-card h4 { margin: 0 0 4px; font-size: .95em; }
+.type-card .lab { display: block; font-weight: 700; color: var(--accent-text); font-size: .8em; margin: 8px 0 2px; }
+.type-card p { margin: 0; font-size: .86em; line-height: 1.7; }
+
+/* 章末锐评 */
+.pull { border-top: 1px solid #B9B29F; border-bottom: 1px solid #B9B29F;
+  padding: 16px 8px 16px 50px; margin: 24px 0; position: relative;
+  font-family: var(--font-heading); font-size: 1.15em; font-weight: 700; color: var(--accent); line-height: 1.8; white-space: nowrap; }
+.pull::before { content: "“"; position: absolute; left: 2px; top: 0; font-size: 2.4em; color: #B9B29F; }
+
+.callout { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent);
+  border-radius: 10px; padding: 14px 18px; margin: 18px 0; }
+
+/* 第 5 章标签式结构 */
+.rel-label { display: inline-block; font-weight: 700; font-size: .82em; color: var(--accent-text);
+  letter-spacing: .08em; margin: 18px 0 2px; }
+.rel-label::before { content: ''; display: inline-block; width: 3px; height: 12px; background: var(--accent);
+  border-radius: 2px; margin-right: 7px; vertical-align: -1px; }
+.scene-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 16px 13px; margin: 10px 0 16px; }
+.scene-box .rel-label { margin: 0 0 4px; }
+.scene-box p { margin: 2px 0 0; font-size: .95em; }
+
+/* 编号条目卡 / 留意条 */
+.advice-card { display: flex; gap: 14px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 13px 16px; margin: 10px 0; }
+.ac-num { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: .88em; font-weight: 800; margin-top: 2px; }
+.advice-card p { margin: 0; font-size: .92em; line-height: 1.7; }
+.caution-row { background: var(--card); border: 1px solid var(--border); border-left: 3px solid #D97706;
+  border-radius: 8px; padding: 12px 16px; margin: 10px 0; font-size: .92em; line-height: 1.7; }
+.caution-row b:first-child { color: #8A5A2B; }
+
+/* 附录 */
+.appendix { border-top: 2px dashed var(--border); margin-top: 52px; padding-top: 26px; }
+.appendix h2 { font-family: var(--font-heading); font-size: 1.3em; margin: 0 0 14px; }
+.term-list li, .appb p { font-size: .95em; }
+.faq-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin: 12px 0; }
+.faq-card b.q { display: block; color: var(--accent-text); margin-bottom: 4px; }
+.faq-card p.a { margin: 0; font-size: .94em; }
+.ev-stat { font-size: .85em; color: var(--muted); }
+
+/* 附录 A 类型栈打分表（两个候选并排） */
+.stack-table { width: 100%; border-collapse: collapse; font-size: .8em; margin: 14px 0; font-family: var(--font-body); }
+.stack-table th, .stack-table td { border: 1px solid var(--border); padding: 5px 8px; text-align: center; }
+.stack-table th { font-family: var(--font-heading); font-weight: 700; background: #FAFAF6; }
+.stack-table .fn-cell { font-weight: 700; color: #fff; min-width: 4.5em; }
+
+/* 半透明卡清单 */
+.summary-card, .find-card, .advice-card, .caution-row, .faq-card, .scene-box {
+  background: rgba(255,255,255,.72); }
+
+@media (max-width: 640px) {
+  .toc ol { grid-template-columns: 1fr; }
+  .pull { white-space: normal; }
+}
+
+@page { size: A4; margin: 16mm 15mm; }
+@media print {
+  body { background: #fff; background-image: none; max-width: none; padding: 0 10mm; }
+  .wide { margin-left: 0; margin-right: 0; }
+  .summary-card, .callout, .guide-box, .chart-box, .axis-block, .fnchart, .type-card, .advice-card,
+  .caution-row, .faq-card, .find-card, .scene-box { break-inside: avoid; }
+  .toc { display: none; }
+  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<div class="meta-header">
+  示例样本 SAMPLE-01（合成数据，非真实来访者）· 报告日期：2026-09-06 · 数据来源：八功能测试（自评，百分制 0–100）
+</div>
+
+<div class="guide-box">
+  <strong>怎么读这份报告</strong><br>
+  这份报告用荣格的一套理论来解读你的测试分数，讲的是你心里几种不同的做事方式。报告里每个重要结论旁边有一个小标记：<span class="ev-tag ev-research">✅</span> 表示有心理学研究支持；<span class="ev-tag ev-theory">🔶</span> 表示来自人格类型理论；<span class="ev-tag ev-hypothesis">⚪</span> 表示只是一种可能的推测。标着"推测"的地方，请只当参考。这份报告不是心理诊断。读的过程中如有疑问，可以在读完之后，把它当作一个了解自己的起点，慢慢想，不着急。
+</div>
+
+<div class="toc">
+  <strong>目录</strong>
+  <ol>
+    <li><a href="#s0">一页速览</a></li>
+    <li><a href="#s1">你的分数长什么样，每种活动是什么</a></li>
+    <li><a href="#s2">你最可能是哪种类型</a></li>
+    <li><a href="#s3">按荣格理论，你的分数在说什么</a></li>
+    <li><a href="#s4">你的性格画像</a></li>
+    <li><a href="#s5">亲密关系模式</a></li>
+    <li><a href="#s6">可能的成长环境</a></li>
+    <li><a href="#s7">具体建议</a></li>
+    <li><a href="#appa">附录A 类型是怎么推出来的</a></li>
+    <li><a href="#appb">附录B 这份报告的局限</a></li>
+    <li><a href="#appc">附录C 你可能想问的</a></li>
+  </ol>
+</div>
+
+<!-- ═══ 第 0 章 速览卡（题记 + 三条结论卡 + 恋爱一句话，无图表） ═══ -->
+<div class="summary-card" id="s0">
+  <div class="chapter-head" style="margin-top:0;">
+    <span class="num">00</span><h3>一页速览</h3>
+  </div>
+  <p class="chapter-sub">先给一句话、三条结论，急用先看这一页。</p>
+  <div class="sum-grid">
+    <div>
+      <p class="epigraph">先在心里看清走向，再回头看房间里每个人的脸色。</p>
+      <p class="epigraph-src">——你的前两位：内倾直觉 · 外倾情感（分数见第 1 章）</p>
+    </div>
+    <div class="find-card">
+      <span class="find-ico" style="background:var(--ni)">1</span>
+      <div><b>最顺手 · 看走向，也接得住人</b>
+      <p>内倾直觉排第一（82.6），外倾情感排第二（74.3）：你先在心里把事情往哪儿走看个大概，再顺手照顾到在场每个人的情绪。</p></div>
+    </div>
+    <div class="find-card">
+      <span class="find-ico" style="background:var(--te)">2</span>
+      <div><b>最费力 · 推进度和抓眼前</b>
+      <p>外倾思考 33.2，八项里排最后；外倾感觉 38.5，倒数第二。把事情推着走完、当场接住眼下的活儿，这两件对你最耗神。</p></div>
+    </div>
+    <div class="find-card">
+      <span class="find-ico" style="background:var(--si)">3</span>
+      <div><b>注意一件事 · 内倾感觉的分数对不上位置</b>
+      <p>内倾感觉 68.9，按分数排全场第三——可按类型的排法，它该是个靠后的位置。分数和理论在你这项上打了个结，第 3 章专门说它。</p></div>
+    </div>
+    <p>恋爱里先记一句：你的在意多半用做的、不用说的，可对方收信号靠听。</p>
+  </div>
+</div>
+
+<!-- ═══ 第 1 章 分数模样 + 白描卡 ═══ -->
+<div class="chapter-head" id="s1"><span class="num">01</span><h3>你的分数长什么样，每种活动是什么 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<p class="chapter-sub">这一章回答：八项分数各是什么模样，每一项平时在干什么。</p>
+
+<p>八个维度各是多少分，从高到低排下来。每个维度一种颜色，后文所有图沿用同一套颜色。</p>
+
+<div class="fnchart">
+  <!-- 八彩条形图：8 行按实测分降序；.fn-fill 底色 = 功能身份色，数值条末同色，白描在条下 -->
+  <div class="fn-row">
+    <span class="fn-name">内倾直觉 <span class="fn-code">Ni</span></span>
+    <span class="fn-track"><span class="fn-fill" style="width:82.6%;background:var(--ni)"></span><span class="fn-num" style="left:calc(82.6% + 8px);color:var(--ni)">82.6</span></span>
+  </div>
+  <p class="fn-desc">把零碎的信息慢慢攒成一个判断，常提前"感觉"到事情会往哪儿走</p>
+  <div class="fn-row">
+    <span class="fn-name">外倾情感 <span class="fn-code">Fe</span></span>
+    <span class="fn-track"><span class="fn-fill" style="width:74.3%;background:var(--fe)"></span><span class="fn-num" style="left:calc(74.3% + 8px);color:var(--fe)">74.3</span></span>
+  </div>
+  <p class="fn-desc">容易察觉到别人的情绪和现场的气氛，自然会去照顾、去协调</p>
+  <div class="fn-row">
+    <span class="fn-name">内倾感觉 <span class="fn-code">Si</span></span>
+    <span class="fn-track"><span class="fn-fill" style="width:68.9%;background:var(--si)"></span><span class="fn-num" style="left:calc(68.9% + 8px);color:var(--si)">68.9</span></span>
+  </div>
+  <p class="fn-desc">把过去的经历存成一套细致的记忆，从中得到熟悉和踏实</p>
+  <div class="fn-row">
+    <span class="fn-name">内倾思考 <span class="fn-code">Ti</span></span>
+    <span class="fn-track"><span class="fn-fill" style="width:61.2%;background:var(--ti)"></span><span class="fn-num" style="left:calc(61.2% + 8px);color:var(--ti)">61.2</span></span>
+  </div>
+  <p class="fn-desc">喜欢把道理追问到底，看它说不说得通，习惯把问题拆到根上</p>
+  <div class="fn-row">
+    <span class="fn-name">外倾直觉 <span class="fn-code">Ne</span></span>
+    <span class="fn-track"><span class="fn-fill" style="width:55.4%;background:var(--ne)"></span><span class="fn-num" style="left:calc(55.4% + 8px);color:var(--ne)">55.4</span></span>
+  </div>
+  <p class="fn-desc">从一个点飞快地联想到一大片新的可能性</p>
+  <div class="fn-row">
+    <span class="fn-name">内倾情感 <span class="fn-code">Fi</span></span>
+    <span class="fn-track"><span class="fn-fill" style="width:41.7%;background:var(--fi)"></span><span class="fn-num" style="left:calc(41.7% + 8px);color:var(--fi)">41.7</span></span>
+  </div>
+  <p class="fn-desc">心里有一把"什么重要、什么对"的尺子，决定多由它来做</p>
+  <div class="fn-row">
+    <span class="fn-name">外倾感觉 <span class="fn-code">Se</span></span>
+    <span class="fn-track"><span class="fn-fill" style="width:38.5%;background:var(--se)"></span><span class="fn-num" style="left:calc(38.5% + 8px);color:var(--se)">38.5</span></span>
+  </div>
+  <p class="fn-desc">把注意力放在眼前正发生、身体正感受到的东西上，反应快</p>
+  <div class="fn-row">
+    <span class="fn-name">外倾思考 <span class="fn-code">Te</span></span>
+    <span class="fn-track"><span class="fn-fill" style="width:33.2%;background:var(--te)"></span><span class="fn-num" style="left:calc(33.2% + 8px);color:var(--te)">33.2</span></span>
+  </div>
+  <p class="fn-desc">盯着目标、效率和步骤，习惯把事情推着往前走到完成</p>
+  <p class="chart-note">条长 = 实测分（0–100），数字在条末；每条下面一行小字是这项在做什么。颜色即身份：一种维度一种颜色，凡用功能色处全书沿用。</p>
+</div>
+
+<div class="pull">你不是没有主见，是主见都先过一遍道理。</div>
+
+<!-- ═══ 第 2 章 类型推断 ═══ -->
+<div class="chapter-head" id="s2"><span class="num">02</span><h3>你最可能是哪种类型 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<p class="chapter-sub">这一章回答：按这套理论，你落在哪个类型上，把握有多大。</p>
+
+<div class="callout">
+  <p style="margin:0"><b>第一候选 INFJ · 主观置信度约 65%　|　第二候选 INTJ · 约 35%</b><br>
+  两个候选共用第一位的内倾直觉（82.6），差别在后面七位的坐法。</p>
+</div>
+
+<p>置信度是分析者把你的分数和不同类型的样子逐条对比后得出的主观估计，不是统计概率。它表示"在现有数据下，这个判断有多大把握"，而不是"你有百分之多少的可能性是这个类型"。</p>
+
+<div class="type-cards">
+  <div class="type-card">
+    <h4>INFJ · 第一候选</h4>
+    <span class="lab">匹配什么</span>
+    <p>你的最高分内倾直觉坐它的第一位，第二高分外倾情感坐第二位，实测倒数第二的外倾感觉也正好落在它最费力的位置——对得这么齐的候选，要补的假设最少。</p>
+    <span class="lab">解释不了什么</span>
+    <p>第八位的内倾感觉按这个类型该待在"压力下的你"的末尾，你的实测却把它用成了全场第三（68.9）——要让 INFJ 完全说通，得多假设一句：这项活动你平时也常拿出来用。</p>
+  </div>
+  <div class="type-card">
+    <h4>INTJ · 第二候选</h4>
+    <span class="lab">匹配什么</span>
+    <p>它和 INFJ 共用第一位的内倾直觉，这是它排第二的原因。</p>
+    <span class="lab">解释不了什么</span>
+    <p>按它的样子，外倾思考该是你的左膀右臂，实测它却是八项里的最后一名；外倾情感也该靠后，实际排了第二——两个关键读数都得假设"测反了"，要补的假设明显更多。</p>
+  </div>
+</div>
+
+<p>类型帮你快速定位，但它不能概括你的全部，也不能预测你的人生——类型学有已知的局限（二分简化、重测波动、学界争议）。下面按荣格理论展开的解读，才是这份报告的重点。</p>
+
+<p>两个候选逐位比对的完整表在附录 A。</p>
+
+<div class="pull">分数站在 INFJ 这边，站得不算勉强。</div>
+
+<!-- ═══ 第 3 章 核心章：轴 + 八位置 ═══ -->
+<div class="chapter-head" id="s3"><span class="num">03</span><h3>按荣格理论，你的分数在说什么 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<p class="chapter-sub">这一章回答：把轴和位置摆开，你的分数在说什么。</p>
+
+<p>先交底：这一章的框架是理论推演，手里没有大规模人群的平均分可以跟你比。它的用处是把你的分数组织成一个能核对的形状，不负责替你下结论。这对方向，荣格叫它们两种"态度"——说的是心理能量朝外还是朝内；放到今天的话说，就是你怎么获得能量。</p>
+
+<h3>3.1 获得能量的方式：朝里，还是朝外</h3>
+<p>把八项按朝内、朝外分成两摞，加起来比大小：你朝内的一摞明显更重。落到日常，你的电量更多来自独处和想事情——人多的场合你应付得来，只是耗电快一些。<span class="ev-tag ev-theory">🔶</span></p>
+<p>一个假设场景帮你对照：忙完漫长的一天，有人得凑个热闹的饭局才能缓过来，有人得自己待上半小时才算回血。你偏后者——电量朝里充，是你的常态。</p>
+
+<h3>3.2 两条轴：你怎么接收信息，怎么拿主意</h3>
+<p>感知这一轴，比的是"跳着看"和"接着看"：直觉抓走向、抓重点、听话外音，实感盯眼前、盯细节、认此刻真实发生的。你的直觉侧更长，实感侧不弱。<span class="ev-tag ev-theory">🔶</span></p>
+<p>判断这一轴，比的是"讲道理"和"看人"：思考算对不对得上，情感掂量什么重要、谁会被落下。你的情感侧更长——拿主意的时候，"人"的分量在你这里排在"理"前面。<span class="ev-tag ev-theory">🔶</span></p>
+
+<div class="wide">
+  <!-- 轴对立合并图 ×4 块：块按强端分数降序，块内强端在上；数值 = 样例基线 82.6 / 38.5 / 74.3 / 61.2 / 68.9 / 55.4 / 41.7 / 33.2 -->
+  <div class="axis-block">
+    <div class="axis-head"><b>感知轴 · 走向 ↔ 眼前</b><span class="axis-verdict">顺手：内倾直觉</span></div>
+    <div class="axis-row">
+      <span class="axis-fn">内倾直觉 <span class="fn-code">Ni</span></span>
+      <span class="axis-track"><span class="axis-fill" style="width:82.6%;background:var(--ni)"></span><span class="axis-score" style="left:calc(82.6% + 8px);color:var(--ni)">82.6</span></span>
+    </div>
+    <p class="axis-desc">把零碎的信息慢慢攒成一个判断，常提前"感觉"到事情会往哪儿走</p>
+    <div class="axis-row">
+      <span class="axis-fn">外倾感觉 <span class="fn-code">Se</span></span>
+      <span class="axis-track"><span class="axis-fill" style="width:38.5%;background:var(--se)"></span><span class="axis-score" style="left:calc(38.5% + 8px);color:var(--se)">38.5</span></span>
+    </div>
+    <p class="axis-desc">把注意力放在眼前正发生、身体正感受到的东西上，反应快</p>
+  </div>
+  <div class="axis-block">
+    <div class="axis-head"><b>判断轴 · 气氛 ↔ 道理</b><span class="axis-verdict">顺手：外倾情感</span></div>
+    <div class="axis-row">
+      <span class="axis-fn">外倾情感 <span class="fn-code">Fe</span></span>
+      <span class="axis-track"><span class="axis-fill" style="width:74.3%;background:var(--fe)"></span><span class="axis-score" style="left:calc(74.3% + 8px);color:var(--fe)">74.3</span></span>
+    </div>
+    <p class="axis-desc">容易察觉到别人的情绪和现场的气氛，自然会去照顾、去协调</p>
+    <div class="axis-row">
+      <span class="axis-fn">内倾思考 <span class="fn-code">Ti</span></span>
+      <span class="axis-track"><span class="axis-fill" style="width:61.2%;background:var(--ti)"></span><span class="axis-score" style="left:calc(61.2% + 8px);color:var(--ti)">61.2</span></span>
+    </div>
+    <p class="axis-desc">喜欢把道理追问到底，看它说不说得通，习惯把问题拆到根上</p>
+  </div>
+  <div class="axis-block">
+    <div class="axis-head"><b>感知轴 · 可能性 ↔ 熟路</b><span class="axis-verdict">顺手：内倾感觉</span></div>
+    <div class="axis-row">
+      <span class="axis-fn">内倾感觉 <span class="fn-code">Si</span></span>
+      <span class="axis-track"><span class="axis-fill" style="width:68.9%;background:var(--si)"></span><span class="axis-score" style="left:calc(68.9% + 8px);color:var(--si)">68.9</span></span>
+    </div>
+    <p class="axis-desc">把过去的经历存成一套细致的记忆，从中得到熟悉和踏实</p>
+    <div class="axis-row">
+      <span class="axis-fn">外倾直觉 <span class="fn-code">Ne</span></span>
+      <span class="axis-track"><span class="axis-fill" style="width:55.4%;background:var(--ne)"></span><span class="axis-score" style="left:calc(55.4% + 8px);color:var(--ne)">55.4</span></span>
+    </div>
+    <p class="axis-desc">从一个点飞快地联想到一大片新的可能性</p>
+  </div>
+  <div class="axis-block">
+    <div class="axis-head"><b>判断轴 · 价值尺 ↔ 推进</b><span class="axis-verdict">顺手：内倾情感</span></div>
+    <div class="axis-row">
+      <span class="axis-fn">内倾情感 <span class="fn-code">Fi</span></span>
+      <span class="axis-track"><span class="axis-fill" style="width:41.7%;background:var(--fi)"></span><span class="axis-score" style="left:calc(41.7% + 8px);color:var(--fi)">41.7</span></span>
+    </div>
+    <p class="axis-desc">心里有一把"什么重要、什么对"的尺子，决定多由它来做</p>
+    <div class="axis-row">
+      <span class="axis-fn">外倾思考 <span class="fn-code">Te</span></span>
+      <span class="axis-track"><span class="axis-fill" style="width:33.2%;background:var(--te)"></span><span class="axis-score" style="left:calc(33.2% + 8px);color:var(--te)">33.2</span></span>
+    </div>
+    <p class="axis-desc">盯着目标、效率和步骤，习惯把事情推着往前走到完成</p>
+  </div>
+  <p class="chart-note">条长 = 实测分（0–100）；数字在条末；小字是这项在做什么。要看的关系只有一条：同一条轴上，哪头顺手、哪头费力。内倾感觉那头明显偏长、按类型却该靠后——3.3 专门说它。</p>
+</div>
+
+<p>一个假设场景，两条轴一起感受。同一个会上，同事提了个新方案：实感那头的人先问"数据哪来的、上次踩的坑填了没"，直觉这头的人先想"这方案放到两年后会长成什么样"。</p>
+<p>轮到拿主意：思考那头先列利弊、算对错，情感这头先看"这么定，谁会难受、谁会被落下"。你在两条轴上都偏后面那一头——看走向，也看人。</p>
+
+<h3>3.3 平时的你和压力下的你：八个位置</h3>
+<p>在这套理论里，一个类型展开来看是八个位置排成一列。前四位是平时的你：排第一的最自然、最认同；排第二的专门用来照顾别人、帮别人做事；排第三的放松时才玩得起来；排第四的最费力、最想回避。后四位是压力下的你：平时不常露面，压力一大才冒头。<span class="ev-tag ev-theory">🔶</span></p>
+<p>位置的背后有一条老原则：一条轴上，顺手的那头替你出面，费力的那头退到后面；压力一大，退到后面的那些反而先冒头。所以读这张剖面图要看两层——平时哪几项撑着你，压力下哪几项会冒出来。</p>
+
+<div class="wide">
+<div class="chart-box">
+  <!-- 排位剖面图：8 行按位置序（第一→第八），条长 = 实测分%（0–100 绝对标尺，与轴对立图同尺）；
+       深色 var(--accent) = 1–4 位，浅色 #8FA9AD = 5–8 位 -->
+  <!-- 第一位 内倾直觉：条宽 82.6%（深色） -->
+  <div style="display:flex;align-items:center;gap:8px;font-size:.88em;margin:5px 0">
+    <span style="width:9.5em;font-weight:700;flex-shrink:0">第一位 · 内倾直觉</span>
+    <span style="flex:1;position:relative;height:18px;background:#E9E9E2;border-radius:4px">
+      <span style="position:absolute;top:0;bottom:0;left:0;width:82.6%;background:var(--ni);border-radius:4px"></span>
+      
+    </span>
+    <span style="width:3.5em;text-align:right;font-weight:700;flex-shrink:0">82.6</span>
+    <span style="width:10.5em;font-size:.75em;color:#8A5A2B;flex-shrink:0"></span>
+  </div>
+  <!-- 第二位 外倾情感：条宽 74.3%（深色） -->
+  <div style="display:flex;align-items:center;gap:8px;font-size:.88em;margin:5px 0">
+    <span style="width:9.5em;font-weight:700;flex-shrink:0">第二位 · 外倾情感</span>
+    <span style="flex:1;position:relative;height:18px;background:#E9E9E2;border-radius:4px">
+      <span style="position:absolute;top:0;bottom:0;left:0;width:74.3%;background:var(--fe);border-radius:4px"></span>
+      
+    </span>
+    <span style="width:3.5em;text-align:right;font-weight:700;flex-shrink:0">74.3</span>
+    <span style="width:10.5em;font-size:.75em;color:#8A5A2B;flex-shrink:0"></span>
+  </div>
+  <!-- 第三位 内倾思考：条宽 61.2%（深色） -->
+  <div style="display:flex;align-items:center;gap:8px;font-size:.88em;margin:5px 0">
+    <span style="width:9.5em;font-weight:700;flex-shrink:0">第三位 · 内倾思考</span>
+    <span style="flex:1;position:relative;height:18px;background:#E9E9E2;border-radius:4px">
+      <span style="position:absolute;top:0;bottom:0;left:0;width:61.2%;background:var(--ti);border-radius:4px"></span>
+      
+    </span>
+    <span style="width:3.5em;text-align:right;font-weight:700;flex-shrink:0">61.2</span>
+    <span style="width:10.5em;font-size:.75em;color:#8A5A2B;flex-shrink:0"></span>
+  </div>
+  <!-- 第四位 外倾感觉：条宽 38.5%（深色，未，如实呈现） -->
+  <div style="display:flex;align-items:center;gap:8px;font-size:.88em;margin:5px 0">
+    <span style="width:9.5em;font-weight:700;flex-shrink:0">第四位 · 外倾感觉</span>
+    <span style="flex:1;position:relative;height:18px;background:#E9E9E2;border-radius:4px">
+      <span style="position:absolute;top:0;bottom:0;left:0;width:38.5%;background:var(--se);border-radius:4px"></span>
+      
+    </span>
+    <span style="width:3.5em;text-align:right;font-weight:700;flex-shrink:0">38.5</span>
+    <span style="width:10.5em;font-size:.75em;color:#8A5A2B;flex-shrink:0"></span>
+  </div>
+  <!-- 第五位 外倾直觉：条宽 55.4%（浅色） -->
+  <div style="display:flex;align-items:center;gap:8px;font-size:.88em;margin:5px 0">
+    <span style="width:9.5em;font-weight:700;flex-shrink:0">第五位 · 外倾直觉</span>
+    <span style="flex:1;position:relative;height:18px;background:#E9E9E2;border-radius:4px">
+      <span style="position:absolute;top:0;bottom:0;left:0;width:55.4%;background:var(--ne);opacity:.55;border-radius:4px"></span>
+      
+    </span>
+    <span style="width:3.5em;text-align:right;font-weight:700;flex-shrink:0">55.4</span>
+    <span style="width:10.5em;font-size:.75em;color:#8A5A2B;flex-shrink:0"></span>
+  </div>
+  <!-- 第六位 内倾情感：条宽 41.7%（浅色，未） -->
+  <div style="display:flex;align-items:center;gap:8px;font-size:.88em;margin:5px 0">
+    <span style="width:9.5em;font-weight:700;flex-shrink:0">第六位 · 内倾情感</span>
+    <span style="flex:1;position:relative;height:18px;background:#E9E9E2;border-radius:4px">
+      <span style="position:absolute;top:0;bottom:0;left:0;width:41.7%;background:var(--fi);opacity:.55;border-radius:4px"></span>
+      
+    </span>
+    <span style="width:3.5em;text-align:right;font-weight:700;flex-shrink:0">41.7</span>
+    <span style="width:10.5em;font-size:.75em;color:#8A5A2B;flex-shrink:0"></span>
+  </div>
+  <!-- 第七位 外倾思考：条宽 33.2%（浅色，八项实测最低） -->
+  <div style="display:flex;align-items:center;gap:8px;font-size:.88em;margin:5px 0">
+    <span style="width:9.5em;font-weight:700;flex-shrink:0">第七位 · 外倾思考</span>
+    <span style="flex:1;position:relative;height:18px;background:#E9E9E2;border-radius:4px">
+      <span style="position:absolute;top:0;bottom:0;left:0;width:33.2%;background:var(--te);opacity:.55;border-radius:4px"></span>
+      
+    </span>
+    <span style="width:3.5em;text-align:right;font-weight:700;flex-shrink:0">33.2</span>
+    <span style="width:10.5em;font-size:.75em;color:#8A5A2B;flex-shrink:0"></span>
+  </div>
+  <!-- 第八位 内倾感觉：条宽 68.9%（浅色）——异常位：理论预期极低，实测全场第三，行末如实标注 -->
+  <div style="display:flex;align-items:center;gap:8px;font-size:.88em;margin:5px 0">
+    <span style="width:9.5em;font-weight:700;flex-shrink:0">第八位 · 内倾感觉</span>
+    <span style="flex:1;position:relative;height:18px;background:#E9E9E2;border-radius:4px">
+      <span style="position:absolute;top:0;bottom:0;left:0;width:68.9%;background:var(--si);opacity:.55;border-radius:4px"></span>
+      
+    </span>
+    <span style="width:3.5em;text-align:right;font-weight:700;flex-shrink:0">68.9</span>
+    <span style="width:10.5em;font-size:.75em;color:#8A5A2B;flex-shrink:0">异常：第 8 位实测全场第三</span>
+  </div>
+</div>
+<p class="chart-note">条的颜色 = 所属功能（第 1 章那套颜色），淡化的是阴影里的你（5–8）；位置来自第 2 章的类型推断。</p>
+</div>
+
+<table class="stack-table">
+  <thead>
+    <tr><th style="width:5.5em">位置</th><th>管什么</th><th style="width:8em">落在你身上</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>第一位</td><td>最自然、最拿手、最认同自己的部分</td><td>内倾直觉</td></tr>
+    <tr><td>第二位</td><td>你用来照顾别人、帮别人做事的工具</td><td>外倾情感</td></tr>
+    <tr><td>第三位</td><td>放松时才玩得起来、有点孩子气，也容易在这里受伤</td><td>内倾思考</td></tr>
+    <tr><td>第四位</td><td>最费力、最想回避，压力或亲密关系里会冒出来</td><td>外倾感觉</td></tr>
+    <tr><td>第五位</td><td>压力下冒出来跟你唱反调</td><td>外倾直觉</td></tr>
+    <tr><td>第六位</td><td>内心的挑剔声</td><td>内倾情感</td></tr>
+    <tr><td>第七位</td><td>最不听使唤、关键时刻最容易搞砸</td><td>外倾思考</td></tr>
+    <tr><td>第八位</td><td>压力最大时才出现</td><td>内倾感觉（异常：实测全场第三）</td></tr>
+  </tbody>
+</table>
+
+<p>第八位那里，图和表都对不上理论预期：按这套排法，第八位该是全场最费力的位置，你的内倾感觉却是全场第三高的读数。一种可能的读法是：内倾感觉给你的那份踏实（熟路、旧经验、老规矩）在你身上是平时就在用的班底，不只压力下才冒头（仅为推测）。至于为什么对不上，分数本身说不了，这份报告不替它编原因。<span class="ev-tag ev-hypothesis">⚪</span></p>
+
+<div class="pull">你的眼睛长在走向上，不长在眼前。</div>
+
+<!-- ═══ 第 4 章 性格画像 ═══ -->
+<div class="chapter-head" id="s4"><span class="num">04</span><h3>你的性格画像 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<p class="chapter-sub">这一章回答：把几章拼起来，你平时的完整样子。</p>
+
+<p>把前面几章拼起来，你大概是这样一个人：安静但一直在场，话不多但每句在点上；先在心里把事看明白，再开口把人理顺。屋里的气氛不对，你多半第一个察觉；事情会往哪儿走，你比周围人早一步有数。只是自己的那点疲惫，你习惯压到最后再说。</p>
+
+<p>已经拥有的优势，值得点名：</p>
+
+<div class="advice-card">
+  <span class="ac-num">1</span>
+  <p><strong>提前半步的判断</strong>：事情还没成型，你已经能感觉到它会往哪儿走。这种"早半步"让你在计划、预判、避坑这类事上省力。</p>
+</div>
+<div class="advice-card">
+  <span class="ac-num">2</span>
+  <p><strong>把人理顺的手感</strong>：你自然地照顾气氛、给人台阶。团队里那点看不见的黏合剂，多半是你出的。</p>
+</div>
+<div class="advice-card">
+  <span class="ac-num">3</span>
+  <p><strong>熟路带来的稳</strong>：熟悉的路数、老规矩、老地方，给你的踏实是实打实的。这份稳，身边人其实靠得住。</p>
+</div>
+
+<p>需要留意的，也照直说：</p>
+
+<div class="caution-row"><b>压力下的收尾风险</b>：按排位，关键时刻最容易掉链子的位置上，坐的正是"推进和安排"，而这恰好也是你实测最低的一项。压力大的时候，方向你看得更准，事情反而更容易堆在最后一公里。<span class="ev-tag ev-theory">🔶</span></div>
+<div class="caution-row"><b>往回缩的旧经验</b>：内倾感觉读数偏高这件事，在压力下的一种可能表现，是反过来抱着"以前都这么办"不放。留意那种特别想找旧例的冲动——它常常在提示你该休息了，也常常意味着旧办法真的不够用了。<span class="ev-tag ev-hypothesis">⚪</span></div>
+
+<div class="pull">房间里谁不舒服你都看得见，自己不舒服就藏着。</div>
+
+<!-- ═══ 第 5 章 亲密关系（含依恋象限图 ×2，章末不放谦卑段落） ═══ -->
+<div class="chapter-head" id="s5"><span class="num">05</span><h3>亲密关系模式 <span class="ev-tag ev-hypothesis">⚪</span></h3></div>
+<p class="chapter-sub">这一章回答：靠人近一点的时候，你会怎么相处。</p>
+
+<p>先说这一章的证据地位：从分数猜依恋，是这套理论里最"软"的一段——下面的判断只是方向性推测，别当评估结论用。<span class="ev-tag ev-hypothesis">⚪</span></p>
+
+<p>有一条是有研究打底的：一个人在不同关系里的样子可以不一样——恋爱里一个样，家人里另一个样，这在心理学研究里站得住。<span class="ev-tag ev-research">✅</span></p>
+
+<span class="rel-label">亲密关系</span>
+<p>你的在意，动作比话多。对方的情绪你读得快，习惯用做事回应：做好吃的、把行程安排好、记住对方随口提过的东西。你对自己的需要说得少，对方可能觉得你"什么都不缺"——其实你只是先照顾了别人。</p>
+
+<div class="scene-box">
+  <span class="rel-label">一个误解的全过程</span>
+  <p>触发：对方回消息慢了两个小时。你的内部解读：心里先"咯噔"一下——你对关系的走向敏感，会先感觉到"不对"。情绪：发沉，但不说。行为：你转去找话，把气氛焐热，甚至比平时更体贴。对方可能的反应：根本没注意两小时这回事，只觉得你今天格外热情。你的再解读：把这份没察觉读成"果然不想跟我说"，于是更确信有事。循环就此转起来：你问得越绕，他答得越随意，你越确信。破这个局只需要一句话："你两小时没回，我有点在意。"可这句话排在你的顺手名单末尾。<span class="ev-tag ev-hypothesis">⚪</span></p>
+</div>
+
+<p>往安全型那头偏的理由有两块：内倾感觉读数不低，熟悉的相处节奏给你一份"踏实"打底；外倾情感读数高，对方情绪你读得准。两块叠起来，你在亲密关系里更可能接近安全型那一角：敢靠人，也靠得住。</p>
+
+<div class="wide">
+<div class="chart-box">
+  <!-- 恋爱关系象限图：viewBox 300×260，中线 x=150 / y=130；右=对他人的看法积极，下=对自己的看法积极 -->
+  <!-- 落点推定（定性，无精确换算）：外倾情感 74.3 → 对他人看法偏积极 → x=205（中线右侧 55）；
+       内倾感觉 68.9 → 对自己看法偏积极 → y=175（中线下方 45）；落点在安全型格（右下），虚线圆 = 推测 -->
+  <svg viewBox="0 0 300 260" width="320" role="img" aria-label="恋爱关系依恋象限图">
+    <line x1="150" y1="12" x2="150" y2="244" stroke="var(--border)" stroke-width="1.2"/>
+    <line x1="18" y1="130" x2="282" y2="130" stroke="var(--border)" stroke-width="1.2"/>
+    <text x="28" y="30" font-size="11" fill="#6E6A60">恐惧型</text>
+    <text x="272" y="30" font-size="11" fill="#6E6A60" text-anchor="end">痴迷型</text>
+    <text x="28" y="240" font-size="11" fill="#6E6A60">疏离型</text>
+    <text x="272" y="240" font-size="11" fill="#6E6A60" text-anchor="end">安全型</text>
+    <text x="150" y="257" text-anchor="middle" font-size="9" fill="#6E6A60">对他人的看法：消极 ←→ 积极</text>
+    <text x="12" y="130" text-anchor="middle" font-size="9" fill="#6E6A60" transform="rotate(-90 12 130)">对自己的看法：消极（上）↔ 积极（下）</text>
+    <circle cx="205" cy="175" r="13" fill="rgba(31,95,102,.08)" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4,3"/>
+    <text x="205" y="201" text-anchor="middle" font-size="9" fill="#1B4A50">你（推测）</text>
+  </svg>
+  <p class="chart-note">虚线圆 = 从分数推测的落点（仅为推测）；本图整体偏安全型那一角。落点对分数波动敏感——重测时某项差上几分就可能挪位，越靠近中线读法越容易变，当方向看就好。<span class="ev-tag ev-hypothesis">⚪</span></p>
+</div>
+</div>
+
+<span class="rel-label">家人关系</span>
+<p>家里那头，你的"踏实补给"开得更大：老规矩、老房间、每年重复的那几件事，都在给内倾感觉充电。外倾情感让你自然接住家里人的情绪——谁身体不舒服、谁心里有事，你常常是先知道的那个。</p>
+
+<div class="scene-box">
+  <span class="rel-label">场景</span>
+  <p>一个可能的画面：过年回家，你嘴上嫌那套讲究繁琐，手已经把老三样备齐了。家里人聊天你在灶台边听着，谁话少了你先留意。对你来说，"一切照旧"本身就在回血。<span class="ev-tag ev-hypothesis">⚪</span></p>
+</div>
+
+<div class="wide">
+<div class="chart-box">
+  <!-- 家人关系象限图：同一坐标框；落点比恋爱图更深入安全型格 -->
+  <!-- 落点推定（定性）：外倾情感 74.3 + 内倾感觉 68.9 在熟悉场更省力 → x=218（中线右侧 68），y=190（中线下方 60） -->
+  <svg viewBox="0 0 300 260" width="320" role="img" aria-label="家人关系依恋象限图">
+    <line x1="150" y1="12" x2="150" y2="244" stroke="var(--border)" stroke-width="1.2"/>
+    <line x1="18" y1="130" x2="282" y2="130" stroke="var(--border)" stroke-width="1.2"/>
+    <text x="28" y="30" font-size="11" fill="#6E6A60">恐惧型</text>
+    <text x="272" y="30" font-size="11" fill="#6E6A60" text-anchor="end">痴迷型</text>
+    <text x="28" y="240" font-size="11" fill="#6E6A60">疏离型</text>
+    <text x="272" y="240" font-size="11" fill="#6E6A60" text-anchor="end">安全型</text>
+    <text x="150" y="257" text-anchor="middle" font-size="9" fill="#6E6A60">对他人的看法：消极 ←→ 积极</text>
+    <text x="12" y="130" text-anchor="middle" font-size="9" fill="#6E6A60" transform="rotate(-90 12 130)">对自己的看法：消极（上）↔ 积极（下）</text>
+    <circle cx="218" cy="190" r="13" fill="rgba(31,95,102,.08)" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4,3"/>
+    <text x="218" y="216" text-anchor="middle" font-size="9" fill="#1B4A50">你（推测）</text>
+  </svg>
+  <p class="chart-note">虚线圆 = 从分数推测的落点（仅为推测）；比恋爱图更靠安全型那一角，依据是熟悉与老规矩对你格外管用。同样对分数波动敏感，当方向看。<span class="ev-tag ev-hypothesis">⚪</span></p>
+</div>
+</div>
+
+<div class="pull">对方要的是一句话，你给的是一整套安排。</div>
+
+<!-- ═══ 第 6 章 成长环境（整章 ⚪） ═══ -->
+<div class="chapter-head" id="s6"><span class="num">06</span><h3>可能的成长环境 <span class="ev-tag ev-hypothesis">⚪</span></h3></div>
+<p class="chapter-sub">这一章回答：什么样的环境可能养出这样的分数——整章都是推测。</p>
+
+<p>先立规矩：环境没法从分数里直接读出来，下面是"什么样的环境容易让这几项用得多"的反推。每一条都可能错，也可能全错。<span class="ev-tag ev-hypothesis">⚪</span></p>
+
+<p><strong>需要看脸色的场合</strong>：外倾情感用得这么顺，一种可能的解释是，你从小就在需要"读空气"的环境里长大——家里气氛随某个人阴晴，你学会了先看再动。<span class="ev-tag ev-hypothesis">⚪</span></p>
+
+<p><strong>有老规矩可依靠</strong>：内倾感觉读数不低，可能说明你的成长里有稳定的部分——固定的作息、熟悉的地方、说一遍就记很久的家事。熟悉对你一直是资源。<span class="ev-tag ev-hypothesis">⚪</span></p>
+
+<p><strong>少有人催你收尾</strong>：外倾思考排最后，一种可能是成长里少有"你来带队伍、你来盯进度"的要求。这块没怎么练，不等于练不出来。<span class="ev-tag ev-hypothesis">⚪</span></p>
+
+<p><strong>奖励"想得对"多过"想得怪"</strong>：外倾直觉居中，一种可能是环境鼓励把想法想稳再讲，你练出了分寸，也收住了一部分天马行空。<span class="ev-tag ev-hypothesis">⚪</span></p>
+
+<p>这四条全是反推——对得上的留下，对不上的划掉就行。</p>
+
+<div class="pull">从小到大，你可能一直当那个"先看场面"的人。</div>
+
+<!-- ═══ 第 7 章 具体建议 ═══ -->
+<div class="chapter-head" id="s7"><span class="num">07</span><h3>具体建议</h3></div>
+<p class="chapter-sub">这一章回答：具体到这一周，能做点什么。</p>
+
+<div class="advice-card">
+  <span class="ac-num">1</span>
+  <p><strong>结论先说</strong>：现状：你常是心里已经定了、嘴上还没说，等别人猜。理解：判断要在你心里攒到"说得通"才肯出门，这是内倾直觉和内倾思考的脾气。试着做：每周挑两次，开会或饭桌上第一个把结论说出来，再补理由，顺序反过来试一周。</p>
+</div>
+<div class="advice-card">
+  <span class="ac-num">2</span>
+  <p><strong>三行清单收尾</strong>：现状：开头雄心万丈，最后一公里拖沓。理解：推进、催办、盯细节都在你顺手名单末尾，靠意志硬撑最亏。试着做：每件大事配一张三行清单，写明做什么、找谁、哪天完，贴在每天都看得见的地方。</p>
+</div>
+<div class="advice-card">
+  <span class="ac-num">3</span>
+  <p><strong>在意就说出口</strong>：现状：你的照顾靠做事，对方未必每次都收到。理解：你默认"做好了对方自然会懂"，可收信号这件事，多数人靠听。试着做：每天挑一件，用一句话把在意说出来——"今天你那句提醒，挺管用的。"</p>
+</div>
+<div class="advice-card">
+  <span class="ac-num">4</span>
+  <p><strong>十分钟回到眼前</strong>：现状：一忙起来，你活在计划里，不在身体里。理解："此刻正在发生的事"是你省着用的那一格，越不用越生。试着做：每天十分钟，做一件纯身体的事，并且不带目的——散步不带手机，做饭只闻味道，拉伸只感觉哪块肌肉紧。</p>
+</div>
+
+<div class="pull">心里定了就说，别等别人猜。</div>
+
+<!-- ═══ 附录A 可选阅读（lint 豁免区：Beebe 术语与打分机制只出现在这里） ═══ -->
+<section class="appendix appendix-tech" id="appa">
+<h2>附录A 可选阅读：类型是怎么推出来的</h2>
+<p class="appb">先把打分办法交代清楚：把你的 8 项实测分，与候选类型"标准样子"的 8 个位置逐一对比——读数落在该位置的预期里记 ✓，轻度偏离记 ≈，明显偏离记 ✗；此外，第 5–8 位里每出现一个实测明显偏高的位置，额外加 2 分解释成本。全部加总越小，需要补的假设越少，排得越前。</p>
+<p class="appb">两个前提也交代清楚：十六型的"标准样子"与八个位置的名称，都是类型学圈内的通行约定（Grant/Brownsword 式排序、毕比的原型模型），没有实证研究为位置分配提供数据——它们的作用是让推断可复现，而不是让结论更真。</p>
+
+<table class="stack-table">
+  <thead>
+    <tr><th rowspan="2" style="width:5.5em">位置</th><th colspan="3">第一候选 · INFJ</th><th colspan="3">第二候选 · INTJ</th></tr>
+    <tr><th>功能</th><th>实测分</th><th>判定</th><th>功能</th><th>实测分</th><th>判定</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>第一位</td><td class="fn-cell" style="background:var(--ni)">Ni</td><td>82.6</td><td>✓</td><td class="fn-cell" style="background:var(--ni)">Ni</td><td>82.6</td><td>✓</td></tr>
+    <tr><td>第二位</td><td class="fn-cell" style="background:var(--fe)">Fe</td><td>74.3</td><td>✓</td><td class="fn-cell" style="background:var(--te)">Te</td><td>33.2</td><td>✗</td></tr>
+    <tr><td>第三位</td><td class="fn-cell" style="background:var(--ti)">Ti</td><td>61.2</td><td>✓</td><td class="fn-cell" style="background:var(--fi)">Fi</td><td>41.7</td><td>≈</td></tr>
+    <tr><td>第四位</td><td class="fn-cell" style="background:var(--se)">Se</td><td>38.5</td><td>✓</td><td class="fn-cell" style="background:var(--se)">Se</td><td>38.5</td><td>✓</td></tr>
+    <tr><td>第五位</td><td class="fn-cell" style="background:var(--ne);opacity:.55">Ne</td><td>55.4</td><td>✓</td><td class="fn-cell" style="background:var(--ne);opacity:.55">Ne</td><td>55.4</td><td>✓</td></tr>
+    <tr><td>第六位</td><td class="fn-cell" style="background:var(--fi);opacity:.55">Fi</td><td>41.7</td><td>✓</td><td class="fn-cell" style="background:var(--ti);opacity:.55">Ti</td><td>61.2</td><td>≈</td></tr>
+    <tr><td>第七位</td><td class="fn-cell" style="background:var(--te);opacity:.55">Te</td><td>33.2</td><td>✓</td><td class="fn-cell" style="background:var(--fe);opacity:.55">Fe</td><td>74.3</td><td>✗</td></tr>
+    <tr><td>第八位</td><td class="fn-cell" style="background:var(--si);opacity:.55">Si</td><td>68.9</td><td>✗</td><td class="fn-cell" style="background:var(--si);opacity:.55">Si</td><td>68.9</td><td>✗</td></tr>
+    <tr><td>异常偏高加项</td><td colspan="3">第八位实测全场第三，+2</td><td colspan="3">第七位实测全场第二，+2；第八位，+2</td></tr>
+    <tr><td>解释成本合计</td><td colspan="3"><strong>4</strong></td><td colspan="3"><strong>12</strong></td></tr>
+  </tbody>
+</table>
+
+<p class="appb">两个候选都解释不了第八位（内倾感觉 68.9，实测全场第三），这是这份报告里最大的一处"对不上"。INFJ 要补的假设更少，所以排第一——这符合"哪个解释更省"的取舍原则。阴影位的映射规则：第五到八位 = 前四位各自换一个态度（第一位换外倾、第二位换内倾，依此类推），所以两个候选的后四位都是外倾直觉、（第二位置的对家）、（第三位置的对家）、内倾感觉，只是中间两项随第二、三位不同而不同。</p>
+
+<h3>八个位置都是什么</h3>
+<p class="appb">位置名称沿用毕比（Beebe）的原型理论——是理论建构、没有实证数据支持；原型名只是记号，不带褒贬。正文里这些位置一律用白话称呼。</p>
+<ul class="term-list">
+  <li><strong>第 1 位（"英雄"）</strong>：你最自然、最拿手、最认同自己的部分。</li>
+  <li><strong>第 2 位（"父母"）</strong>：你用来照顾别人、帮别人做事的工具。</li>
+  <li><strong>第 3 位（"孩子"）</strong>：放松时才玩得起来、有点孩子气、也容易在这里受伤的部分。</li>
+  <li><strong>第 4 位（"灵魂"）</strong>：最费力、最想回避，但压力或亲密关系里会冒出来。</li>
+  <li><strong>第 5 位（"对手"）</strong>：压力下冒出来跟你唱反调（与第一位同一活动、态度相反）。</li>
+  <li><strong>第 6 位（"批评者"）</strong>：内心的挑剔声（与第二位同一活动、态度相反）。</li>
+  <li><strong>第 7 位（"恶作剧者"）</strong>：最不听使唤、关键时刻最容易搞砸（与第三位同一活动、态度相反）。</li>
+  <li><strong>第 8 位（"恶魔"）</strong>：压力最大时才出现、破坏性最强（与第四位同一活动、态度相反）。</li>
+</ul>
+</section>
+
+<!-- ═══ 附录B 局限声明（固定块照录）+ 证据统计 ═══ -->
+<div class="appendix" id="appb">
+<h2>附录B 这份报告的局限</h2>
+<p class="appb">本报告基于这份测试分数的理论分析，不构成临床诊断，不作为任何重大决定的依据。报告使用的"八维"框架是荣格理论在后世的发展——荣格本人只提出了四种功能与内/外倾两种态度，八功能模型来自迈尔斯等人的类型学实践与毕比的原型理论，并非荣格本人的原始表述。测试分数反映的是你作答时的自我认知，可能受当时状态影响。如需正式评估，请寻求专业的心理评估服务。</p>
+<p class="appb">另外三条局限，照实列在下面。其一，八项分数的排序只是按读数排队，两项之间差几分不构成理论上的远近，别把它读成有意义的分层。其二，第 5 章的依恋推断未经任何实测验证，只是方向性推测；想认真确认，可以做一份正式的依恋问卷，再和这份报告对照着读。其三，类型推断依赖"标准样子"的约定，约定本身没有实证数据，依据与打分过程都写在附录 A。</p>
+<p class="ev-stat"><strong>结论依据构成：</strong> ✅ 研究支持 × 2 处 · 🔶 理论推断 × 10 处 · ⚪ 探索性假设 × 16 处</p>
+</div>
+
+<!-- ═══ 附录C 常见问题 ═══ -->
+<div class="appendix" id="appc">
+<h2>附录C 你可能想问的</h2>
+<div class="faq-card">
+  <b class="q">Q：重测的话，分数会变吗？</b>
+  <p class="a">A：会有些波动——自我认知本来就随状态和经历浮动，类型学自己也承认重测波动这个局限。分数变了别慌：把两次放在一起看哪些稳、哪些晃，比只看一次有用。<span class="ev-tag ev-hypothesis">⚪</span></p>
+</div>
+<div class="faq-card">
+  <b class="q">Q：第 3 章那个"第八位对不上"，是好事还是坏事？</b>
+  <p class="a">A：都不是。它只是说：你的内倾感觉读数和理论的预期位置对不上，理论需要多补一个假设才能解释你。读数没有好坏——分高不表示超额，排后也不表示能力差，只表示平时用得多或用得少。另外多说一层：十六型每个位置坐哪个功能，是类型学圈内的通行约定（Grant/Brownsword 式排序），八个位置的名称来自毕比的原型理论——位置怎么分，没有任何实证数据支持，是理论里约定出来的排法。类型学还有已知的局限（二分简化、重测波动、学界争议）。所以"对不上"这件事，先说明这套排法本身是约定、不是测量，其次才是你的剖面特点。</p>
+</div>
+<div class="faq-card">
+  <b class="q">Q：我觉得有一处说得不对，怎么办？</b>
+  <p class="a">A：先找具体细节——是哪个场景、哪句话对不上。找到了就把它当线索：要么报告的推测偏了，要么你身上有个还没被讲到的部分。两种可能都有价值。</p>
+</div>
+<div class="faq-card">
+  <b class="q">Q：能给别人看吗？</b>
+  <p class="a">A：可以，写给谁看由你决定。这份报告是对你一次作答的解读，不是你的全部——分享时带上这个前提，对话会顺畅很多。</p>
+</div>
+</div>
+
+</body>
+</html>
