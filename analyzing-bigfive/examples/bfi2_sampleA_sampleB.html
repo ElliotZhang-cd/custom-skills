@@ -22,18 +22,11 @@ body {
   max-width: 680px; margin: 0 auto; padding: 40px 20px 80px;
 }
 body p { text-align: justify; }
-.ev-tag, .chip, .prog-bar, .meta-header, .dval, .z, .lv { font-family: var(--font-body); }
-.wide { margin-left: -90px; margin-right: -90px; }
-@media (max-width: 900px) { .wide { margin-left: 0; margin-right: 0; } }
 
 /* 顶部阅读进度条 */
-.prog-bar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 12px;
   background: rgba(247,245,239,.94); backdrop-filter: blur(4px);
   margin: -40px -90px 26px; padding: 11px 18px; border-bottom: 1px solid var(--border);
   font-size: .8em; color: var(--muted); }
-.prog-track { flex: 1; height: 3px; border-radius: 2px; background: var(--border); position: relative; }
-.prog-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--accent); border-radius: 2px; }
-@media (max-width: 900px) { .prog-bar { margin-left: -20px; margin-right: -20px; } }
 
 /* 章节头 */
 .chapter-head { display: flex; align-items: baseline; gap: 16px; margin: 48px 0 6px;
@@ -146,10 +139,14 @@ p.appb { font-size: .95em; }
 .meters-table, .scard, .advice-card, .caution-row, .scene-box, .combo-card, .callout, .guide-box, .toc {
   background: rgba(255,255,255,.72); }
 .meters-table { background: rgba(255,255,255,.82); }
+.pull { border-top: 1px solid #B9B29F; border-bottom: 1px solid #B9B29F;
+  padding: 16px 8px 16px 50px; margin: 24px 0; position: relative;
+  font-family: var(--font-heading); font-size: 1.15em; font-weight: 700; color: var(--accent); line-height: 1.8; white-space: nowrap; }
+@media (max-width: 640px) { .pull { white-space: normal; } }
+.pull::before { content: "“"; position: absolute; left: 2px; top: 0; font-size: 2.4em; color: #B9B29F; }
+@page { size: A4; margin: 16mm 15mm; }
 @media print {
-  body { background: #fff; max-width: none; padding: 0 10mm; }
-  .wide { margin-left: 0; margin-right: 0; }
-  .prog-bar { display: none; }
+  body { background: #fff; background-image: none; max-width: none; padding: 0 10mm; }
   .summary-card, .callout, .guide-box, .chart-box, .facet-card, .humility,
   .advice-card, .caution-row, .faq-card, .find-card, .cmp-row, .scard, .meters-table { break-inside: avoid; }
   .toc { display: none; }
@@ -159,12 +156,10 @@ p.appb { font-size: .95em; }
 </head>
 <body>
 
-<div class="prog-bar"><span id="pg-name">快照</span><span class="prog-track"><span class="prog-fill" id="pg-fill"></span></span><span id="pg-cnt">1 / 9</span></div>
-
 <div class="meta-header">
   双人关系报告 · 示例样本（合成数据，非真实来访者）· <span class="p1-tag" style="color:var(--p1-color)">小雅</span> SAMPLE-02 · <span class="p2-tag" style="color:var(--p2-color)">阿杰</span> SAMPLE-03<br>
   数据来源：小雅、阿杰（BFI-2 交互页导出）｜ 报告日期：2026-09-06<br>
-  量表来源：BFI-2 中文修订版 ｜ 常模：中国大学生样本（Zhang et al., 2022）
+  常模：中国大学生样本（Zhang et al., 2022）
 </div>
 
 <div class="guide-box">
@@ -194,10 +189,8 @@ p.appb { font-size: .95em; }
 </div>
 
 <!-- ═══ 第 1 章 快照 ═══ -->
-<div class="chapter-head" id="s1" data-ch="快照"><span class="num">01</span><h3>你们各自的人格快照 <span class="ev-tag ev-research">✅</span></h3></div>
+<div class="chapter-head" id="s1"><span class="num">01</span><h3>你们各自的人格快照 <span class="ev-tag ev-research">✅</span></h3></div>
 <p class="chapter-sub">这一章回答一个问题：你们两个人各自是什么性格，放在一起整体像不像。</p>
-
-
 
 <div class="wide">
 <div class="snap">
@@ -274,7 +267,7 @@ p.appb { font-size: .95em; }
 </div>
 
 <!-- ═══ 第 2 章 相似度 ═══ -->
-<div class="chapter-head" id="s2" data-ch="相似度"><span class="num">02</span><h3>五维度相似度与差异</h3></div>
+<div class="chapter-head" id="s2"><span class="num">02</span><h3>五维度相似度与差异</h3></div>
 <p class="chapter-sub">像在哪里，差在哪里，差多少——先给一眼结论，再逐维对照。</p>
 
 <p>格子越满 = 分越高（1 格低，5 格高）；Δ = 两个人分数的差距，行按差距从大到小排。</p>
@@ -335,7 +328,7 @@ p.appb { font-size: .95em; }
 <p>两张清单放一起：待人的姿态和情绪的底盘很齐，越到"具体怎么过日子"差异越多。默契点决定日常省不省力，磨合区决定你们愿意为彼此花多少心思。<span class="ev-tag ev-hypothesis">⚪</span></p>
 
 <!-- ═══ 第 3 章 优势 ═══ -->
-<div class="chapter-head" id="s3" data-ch="优势"><span class="num">03</span><h3>关系中的天然优势 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<div class="chapter-head" id="s3"><span class="num">03</span><h3>关系中的天然优势 <span class="ev-tag ev-theory">🔶</span></h3></div>
 <p class="chapter-sub">从两处"几乎一样"和一处"正好互补"里，挑四件现成的好东西。</p>
 
 <div class="advice-card">
@@ -357,7 +350,8 @@ p.appb { font-size: .95em; }
 
 <!-- ═══ 第 4 章 风险 ═══ -->
 
-<div class="chapter-head" id="s4" data-ch="风险"><span class="num">04</span><h3>可能的风险点 <span class="ev-tag ev-hypothesis">⚪</span></h3></div>
+<div class="pull">你们俩吵不起来，是先天配置，不是感情好。</div>
+<div class="chapter-head" id="s4"><span class="num">04</span><h3>可能的风险点 <span class="ev-tag ev-hypothesis">⚪</span></h3></div>
 <p class="chapter-sub">差距最大的三个维度，各自可能在哪儿打滑。都是"可能"，不是"一定"。</p>
 
 <p>每条附一句"翻译"：把对方的行为从"针对我"，还原成"他本来就是这么个人"。</p>
@@ -366,13 +360,10 @@ p.appb { font-size: .95em; }
 <div class="caution-row"><b>开放性（Δ 1.60）：尝新与求稳</b>。阿杰高，对新想法、新体验、艺术和美有比较强的兴趣；小雅中等偏低，更偏好熟悉和实际。可能出现的错位：旅行计划、换餐厅、尝试新事物时，一个觉得"又来"，一个觉得"怎么总是不变"。翻译：阿杰的尝新不是"不安分"，小雅的求稳不是"扫兴"，是两个人给"好日子"下的定义不同。<span class="ev-tag ev-hypothesis">⚪</span></div>
 <div class="caution-row"><b>尽责性（Δ 1.28）：生活节奏</b>。小雅中等偏高，做事有计划、有条理，答应的事负责到底；阿杰中，该认真认真、该放松放松。可能出现的错位：整洁度、时间观念、花钱方式这类日常小事上，小雅可能觉得阿杰"太随意"，阿杰可能觉得小雅"管太多"。翻译：这是两套都成立的节奏撞在了一起，不是谁不上心。<span class="ev-tag ev-hypothesis">⚪</span></div>
 
-<div class="humility">
-  这一部分的内容全部来自分数的理论推测。你的真实经历和感受，只有你自己知道——如果哪里说得不对，以你的经历为准。如果某处内容让你有触动，可以留给自己慢慢消化，也可以和任何你信任的人聊聊。
-</div>
-
 <!-- ═══ 第 5 章 冲突 ═══ -->
 
-<div class="chapter-head" id="s5" data-ch="冲突"><span class="num">05</span><h3>冲突模式参考 <span class="ev-tag ev-hypothesis">⚪</span></h3></div>
+<div class="pull">他充电靠人，你回血靠静，别互相改造。</div>
+<div class="chapter-head" id="s5"><span class="num">05</span><h3>冲突模式参考 <span class="ev-tag ev-hypothesis">⚪</span></h3></div>
 <p class="chapter-sub">最容易点着的话题，以及两个可能发生的场景。</p>
 
 <p>先看最容易点着的三类话题：</p>
@@ -401,18 +392,20 @@ p.appb { font-size: .95em; }
 
 <!-- ═══ 第 6 章 满意度 ═══ -->
 
-<div class="chapter-head" id="s6" data-ch="满意度"><span class="num">06</span><h3>关系满意度参考 <span class="ev-tag ev-research">✅</span></h3></div>
+<div class="pull">聚餐和待办清单，是你们最容易翻车的两件小事。</div>
+<div class="chapter-head" id="s6"><span class="num">06</span><h3>关系满意度参考 <span class="ev-tag ev-research">✅</span></h3></div>
 <p class="chapter-sub">研究怎么说，以及怎么正确地听它说。</p>
 
 <p>先说证据的分量：汇总几十项研究的元分析里，和满意度关联最强的是情绪稳定性和宜人性，其后是尽责性；外向性、开放性的关联小得多 <span class="ev-tag ev-research">✅</span>。名次只作参考，别当成绩单。</p>
-<p>对照你们的分数：关联最强的两项——情绪稳定性、宜人性——恰好是你们最像的两项。这是温和的好消息：关系底盘上没有"一个急一个躲"的先天错位 <span class="ev-tag ev-hypothesis">⚪</span>。差距大的三项在研究里本就和满意度关联不大——它们影响的是日常磨合的成本，不是"这段关系好不好" <span class="ev-tag ev-theory">🔶</span>。</p>
+<p>对照你们的分数：关联最强的两项——情绪稳定性、宜人性——恰好是你们最像的两项。算个好消息：你们没有"一个急一个躲"的先天错位 <span class="ev-tag ev-hypothesis">⚪</span>。差距大的三项在研究里本就和满意度关联不大——它们影响的是日常磨合的成本，不是"这段关系好不好" <span class="ev-tag ev-theory">🔶</span>。</p>
 <p>还有一句要说在前面：人格对满意度的解释力是中等程度的——同样的分数，在不同的沟通习惯和外部压力下，会走向很不一样的日子。</p>
 
 <div class="callout">人格特质只是影响关系的因素之一，不是决定性因素。你们的沟通方式和一起面对困难的态度，比分数更重要。</div>
 
 <!-- ═══ 第 7 章 沟通 ═══ -->
 
-<div class="chapter-head" id="s7" data-ch="沟通"><span class="num">07</span><h3>沟通风格差异 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<div class="pull">研究站在你们这边，但日子是你们自己过的。</div>
+<div class="chapter-head" id="s7"><span class="num">07</span><h3>沟通风格差异 <span class="ev-tag ev-theory">🔶</span></h3></div>
 <p class="chapter-sub">同一句话，两个人听到的可能不一样。只讲风格，不分对错。</p>
 
 <p>沟通风格里最要紧的两件事：能量从哪里来（外向性），情绪以什么基调流动（情绪稳定性）。前一项你们差距大，后一项几乎重合：</p>
@@ -439,7 +432,8 @@ p.appb { font-size: .95em; }
 
 <!-- ═══ 第 8 章 方法 ═══ -->
 
-<div class="chapter-head" id="s8" data-ch="方法"><span class="num">08</span><h3>具体可以怎么做 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<div class="pull">他嫌你躲，你嫌他吵——其实都是节奏问题。</div>
+<div class="chapter-head" id="s8"><span class="num">08</span><h3>具体可以怎么做 <span class="ev-tag ev-theory">🔶</span></h3></div>
 <p class="chapter-sub">五条都能落地的做法，每条都标了什么时候用，对应第 4、5 章的风险。</p>
 
 <div class="advice-card">
@@ -480,7 +474,8 @@ p.appb { font-size: .95em; }
 
 <!-- ═══ 第 9 章 结语 ═══ -->
 
-<div class="chapter-head" id="s9" data-ch="结语"><span class="num">09</span><h3>结语</h3></div>
+<div class="pull">把"猜对方"换成"问对方"，五条就够了。</div>
+<div class="chapter-head" id="s9"><span class="num">09</span><h3>结语</h3></div>
 <p class="chapter-sub">最后一页，留给你们自己。</p>
 
 <p>分数描述的是倾向，日子是你们自己过的。宜人性和情绪稳定性上的相近，让你们容易听懂对方；外向性、开放性、尽责性上的差距，让你们有机会练一件很多伴侣没练熟的事——把"他和我不一样"读成"我们可以商量"。</p>
@@ -493,30 +488,6 @@ p.appb { font-size: .95em; }
 <p class="appb">双人部分（相似度、风险、冲突、满意度）多属经验规则与理论推断，证据比单维度描述更薄；文中所有"可能"，都请以你们相处的真实感受为准。</p>
 <p class="ev-stat"><strong>结论依据构成：</strong> ✅ 研究支持 × 7 处 · 🔶 理论推断 × 10 处 · ⚪ 探索性假设 × 22 处</p>
 </div>
-
-<script>
-(function(){
-  var secs = [].slice.call(document.querySelectorAll('[data-ch]'));
-  var fill = document.getElementById('pg-fill');
-  var name = document.getElementById('pg-name');
-  var cnt = document.getElementById('pg-cnt');
-  function up(){
-    var h = document.documentElement;
-    var max = h.scrollHeight - h.clientHeight;
-    var y = window.pageYOffset || h.scrollTop || 0;
-    fill.style.width = (max > 0 ? (y / max) * 100 : 0).toFixed(1) + '%';
-    var cur = 0;
-    for (var i = 0; i < secs.length; i++) {
-      if (secs[i].getBoundingClientRect().top <= 90) cur = i;
-    }
-    name.textContent = secs[cur].getAttribute('data-ch');
-    cnt.textContent = (cur + 1) + ' / ' + secs.length;
-  }
-  window.addEventListener('scroll', up, { passive: true });
-  window.addEventListener('resize', up);
-  up();
-})();
-</script>
 
 </body>
 </html>

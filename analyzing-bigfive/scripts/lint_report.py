@@ -3,10 +3,15 @@
 
 检查项：
 - 禁用词（工程/IT/系统类词汇、裸英文）
-- 固定文本块缺失
-- 图表容器完整性
+- 固定文本块（阅读指南/局限声明）
+- 容器完整性（通用 + 仅单人 + 仅双人 三组）
 - 维度 z 分一致性（雷达图/正文/仪表条 同维度不得矛盾）
-- meter-fill CSS 要求
+- 证据标签统计与实际数量一致
+- 拉引文（数量：单人 7 / 双人 6；单条 ≤22 字）
+- 章节结构完整性（单人 s4–s7 锚点 / 双人 p1-tag、p2-tag 与伦理声明）
+- 组合卡存在性（跨维度组合结论必须以 .combo-card 承载）
+- 文件命名规范
+- meter-fill CSS（旧版兼容）
 - 局限声明存在性
 """
 
@@ -31,8 +36,7 @@ FORBIDDEN_WORDS = [
 
 REQUIRED_BLOCKS = [
     ("阅读指南", "怎么读这份报告"),
-    ("局限声明", "不构成临床诊断"),
-    ("谦卑段", "这一部分的内容全部来自分数的理论推测"),  # writing-style.md §9.1
+    ("局限声明", "不构成临床诊断"),  # writing-style.md §9.3
 ]
 
 REQUIRED_CONTAINERS = [
@@ -221,6 +225,20 @@ def lint(filepath: str) -> list[str]:
                     f"FAIL: 缺少章节锚点 #{anchor}（{label}，html-templates.md §3.1 "
                     f"要求单人报告含第 4-7 章）"
                 )
+
+    # ── 9.5 锐评式拉引文：数量 = 章数（单人 7 / 双人 6），单条 ≤ 22 字（保证一行以内）──
+    pull_texts = re.findall(r'<div class="pull">(.*?)</div>', html, re.S)
+    expected_pulls = 6 if is_couple else 7
+    if len(pull_texts) != expected_pulls:
+        fails.append(f"FAIL: 拉引文数量 {len(pull_texts)} ≠ 预期 {expected_pulls}")
+    for pt in pull_texts:
+        plain = re.sub(r"<[^>]+>", "", pt).strip()
+        if len(plain) > 22:
+            fails.append(f"FAIL: 拉引文超过 22 字（无法保持一行）: {plain[:30]}…")
+
+    # ── 9.6 组合卡：跨维度组合结论必须以 .combo-card 承载 ──
+    if "combo-card" not in html:
+        fails.append("FAIL: 缺少组合卡 .combo-card（跨维度组合结论必须用它承载）")
 
     # ── 10. 文件命名（bfi2_{代号}.html / bfi2_{代号A}_{代号B}.html）──
     if not FILENAME_RE.match(basename):

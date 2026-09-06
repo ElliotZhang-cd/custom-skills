@@ -21,18 +21,11 @@ body {
   max-width: 680px; margin: 0 auto; padding: 40px 20px 80px;
 }
 body p { text-align: justify; }
-.ev-tag, .bar-zchip, .fc-z, .facet-flag, .chip, .prog-bar, .meta-header { font-family: var(--font-body); }
-.wide { margin-left: -90px; margin-right: -90px; }
-@media (max-width: 900px) { .wide { margin-left: 0; margin-right: 0; } }
 
 /* 顶部阅读进度条 */
-.prog-bar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 12px;
   background: rgba(247,245,239,.94); backdrop-filter: blur(4px);
   margin: -40px -90px 26px; padding: 11px 18px; border-bottom: 1px solid var(--border);
   font-size: .8em; color: var(--muted); }
-.prog-track { flex: 1; height: 3px; border-radius: 2px; background: var(--border); position: relative; }
-.prog-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--accent); border-radius: 2px; }
-@media (max-width: 900px) { .prog-bar { margin-left: -20px; margin-right: -20px; } }
 
 /* 章节头 */
 .chapter-head { display: flex; align-items: baseline; gap: 16px; margin: 48px 0 6px;
@@ -112,6 +105,11 @@ body p { text-align: justify; }
 .facet-flag { display: inline-block; font-size: .7em; background: #F6ECD9; color: #8A5A2B;
   padding: 0 6px; border-radius: 9px; margin-left: 4px; font-weight: 600; }
 
+.pull { border-top: 1px solid #B9B29F; border-bottom: 1px solid #B9B29F;
+  padding: 16px 8px 16px 50px; margin: 24px 0; position: relative;
+  font-family: var(--font-heading); font-size: 1.15em; font-weight: 700; color: var(--accent); line-height: 1.8; white-space: nowrap; }
+@media (max-width: 640px) { .pull { white-space: normal; } }
+.pull::before { content: "“"; position: absolute; left: 2px; top: 0; font-size: 2.4em; color: #B9B29F; }
 .callout { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent);
   border-radius: 10px; padding: 14px 18px; margin: 18px 0; }
 .combo-card { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent);
@@ -156,10 +154,9 @@ body p { text-align: justify; }
 
 .summary-card, .find-card, .facet-card, .combo-card, .advice-card, .caution-row, .faq-card {
   background: rgba(255,255,255,.72); }
+@page { size: A4; margin: 16mm 15mm; }
 @media print {
-  body { background: #fff; max-width: none; padding: 0 10mm; }
-  .wide { margin-left: 0; margin-right: 0; }
-  .prog-bar { display: none; }
+  body { background: #fff; background-image: none; max-width: none; padding: 0 10mm; }
   .summary-card, .callout, .guide-box, .chart-box, .facet-card, .humility,
   .advice-card, .caution-row, .faq-card, .find-card { break-inside: avoid; }
   .toc { display: none; }
@@ -169,10 +166,8 @@ body p { text-align: justify; }
 </head>
 <body>
 
-<div class="prog-bar"><span id="pg-name">一页速览</span><span class="prog-track"><span class="prog-fill" id="pg-fill"></span></span><span id="pg-cnt">1 / 9</span></div>
-
 <div class="meta-header">
-  示例样本 SAMPLE-01（合成数据，非真实来访者）· 报告日期：2026-01-15 · 量表来源：BFI-2 中文修订版 · 常模：中国大学生样本（Zhang et al., 2022）
+  示例样本 SAMPLE-01（合成数据，非真实来访者）· 报告日期：2026-01-15 · 常模：中国大学生样本（Zhang et al., 2022）
 </div>
 
 <div class="guide-box">
@@ -198,7 +193,7 @@ body p { text-align: justify; }
 </div>
 
 <!-- ═══ 第 0 章 速览卡 ═══ -->
-<div class="summary-card" id="s0" data-ch="一页速览">
+<div class="summary-card" id="s0">
   <div class="chapter-head" style="margin-top:0;">
     <span class="num">00</span><h3>一页速览</h3>
   </div>
@@ -206,7 +201,7 @@ body p { text-align: justify; }
   <div class="sum-grid">
     <div class="chart-box">
       <svg viewBox="0 0 300 280" width="380" role="img" aria-label="五维度雷达图">
-        <circle cx="150" cy="150" r="50" fill="none" stroke="#0891B2" stroke-width="1.4" stroke-dasharray="4,3" opacity=".55"/>
+        <circle cx="150" cy="150" r="50" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4,3" opacity=".55"/>
         <circle cx="150" cy="150" r="100" fill="none" stroke="#E4E4DC" stroke-width="1.2"/>
         <text x="150" y="93" text-anchor="middle" font-size="9.5" fill="#64748B">同龄人平均</text>
         <line x1="150" y1="150" x2="150" y2="50" stroke="#E4E4DC" stroke-width="1"/>
@@ -220,7 +215,7 @@ body p { text-align: justify; }
         <!-- 情绪稳定性(z=+0.39): r=56.5, 顶点(116.8,195.7) -->
         <!-- 开放性(z=-0.75): r=37.5, 顶点(114.3,138.4) -->
         <polygon points="150,83.8 181.1,139.9 195.7,212.9 116.8,195.7 114.3,138.4"
-                 fill="rgba(8,145,178,0.16)" stroke="#0891B2" stroke-width="2"/>
+                 fill="rgba(8,145,178,0.16)" stroke="var(--accent)" stroke-width="2"/>
         <circle cx="150" cy="83.8" r="4.5" fill="#e67e22" stroke="#fff" stroke-width="1.5"/>
         <circle cx="181.1" cy="139.9" r="4.5" fill="#27ae60" stroke="#fff" stroke-width="1.5"/>
         <circle cx="195.7" cy="212.9" r="4.5" fill="#2980b9" stroke="#fff" stroke-width="1.5"/>
@@ -262,9 +257,8 @@ body p { text-align: justify; }
 </div>
 
 <!-- ═══ 第 1 章 ═══ -->
-<div class="chapter-head" id="s1" data-ch="五维度"><span class="num">01</span><h3>你的五维度长什么样 <span class="ev-tag ev-research">✅</span></h3></div>
+<div class="chapter-head" id="s1"><span class="num">01</span><h3>你的五维度长什么样 <span class="ev-tag ev-research">✅</span></h3></div>
 <p class="chapter-sub">这一章回答一个问题：和同龄人比，你站在哪里。</p>
-
 
 <div class="wide">
   <div class="bar-container">
@@ -340,13 +334,13 @@ body p { text-align: justify; }
 <p>更偏好熟悉和实际的事物，对抽象理论或新奇体验兴趣不大。你可能会被认为"务实"或"接地气"。但下面我们会看到，你的开放性有一个有"选择"的部分——你对"美"这件事反而很敏感。</p>
 </div>
 
+<div class="pull">你不是天生靠谱，是靠计划撑出来的靠谱。</div>
 <!-- ═══ 第 2 章 ═══ -->
-<div class="chapter-head" id="s2" data-ch="子维度画像"><span class="num">02</span><h3>细节：你的子维度画像 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<div class="chapter-head" id="s2"><span class="num">02</span><h3>细节：你的子维度画像 <span class="ev-tag ev-theory">🔶</span></h3></div>
 <p class="chapter-sub">15 个子维度与内部矛盾。特别需要注意的地方会单独圈出来。</p>
 
 <p>特别需要留意：你在<strong>开放性</strong>这个维度上的子维度表现不一致——总分和子维度"打架"了。</p>
 
-<div class="wide">
 <div class="facet-grid">
   <div class="facet-card" style="--dc:var(--extraversion)">
     <div class="fc-head"><i class="fc-dot"></i><b>社交</b><span class="fc-lv">中</span><span class="fc-z">+0.40</span></div>
@@ -409,7 +403,6 @@ body p { text-align: justify; }
     <p>思维偏实际，不太做"如果……会怎样"的脑内演练。</p>
   </div>
 </div>
-</div>
 
 <h3>开放性的子维度矛盾 <span class="ev-tag ev-theory">🔶</span></h3>
 <p>你在开放性方面，整体得分中等偏低（z = -0.75）。但拆开来看，你的三个子维度表现并不一致：</p>
@@ -420,12 +413,9 @@ body p { text-align: justify; }
 </ul>
 <p>这说明：你不太喜欢抽象理论或新奇的体验，但对音乐、绘画、自然之美有特别的感受力。你的开放性是有"选择"的——你不被想法吸引，但被画面、声音、风景吸引。一个可能的具体场景是：你会因为一段旋律循环听一下午，但别人聊哲学你听不进去五分钟。这不是"你不够开放"，而是你的开放走的是感官这条路径，而不是概念这条路。<span class="ev-tag ev-hypothesis">⚪</span></p>
 
-<div class="humility">
-  这一部分的内容全部来自分数的理论推测。你的真实经历和感受，只有你自己知道——如果哪里说得不对，以你的经历为准。如果某处内容让你有触动，可以留给自己慢慢消化，也可以和任何你信任的人聊聊。
-</div>
-
+<div class="pull">你的开放是挑食的：只吃美，不吃道理。</div>
 <!-- ═══ 第 3 章 ═══ -->
-<div class="chapter-head" id="s3" data-ch="人格画像"><span class="num">03</span><h3>你独特的人格画像 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<div class="chapter-head" id="s3"><span class="num">03</span><h3>你独特的人格画像 <span class="ev-tag ev-theory">🔶</span></h3></div>
 <p class="chapter-sub">把五个维度放在一起看，你身上最核心的那股劲。</p>
 
 <div class="combo-card">
@@ -439,7 +429,7 @@ body p { text-align: justify; }
       <b>开放性 · 中等偏低</b><span>z = -0.75 · 偏好熟悉与实际</span>
     </div>
   </div>
-  <p class="combo-read">这两件事单独看都是优点：计划让你稳，谨慎让你少踩坑。撞在一起，就出现一个典型场景——<strong>事情越按计划推进越顺，计划外的变化越让你想先回到计划里</strong>。你身上最明显的一股张力就在这里。</p>
+  <p class="combo-read">两件事单独看都是优点：计划让你稳，谨慎让你少踩坑。但它们会撞车。<strong>事情越按计划推进越顺，计划外的变化越让你想先回到计划里</strong>。你最明显的张力在这。</p>
 </div>
 
 <span class="lead">这股劲怎么帮你、什么时候卡</span>
@@ -451,8 +441,9 @@ body p { text-align: justify; }
 <span class="lead">你在团队里的位置</span>
 <p>宜人性偏低意味着你在合群这件事上不靠"迁就别人"换认同，靠的是"靠谱"换信任——也就是说，别人跟你合作不是因为你好说话，而是因为你答应的事能成。这个组合让你在团队里更像是"被信任的执行者"，而不是"救火队员"。<span class="ev-tag ev-theory">🔶</span></p>
 
+<div class="pull">帮你赢的是计划，拦住你的也会是它。</div>
 <!-- ═══ 第 4 章 ═══ -->
-<div class="chapter-head" id="s4" data-ch="工作中"><span class="num">04</span><h3>你在工作中可能的样子 <span class="ev-tag ev-research">✅</span></h3></div>
+<div class="chapter-head" id="s4"><span class="num">04</span><h3>你在工作中可能的样子 <span class="ev-tag ev-research">✅</span></h3></div>
 <p class="chapter-sub">把第 3 章的结论放到工作场景里，只做参考。</p>
 
 <p>综合你最高的两个维度（外向性、尽责性）和霍兰德 RIASEC 职业类型的研究映射，你的代码倾向是：</p>
@@ -462,12 +453,13 @@ body p { text-align: justify; }
   <span class="riasec-badge" style="background:var(--extraversion)">常规型 C</span>
 </p>
 
-<p>你可能适合那种既需要主动推进、也需要按规矩把事情做完的环境——比如项目管理、运营、产品推进、带小团队的执行岗。你能讲规则，也能推动别人跟规则走，这是双优势叠加的地方。</p>
+<p>你可能适合那种既需要主动推进、也需要按规矩把事情做完的环境——比如项目管理、运营、产品推进、带小团队的执行岗。你能讲规则，也能推着别人守规则，这两样叠在一个人身上不多见。</p>
 
 <p><strong>不太适合你的工作环境</strong>：纯创意、需要不断切换抽象框架的环节。你的好奇和想象子维度都偏低，意味着你在"做点没做过的事"时需要先消化一遍，再做，节奏会比天然爱探索的人慢一点。这不影响你做这些事的能力，只影响你做这些事时是否感到轻松。</p>
 
+<div class="pull">把规则内的事做到底，就是你的主场。</div>
 <!-- ═══ 第 5 章 ═══ -->
-<div class="chapter-head" id="s5" data-ch="压力下的你"><span class="num">05</span><h3>压力下的你 <span class="ev-tag ev-research">✅</span></h3></div>
+<div class="chapter-head" id="s5"><span class="num">05</span><h3>压力下的你 <span class="ev-tag ev-research">✅</span></h3></div>
 <p class="chapter-sub">压力来的时候，哪些部分帮你扛，哪些部分会消耗你。</p>
 
 <p>你面对压力的时候，<strong>已经拥有的优势</strong>是：</p>
@@ -486,8 +478,9 @@ body p { text-align: justify; }
 <div class="caution-row"><strong>宜人性偏低</strong>：在压力下你可能不太愿意求助。一句"这事我一个人扛得住"在顺境是优势，在压力顶峰是会消耗你的资本。可以试着定一个具体动作——比如"压力连续 3 天超过 7 分时，主动找一个朋友说 10 分钟"，把求助量化成可执行的事。</div>
 <div class="caution-row"><strong>开放性偏低的好奇子维度</strong>：遇到被迫改变旧方法的场景，你的第一反应是"按原计划走"。需要在心里预留 10 分钟"先看新规则"的时间，再决定改不改计划，而不是直接进执行模式。</div>
 
+<div class="pull">你不是扛不住，你是从来不开口。</div>
 <!-- ═══ 第 6 章 ═══ -->
-<div class="chapter-head" id="s6" data-ch="与人相处"><span class="num">06</span><h3>你与人相处的方式 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<div class="chapter-head" id="s6"><span class="num">06</span><h3>你与人相处的方式 <span class="ev-tag ev-theory">🔶</span></h3></div>
 <p class="chapter-sub">亲密关系与日常社交里的你。</p>
 
 <span class="rel-label">亲密关系</span>
@@ -506,8 +499,9 @@ body p { text-align: justify; }
   <p>一个可能的具体场景：周五下班朋友临时喊聚餐，你其实更想回家待着。你可以直接说"今天想自己待着，下次约"——对你来说，直说不会伤关系，勉强赴约反而让你整晚不在状态。<span class="ev-tag ev-hypothesis">⚪</span></p>
 </div>
 
+<div class="pull">你把在乎做成了事，可人有时候只想听一句。</div>
 <!-- ═══ 第 7 章 ═══ -->
-<div class="chapter-head" id="s7" data-ch="成长建议"><span class="num">07</span><h3>给你的成长建议 <span class="ev-tag ev-theory">🔶</span></h3></div>
+<div class="chapter-head" id="s7"><span class="num">07</span><h3>给你的成长建议 <span class="ev-tag ev-theory">🔶</span></h3></div>
 <p class="chapter-sub">每一条都很小，小到这周就能开始。</p>
 
 <div class="advice-card">
@@ -528,7 +522,8 @@ body p { text-align: justify; }
 </div>
 
 <!-- ═══ 附录A ═══ -->
-<div class="appendix" id="appa" data-ch="附录">
+<div class="pull">性格改不了，也不用改——给计划开四个口子。</div>
+<div class="appendix" id="appa">
 <h2>附录A 术语表</h2>
 <ul class="term-list">
   <li><strong>z 分</strong>：一种标准化分数，用来表示你的得分距离"平均水平"有多远。z=0 表示刚好在平均线上，正数表示高于平均，负数表示低于平均。</li>
@@ -563,30 +558,6 @@ body p { text-align: justify; }
   <p class="a">A：这份报告写给的是你自己。分享给信任的人聊聊当然可以，但要明白对方读到的是"对你的一次解读"，不是你的全部。你想分享什么、不分享什么，由你决定。</p>
 </div>
 </div>
-
-<script>
-(function(){
-  var secs = [].slice.call(document.querySelectorAll('[data-ch]'));
-  var fill = document.getElementById('pg-fill');
-  var name = document.getElementById('pg-name');
-  var cnt = document.getElementById('pg-cnt');
-  function up(){
-    var h = document.documentElement;
-    var max = h.scrollHeight - h.clientHeight;
-    var y = window.pageYOffset || h.scrollTop || 0;
-    fill.style.width = (max > 0 ? (y / max) * 100 : 0).toFixed(1) + '%';
-    var cur = 0;
-    for (var i = 0; i < secs.length; i++) {
-      if (secs[i].getBoundingClientRect().top <= 90) cur = i;
-    }
-    name.textContent = secs[cur].getAttribute('data-ch');
-    cnt.textContent = (cur + 1) + ' / ' + secs.length;
-  }
-  window.addEventListener('scroll', up, { passive: true });
-  window.addEventListener('resize', up);
-  up();
-})();
-</script>
 
 </body>
 </html>

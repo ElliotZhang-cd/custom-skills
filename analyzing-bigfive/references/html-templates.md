@@ -62,7 +62,7 @@
 
 - 标题（h1-h3、章节号）用衬线（`var(--font-heading)`）；1206 A 方向：正文转衬线（行高 2.0、两端对齐），黑体仅用于 UI 小件。`body`：`font-family:var(--font-heading); font-size:16px; line-height:2.0; color:var(--fg); background-color:var(--bg)` + 内联 SVG 噪点纹理（16%，数据 URI，零依赖）；`max-width:680px; margin:0 auto; padding:40px 20px 80px`
 - 字号刻度（px）：14 / 16 / 18 / 24 / 32 / 48。正文 16、行高 1.75；小注 14（.78em 级）；小节标题 18（1.12em 级）；章节标题 24（1.5em）；章节号 48（3em）半透明
-- **正文列宽 680px**（≈38 汉字/行，符合 65–75 字符行长准则）；图表 / 卡片 / 表格用 `.wide` 破格至 860px：`.wide { margin-left:-90px; margin-right:-90px; }`，`@media (max-width:900px)` 时左右 margin 归 0
+- **正文列宽 680px**（≈38 汉字/行，符合 65–75 字符行长准则）；定位条、雷达等图表用 `.wide` 破格至 860px；**子维度网格、卡片与正文同宽不破格**（1206：与正文对齐）：`.wide { margin-left:-90px; margin-right:-90px; }`，`@media (max-width:900px)` 时左右 margin 归 0
 - 移动端断点 640px：facet-grid、bar-score、.snap 降单列（toc 同步降单列，见 §1.3）
 - 间距刻度 4 / 8 / 12 / 16 / 24 / 32 / 48px，章节块间 ≥32px；卡片圆角 10px，大容器（对比表、速览卡）12px，chip 全圆角；卡片 = 白底 + 1px var(--border)，无阴影或极轻阴影（打印安全）
 - `.fn-code`：`font-size:0.75em; color:var(--muted); font-weight:400`（学术名灰色小字括注）
@@ -73,10 +73,10 @@
 
 | 类名 | 用途 | CSS 关键属性 |
 |------|------|-------------|
-| `.prog-bar`（+.prog-track / +.prog-fill） | 顶部粘性阅读进度条 | `position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:12px; background:rgba(245,245,240,.94); backdrop-filter:blur(4px); margin:-40px -90px 26px; padding:11px 18px; border-bottom:1px solid var(--border); font-size:.8em; color:var(--muted)`；`.prog-track` 3px 高圆角轨道（底 var(--border)）；`.prog-fill` 绝对定位、宽 0、底 var(--accent)，由内联脚本按滚动百分比更新 width；≤900px 时左右 margin 改 -20px；打印隐藏（§1.4） |
-| `.chapter-head`（+.num） | 大编号章节头 | `display:flex; align-items:baseline; gap:14px; margin:48px 0 6px`；`:first-of-type{margin-top:8px}`；`.num` 衬线 3em/700 var(--accent) opacity .28 line-height 1 letter-spacing -.02em；内部 h3 衬线 1.5em/700 margin 0 |
+| `.chapter-head`（+.num） | 大编号章节头 | `display:flex; align-items:baseline; gap:16px; margin:48px 0 6px`；`border-bottom:3px double #B9B29F; padding-bottom:12px`（双细线）；`.num` 衬线 3.4em/700 墨青 opacity .3；后接 `.chapter-sub`（衬线 .88em） |
 | `.chapter-sub` | 章节副题（"这一章回答什么"） | `font-size:.85em; color:var(--muted); margin:0 0 18px` |
-| `.pull` | 每章末尾拉引文：上下细线 + 大引号 + 衬线 1.15em/700 墨青；引文逐字引自该章原文，不加新话、不带证据标签；首字下沉已取消 |
+| `.prog-bar` | 顶部阅读进度条——**已取消（1206）**，勿再生成；打印块中相关行一并删除 |
+| `.pull` | 每章末尾一句话锐评（≤30 字、一行以内）：上下细线 + 大引号 + 衬线 1.15em/700 墨青；由分析层基于本章素材生成——言辞犀利、一针见血、直观形象，不引入新结论，不带证据标签；首字下沉已取消 |
 | `.meta-header` | 页眉（代号/日期/量表来源/常模） | `font-size:.78em; color:var(--muted); border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:24px` |
 | `.guide-box` | 阅读指南 / 双人伦理声明 | `background:#FAFAF6; border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:10px; padding:16px 20px; margin:20px 0; font-size:.92em` |
 | `.toc` | 锚点目录 | `background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px 22px; font-size:.88em; margin:20px 0`；`ol` 两列 grid（`grid-template-columns:1fr 1fr; column-gap:24px; row-gap:2px`），640px 降单列 |
@@ -96,7 +96,6 @@
 | `.scene-box` | 场景卡 | 白底 1px 圆角 10，`padding:12px 16px 13px; margin:10px 0 16px`；内部 `.rel-label{ margin:0 0 4px }`；p .95em margin 2px 0 0 |
 | `.advice-card`（+.ac-num） | 编号条目卡（优势 / 建议 / 方法） | `display:flex; gap:14px; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:13px 16px; margin:10px 0`；`.ac-num` 30px 圆形 var(--accent) 白字 .88em/800；p .92em line-height 1.7 margin 0 |
 | `.caution-row` | 风险 / 留意条目 | 白卡 1px + `border-left:3px solid #D97706`（琥珀），圆角 8，padding 12px 16px，margin 10px 0，.92em/1.7；`b:first-child{ color:#8A5A2B }` |
-| `.humility` | 谦卑段容器（writing-style.md §9.1 固定块） | `background:#FAFAF6; border-left:3px solid var(--border); padding:12px 16px; margin:18px 0; font-size:.86em; color:var(--muted); border-radius:0 8px 8px 0` |
 | `.appendix`（+.term-list / +.appb / +.ev-stat） | 附录区块 | `border-top:2px dashed var(--border); margin-top:52px; padding-top:26px`；h2 衬线 1.3em；`.term-list li` / `.appb p` .95em；`.ev-stat` .85em muted |
 | `.faq-card` | 附录C 每问一卡 | 白底 1px 圆角 10 padding 14px 18px margin 12px 0；`b.q` block var(--accent-text) margin-bottom 4px；`p.a` .94em margin 0 |
 | `.riasec-badge` | RIASEC 职业倾向标签 | `display:inline-block; padding:4px 14px; border-radius:20px; font-weight:700; color:#fff; font-size:.95em; margin:0 4px`（底色 inline = 维度色） |
@@ -136,13 +135,12 @@
 
 ### 1.4 打印样式（必须有）
 
-逐字照抄样例 `@media print` 块：
+逐字照抄样例 `@media print` 块（必须含 `@page { size: A4; margin: 16mm 15mm; }` 与 `body { background-image: none; }`——A4 可打印、纸纹不打印）：
 
 ```css
 @media print {
   body { background: #fff; max-width: none; padding: 0 10mm; }
   .wide { margin-left: 0; margin-right: 0; }
-  .prog-bar { display: none; }
   .summary-card, .callout, .guide-box, .chart-box, .facet-card, .humility,
   .advice-card, .caution-row, .faq-card, .find-card { break-inside: avoid; }
   .toc { display: none; }
@@ -154,7 +152,6 @@
 
 ## 2. 图表与布局（全部内联 SVG，无外部依赖，打印安全）
 
-> 图表承载报告的**常模层**（相对所标注常模人群的位置，见 scoring-interpretation.md §4.1）；**自比层**（内部格局与矛盾）由第 2–3 章正文承担。图表必须带锚点标注（同龄人平均 / 极值 / 阅读指引），让位置自解释。零外部依赖：无网页字体、无 CDN、无 `<script src>`/`<link>`；内联脚本仅进度条一处（<1KB）。
 
 ### 2.1 五维度雷达图（单人速览卡内 / 双人第 1 章）
 
@@ -252,7 +249,7 @@ HTML 实现示例（数值来自样例）：
 - 每行：维度名（.95em/700）| P1 五格条 | P2 五格条 | Δ 值（.9em/800）+ 四档 chip
 - **五格条**：5 个 16px 圆角 4px 格子（gap 4px），填充数 = 档位（低=1 … 高=5），填充色 = 人物色（P1 用 `.p`、P2 用 `.g`），空格 #E9E9E2；**不画 Δ 轨道图形**（避免与雷达图重复）——"差多少"由格数差 + Δ 数值承担
 - 行序按 **Δ 降序**；**仅当存在 Δ>1 时**，最大 Δ 行加「▲ 差得最远」flag（chip 样式）+ 浅红底 #FDF7F5 + 3px 左边条 #A6402F（`box-shadow:inset 3px 0 0 #A6402F`）
-- Δ 阈值标签 = couple-dynamics.md §1.4 四档（高度相似 / 中度差异 / 显著差异 / 高度差异，经验规则 ⚪），chip 配色见 §1.1 语义色表；**不自造标签**
+- Δ 阈值标签 = couple-dynamics.md §1.1 四档（高度相似 / 中度差异 / 显著差异 / 高度差异，经验规则 ⚪），chip 配色见 §1.1 语义色表；**不自造标签**
 - 行内**不放**档位文字注释（"低 · 偏安静"之类）——档位含义由第 1 章快照卡承担，两章不重复
 
 对比表辅助类（配合 `.meters-table` 使用，随双人追加块一起复制）：
@@ -296,8 +293,7 @@ HTML 实现示例（数值来自样例）：
 ### 3.1 单人报告（来访者终端产品，7000–9000 字）
 
 ```
-prog-bar 顶部粘性进度条（data-ch 站点计数，见下方结构规则）
-页眉 .meta-header：报告日期 · 量表来源 · 来访者代号 · 所用常模（不写测评日期——报告读者用不到，1206 确认）
+页眉 .meta-header：报告日期 · 来访者代号 · 所用常模（不写测评日期与量表来源——报告读者用不到，1206 确认）
 阅读指南 .guide-box（照录 writing-style.md 固定文本块）
 目录 .toc（锚点导航，两列网格）
 
@@ -340,15 +336,13 @@ prog-bar 顶部粘性进度条（data-ch 站点计数，见下方结构规则）
 
 - 单人报告共 **8 个 `.chapter-head`（00–07）**，每章开头 `.chapter-head` + 一句 `.chapter-sub`（"这一章回答什么"）
 - 锚点 `id` 固定：s0–s7、appa/appb/appc；**s4 / s5 / s6 / s7 是 lint 必查锚点**，缺一即 FAIL
-- 进度条站点：`data-ch="章节名"` 挂在速览卡、第 1–7 章、附录A 上（共 9 站）；附录B/C 不挂
 - 证据统计行先数后写：`grep -c 'class="ev-tag ev-research"'`（另两个同理）的三个数必须与「✅ × N 处 · 🔶 × N 处 · ⚪ × N 处」声明一致（lint 校验）
 - 曾提议在第 7 章后新增第 8 章（SPEC §3.12b），已在设计评审中取消——**不得添加任何额外章节**
 
 ### 3.2 双人报告（来访者终端产品，8000–10000 字）
 
 ```
-prog-bar（9 站：快照 / 相似度 / 优势 / 风险 / 冲突 / 满意度 / 沟通 / 方法 / 结语）
-页眉 .meta-header（双方代号 + 数据来源 + 量表来源 / 常模 / 报告日期；不写测评日期）
+页眉 .meta-header（双方代号 + 数据来源 / 常模 / 报告日期；不写测评日期与量表来源）
 伦理声明 .guide-box（照录 couple-dynamics.md §7 固定块，逐字——
    含"这份报告基于双方的人格测评数据分析"，lint 必查）
 目录 .toc
@@ -448,6 +442,5 @@ prog-bar（9 站：快照 / 相似度 / 优势 / 风险 / 冲突 / 满意度 / �
    python3 scripts/lint_report.py examples/bfi2_sample.html
    python3 scripts/lint_report.py examples/bfi2_sampleA_sampleB.html
    ```
-3. 浏览器打开检查：顶部进度条滚动正常且打印预览（Ctrl+P）中消失；速览卡 = 大雷达在上（无边框）+ 三结论卡在下；每章有大编号章节头；定位条 = 连续渐变 + 两条竖虚线、无中线；雷达图无文字裁剪；组合卡与第 6 章标签式结构在位；目录锚点可跳转；640px 宽度下全部单列；打印预览无组件断裂
 4. 双人报告浏览器核对：快照双卡档位与 scoring-interpretation §2.1 一致；对比表列对齐且行序按 Δ 降序；重叠雷达形状与轴端数字互证（缩得最深的顶点 / 外扩最远的顶点与 Δ 最大维度对得上）；伦理声明在位
 5. 全部通过才允许交付

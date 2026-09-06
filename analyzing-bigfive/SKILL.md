@@ -1,6 +1,6 @@
 ---
 name: analyzing-bigfive
-description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做大五人格分析，生成来访者视角 HTML 报告。当用户提供 5 维度 + 15 子维度原始分，或要求 BFI-2 报告、大五人格分析、人格剖面分析、压力/职业/人际模式分析、伴侣大五匹配时使用。输入只需原始分，z 分由 skill 按内置中国常模计算；本 skill 不负责从原始答题计分
+description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做大五人格分析，生成来访者视角 HTML 报告。当用户提供 5 维度 + 15 子维度原始分，或要求 BFI-2 报告、大五人格分析、人格剖面分析、基于大五的基于大五的压力/职业/人际模式分析、伴侣大五匹配时使用。输入只需原始分，z 分由 skill 按内置中国常模计算；本 skill 不负责从原始答题计分
 ---
 
 # AnalyzingBigfive — BFI-2 大五人格分析（单人 / 双人报告）
@@ -44,7 +44,7 @@ description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做�
      - 第 4 域方向：负性情绪（BFI-2 原始方向）/ 情绪稳定性（ES）？
      ```
    拿到补齐信息后再继续
-2. 提取 5 维度 + 15 子维度**原始分**。**裸分数无标签时，默认顺序为：外向性、宜人性、尽责性、负性情绪（方向待 step 3 确认）、开放性**（BFI-2 标准输出顺序）。**用内置常模计算 z 分**（规则见 `references/scoring-interpretation.md` §1.2——输入中的 z/等级/M/SD 一律忽略，可能来自其他常模）。回显解析结果与所用常模；**正常输入无需等确认**，仅在以下情况停下等确认：第 4 域旧格式翻转（step 3）、缺信息清单项（step 1）、质量检查异常（step 4）。若用户主动指出解析有误，以用户为准
+2. 提取 5 维度 + 15 子维度**原始分**。**裸分数无标签时，默认顺序为：外向性、宜人性、尽责性、负性情绪（方向待 step 3 确认）、开放性**（BFI-2 标准输出顺序）。**用内置常模计算 z 分**（规则见 `references/scoring-interpretation.md` §1.2——输入中的 z/等级/M/SD 一律忽略，可能来自其他常模）。回显解析结果与所用常模；**正常输入无需等确认**，仅在以下情况停下等确认：第 4 域旧格式翻转（step 3）、缺信息清单项（step 1）；质量检查异常（step 4）不停——按该条处置降权/标注后继续产出。若用户主动指出解析有误，以用户为准
 3. **第 4 域方向检测**（规则见 `references/scoring-interpretation.md` §1.2/§1.3）：检查输入第 4 域 label——若为「情绪稳定性 / Emotional Stability / ES」（bfi2_interactive.html 复制/导出即此方向），直接用稳定性方向换算常模计算；若为 BFI-2 原始方向（负性情绪/神经质/N/Neuroticism），属旧格式输入：**不得静默翻转**，必须向用户回显警告并经确认后，才按本义方向计算再取反（焦虑/抑郁/易变 3 个子维度始终保持本义方向解读：高=更敏感，见 §1.3）。方向错误 = chart/正文 180° 反转（A001 即此 bug）
 4. 质量检查（基于**计算出的 z 分**）：
    - 完整性：5 维度 + 15 子维度齐全，原始分在 1–5 均值刻度，计算 z 在合理范围（-3 ~ +3）
@@ -76,16 +76,20 @@ description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做�
 - 章节结构、图表、组件 CSS、打印样式：严格按 `references/html-templates.md`
 - 语言：严格按 `references/writing-style.md`——学术名+白描命名、去 AI 味、证据三级标签
 - 跨维度组合结论（如"高尽责 × 低开放"式张力）必须用 `.combo-card` 承载：并排两个维度的实际档位 + z 值 + 大白话组合含义与一个典型场景，块头注明"从你的分数组合里读出来"并挂 🔶/⚪——禁止裸断言；档位词与正文一致，不得用与档位不符的简称
-- 双人报告：第 1 章 = `.snap` 人格快照双卡（白描唯一来源 scoring-interpretation §2.2 模板压缩）+ 重叠雷达图；第 2 章 = `.meters-table` 五维相似度对比表（五格条 + Δ + couple-dynamics §1.4 四档标签，按 Δ 降序）；对比表管差多少、雷达管整体形状，不重复画双人位置
-- 固定文本块（阅读指南/谦卑段落/局限声明）**照录，不得改写**；双人报告另加伦理声明（见 `references/couple-dynamics.md` §7）
+- 双人报告：第 1 章 = `.snap` 人格快照双卡（白描唯一来源 scoring-interpretation §2.2 模板压缩）+ 重叠雷达图；第 2 章 = `.meters-table` 五维相似度对比表（五格条 + Δ + couple-dynamics §1.1 四档标签，按 Δ 降序）；对比表管差多少、雷达管整体形状，不重复画双人位置
+- 固定文本块（阅读指南/局限声明）**照录，不得改写**；谦卑段落已取消（writing-style §9.1），勿生成；双人报告另加伦理声明（见 `references/couple-dynamics.md` §7）
 - 文件命名：单人 `bfi2_{代号}.html`，双人 `bfi2_{代号A}_{代号B}.html`（代号用你给的写法，如 zyh、A001，不带日期——文件系统自带时间戳）
 - 保存路径：默认 `C:/Users/elliot/Desktop/relations/BFI2/`；你指定时从其指定
 - 目标文件已存在（代号重复）→ 停下来问一句：加 `-v2` 后缀，还是同一代号复用（覆盖）
 
 ### Phase 3: 验证（反馈循环，不通过则修复后重来）
 
-1. 运行 lint：`python3 scripts/lint_report.py <报告文件路径>`
-   - 检查：禁用词（含全文档禁止的"咨询师/会谈/咨询中"）、固定文本块（阅读指南/局限声明/谦卑段）、必填容器（meta-header/guide-box/toc/chapter-head/summary-card/chart-box/bar-container/facet-grid/riasec-badge/ev-tag；双人另查 meters-table/meter/scard）、meter-fill CSS、disclaimer、**维度 z 分一致性**（每个维度在标题/雷达图注释/仪表条三处必须一致，防 chart/正文符号翻转）
+1. 运行 lint：`python scripts/lint_report.py <报告文件路径>`
+   - 检查（四组，与脚本实际能力一致）：
+     - 通用容器：meta-header / guide-box / toc / chapter-head / chart-box / ev-tag / combo-card
+     - 仅单人：summary-card / bar-container / facet-grid / riasec-badge；仅双人：meters-table / meter / scard
+     - 其他：禁用词（含"咨询师/会谈/咨询中"）、固定文本块（阅读指南/局限声明）、证据统计一致性、维度 z 分一致性（标题/雷达注释/仪表条三处）、拉引文（数量：单人 7 / 双人 6；单条 ≤22 字）、章节锚点（单人 s4–s7；双人 p1-tag/p2-tag+伦理声明）、文件命名、meter-fill 兼容、disclaimer
+     - 说明：谦卑段已取消不查；summary-card/bar-container/facet-grid/riasec-badge 仅单人必查
    - 有 FAIL 项 → 修复 → 重新 lint，直到全部 PASS
 2. 浏览器渲染检查：打开 HTML 确认雷达图/仪表条可见、速览卡完整、目录锚点可跳转、打印预览无组件断裂
 3. 全部通过才允许交付
@@ -108,6 +112,8 @@ description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做�
 - `scripts/lint_report.py` 对报告文件全部 PASS
 - 报告正文无「研究证实」式的无据断言；所有启发式规则（职业倾向映射、Δ 阈值、高风险组合等）按"经验推测 / 可能 / 倾向于"措辞
 - 报告为双层解读：常模层（相对所标注常模人群的位置）+ 自比层（相对来访者自身的格局与矛盾）
+- 报告 ✅🔶⚪ 标签实际数量与附录统计一致
+- 跨维度组合结论均以 `.combo-card` 承载（并排档位 + z 值 + 典型场景 + 证据标签），无裸断言
 - 文件名符合 `bfi2_{代号}.html` / `bfi2_{代号A}_{代号B}.html`；代号缺失时已向用户问询
 - 咨询师备注只在对话中汇报，未写入任何文件
 
@@ -128,7 +134,7 @@ description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做�
 - **第 4 域方向**：检测到旧格式（负性情绪/神经质）输入，必须先回显确认再翻转，禁止静默翻转。
 - **代号与人数缺失**：输入未提供时先停下来问一句，拿到再继续。
 - **双人数据不齐**：只有一方数据时不得硬写双人报告，必须降级或等待另一方数据。
-- **本机专属路径**：默认输出目录 `C:/Users/elliot/Desktop/relations/BFI2/` 为本机专属（Windows、正斜杠），非通用约定；换机器需改路径。**常模数据在 skill 内置**（`references/bfi2_norms_cn.json`，随 skill 迁移），输入只需原始分，不依赖任何外部数据文件
+- **常模数据内置**：`references/bfi2_norms_cn.json` 随 skill 迁移，输入只需原始分，不依赖任何外部数据文件
 
 ## 常见陷阱
 
@@ -138,6 +144,7 @@ description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做�
 - 双人报告只有一方数据：仍按双人模板写 → 必须降级处理或等待另一方数据
 - 雷达图顶点坐标与 z 标注不符：手算坐标出错 → 图形和数字对不上，信任度崩塌；先按 r=(z+3)/6×半径 逐维度写注释再画点，交付前浏览器放大核对
 - 组合卡写成裸断言："最核心的张力是 A 和 B"这类句子没有档位、没有推导、没有证据标签 → 读者不知道它从哪来
+- 本机专属路径：默认输出目录与常模文件均为 Windows 本机路径约定，换机器需同步修改（常模数据随 skill 内置，不依赖外部文件）
 
 ## References
 
@@ -152,3 +159,4 @@ description: 基于 BFI-2（Big Five Inventory-2）维度与子维度分数做�
 ## Examples
 
 - `examples/bfi2_sample.html` — 单人报告范式（**合成数据 SAMPLE-01**，非真实来访者，用于结构参考与 lint 通过基线）
+- `examples/bfi2_sampleA_sampleB.html` — 双人报告范式（合成数据，lint 双人分支基线：快照卡/对比表/重叠雷达/拉引文 6 条）
