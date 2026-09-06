@@ -55,23 +55,23 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 | HTML 结构/组件/打印样式 | `references/html-templates.md` | 生成报告前读 |
 
 关键要求：
-- 报告第 0 章速览卡 = 题记 + 三条结论卡 + 恋爱一句话，无图表（题记规则 `writing-style.md` §10.8）；报告第 1 章：渐变定位条给「分数模样」，白描卡给每个维度的解释；四条轴的倒向与含义放报告第 3 章，配**三轴极性图**＋假设场景（`html-templates.md` §2.3）
+- 报告第 1 章：降序条形图给「分数模样」，功能速览网格给每个维度的解释；四条轴的倒向与含义放报告第 3 章，配**三轴极性图**＋假设场景（`html-templates.md` §2.3）
 - 类型推断输出**前两名候选 + 主观置信度**（不得用"概率"），附「类型只是名字」固定说明（`writing-style.md` §2.3）；排序按量化打分表（`scoring-algorithm.md` §2.3）执行；偏离只述现象、不编归因（`scoring-algorithm.md` §2.4）
 - 荣格解读（报告第 3 章，核心章）用 **8 位置原型白话框架**（`writing-style.md` §2.2），🔶 标注并声明"理论模型、无实证常模"；正文不出现原型名
 - 依恋推断必须区分**恋爱关系 vs 父母/家人**两个领域；分数落在阈值 ±3 边界上的结论必须标注"对分数波动敏感"；Fe 低时并列替代解释（`attachment-inference.md` §1.1）
 
 ### Phase 2: 生成报告 HTML + 得分 JSON
 
-- 章节结构（0–9 章与附录，各章 chapter-head + 副题 + 章末锐评拉引文）、视觉件（渐变定位条 / 白描卡 / 题记 / 三轴极性图 / 排位剖面图 / 依恋象限图 / 类型栈表）、组件 CSS、打印样式：严格按 `references/html-templates.md` §1-3（唯一视觉事实源 = `examples/mbti_sample.html`）
-- 语言：严格按 `references/writing-style.md`——语气总纲（最高优先级）、术语零容忍（R7）与不给机制性解释（R8）、学术名+白描、功能轴与 8 原型大白话、具体化形式多样、去 AI 味规则、证据三级标签、§10 组合卡与标签式结构
+- 章节结构（11 部分，含原型章与成长方向章，各章 h2 后带一句话结论框）、视觉件（降序条形图 / 功能速览网格 / 三轴极性图 / 排位剖面图 / 依恋象限图 / 类型栈表）、组件 CSS、打印样式：严格按 `references/html-templates.md` §2-3
+- 语言：严格按 `references/writing-style.md`——语气总纲（最高优先级）、术语零容忍（R7）与不给机制性解释（R8）、学术名+白描、功能轴与 8 原型大白话、具体化形式多样、去 AI 味规则、证据三级标签
 - 深度：严格按 `references/writing-style.md` §5——功能互动动力学、核心张力、误解全过程场景分解；单人报告 6000-8500 字
-- 固定文本块（阅读指南/伦理声明/局限声明）**照录，不得改写**
+- 固定文本块（阅读指南/伦理声明/谦卑段落/局限声明）**照录，不得改写**
 - 文件命名（详情见 `references/input-parsing.md` §3-4）：单人 `mbti_<代号>.html` + `mbti_<代号>.json`；双人 `mbti_<A>_<B>.html` + 两份单人次 JSON（v2 时 `mbti_<代号>-v2.*`），保存到 `/c/Users/elliot/Desktop/relations/MBTI/`
 
 ### Phase 3: 验证（反馈循环，不通过则修复后重来）
 
 1. 运行 lint：`python3 scripts/lint_report.py <报告文件路径>`
-   - 检查：正文裸功能代码、禁用词（含统计措辞）、固定文本块、证据标签、A 纸感样式（@page A4、纸纹不打印、680px）、结构件（chapter-head ≥10、pull =9、epigraph、combo-card、定位条 ≥8）、速览卡、打印样式；双人报告额外检查非预测承诺与伦理声明，并跳过单人口径计数
+   - 检查：正文裸功能代码、禁用词（含统计措辞：显著/概率/证实/证明/必然）、固定文本块、证据标签、meter-fill CSS、速览卡、打印样式；双人报告额外检查非预测承诺与伦理声明
    - 有 FAIL 项 → 修复 → 重新 lint，直到全部 PASS
 2. JSON 校验：得分 JSON 可解析、`scores` 8 键齐全且顺序为 `Ne,Ni,Fe,Fi,Te,Ti,Se,Si`、与报告中的分数一致
 3. 浏览器渲染检查：打开 HTML 确认视觉件（速览网格/象限图/表格）渲染正常、速览卡完整、目录锚点可跳转、打印预览无组件断裂
@@ -127,4 +127,4 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 - `references/attachment-inference.md` — 功能→依恋映射（证据地位声明）、双领域规则、替代解释、阈值边界敏感规则、休眠钩子
 - `references/couple-dynamics.md` — 八维度评分、关系天赋、阶段/冲突/风险/解决办法模板、伦理声明
 - `references/writing-style.md` — 语气总纲、学术名+白描命名表、去 AI 味规则、深度规范、禁用词表、证据标签、固定文本块
-- `references/html-templates.md` — CSS 变量、组件类、视觉件规范（渐变定位条/白描卡/依恋象限图/类型栈表）、报告结构（0–9 章与附录）、输出与验证规范
+- `references/html-templates.md` — CSS 变量、组件类、视觉件规范（功能速览网格/依恋象限图/类型栈表）、报告结构（11 部分）、输出与验证规范

@@ -5,10 +5,7 @@
 退出码: 0 = 全部通过; 1 = 存在 FAIL; 2 = 文件/参数错误
 
 检查项: 正文裸功能代码 / 禁用词（含统计措辞）/ 固定文本块 / 证据标签 /
-A 纸感样式（@page A4、纸纹不打印、正文 680px、已取消视觉件不回流）/
-结构件（chapter-head、pull 锐评、epigraph 题记、combo-card、定位条）/
-速览卡 / 打印样式 / 双人报告专项（非预测承诺 + 伦理声明；双人跳过单人口径计数）
-2026-09-06 视觉改造：移除谦卑段落必查（已取消，原句列入禁用词）。
+meter-fill CSS / 速览卡 / 打印样式 / 双人报告专项（非预测承诺 + 伦理声明）
 """
 import re
 import sys
@@ -33,17 +30,16 @@ FORBIDDEN_BODY = ["劣势功能", "主导功能", "Fi-Ni loop", "Fi-Ni Loop", "�
                   "自洽", "感官体验", "感官投入", "收拢",
                   # 报告正文禁止的外部关系导向
                   "咨询师", "会谈", "咨询中",
-                  # 统计措辞（"不是统计概率"在扫描前豁免，见 main 中的替换）
+                  # 统计措辞（结论一律用倾向/方向 + 证据标签表达；置信度固定说明中的
+                  # "不是统计概率"在扫描前豁免，见 main 中的 neutralize）
                   "显著", "证实", "证明", "概率"]
-# 任何位置都禁止（含附录；神经质为整体不涉及；谦卑段落已取消 2026-09-06）
-FORBIDDEN_GLOBAL = ["你就是太", "你一定会", "你肯定会", "神经质", "情绪稳定性", "必然",
-                    "以你的经历为准"]
-# 已取消的视觉件（红线：勿生成）
-FORBIDDEN_CSS = ["prog-bar", "first-letter"]
+# 任何位置都禁止（含附录；神经质为整体不涉及）
+FORBIDDEN_GLOBAL = ["你就是太", "你一定会", "你肯定会", "神经质", "情绪稳定性", "必然"]
 
 REQUIRED_BLOCKS = {
     "阅读指南": "怎么读这份报告",
     "局限声明": "不构成临床诊断",
+    "谦卑段落": "以你的经历为准",
 }
 
 
@@ -63,7 +59,7 @@ def main() -> int:
         return 2
     try:
         html = path.read_text(encoding="utf-8")
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:  # noqa: BLE001 - 给调用者明确错误而非栈
         print(f"错误: 无法读取文件: {e}")
         return 2
 
@@ -75,9 +71,6 @@ def main() -> int:
         if not ok:
             failures.append(name)
 
-    # 双人报告判定（3b 与结构件口径共用）
-    is_couple = "p1-tag" in html or "这段关系可能会怎样发展" in html
-
     # 检查区 = 去掉 <style>、灰色括注 .fn-code、可选阅读附录 .appendix-tech
     body = strip_regions(html, [
         r"<style.*?</style>",
@@ -85,6 +78,7 @@ def main() -> int:
         r"<section[^>]*class=\"[^\"]*appendix-tech[^\"]*\"[^>]*>.*?</section>",
         r"<div[^>]*class=\"[^\"]*appendix-tech[^\"]*\"[^>]*>.*?</div>",
     ])
+    # 去掉剩余标签，只留文本
     text = re.sub(r"<[^>]+>", " ", body)
     # 豁免置信度固定说明（照录块，子串稳定）：其中的"不是统计概率"是否定用法
     text = text.replace("不是统计概率", "非统计判断")
@@ -102,15 +96,13 @@ def main() -> int:
     bad_global = [w for w in FORBIDDEN_GLOBAL if w in html]
     check("无禁用词（正文）", not bad_words, "出现: " + ", ".join(bad_words))
     check("无禁用词（全局）", not bad_global, "出现: " + ", ".join(bad_global))
-    check("已取消视觉件未回流", not any(c in html for c in FORBIDDEN_CSS),
-          "出现: " + ", ".join([c for c in FORBIDDEN_CSS if c in html]))
 
-    # 3. 固定文本块（谦卑段落已取消，不再必查）
+    # 3. 固定文本块
     for name, needle in REQUIRED_BLOCKS.items():
         check(f"固定文本块存在: {name}", needle in html, f"未找到关键句「{needle}」")
 
-    # 3b. 双人报告专项
-    if is_couple:
+    # 3b. 双人报告专项（出现双人结构时检查）
+    if "p1-tag" in html or "这段关系可能会怎样发展" in html:
         check("双人报告：非预测承诺存在", "不是对你们关系的预测" in html,
               "未找到固定句「不是对你们关系的预测」（couple-dynamics.md §3.4）")
         check("双人报告：伦理声明存在", "不是对这段关系的判决" in html,
@@ -119,7 +111,7 @@ def main() -> int:
     # 4. 证据标签至少使用一次
     check("使用证据标签(ev-tag)", bool(re.search(r"ev-(research|theory|hypothesis)", html)))
 
-    # 5. meter-fill CSS（仅当报告含评分条时检查，双人组件向后兼容）
+    # 5. meter-fill CSS（仅当报告含评分条时检查）
     if "meter-bar" in html or "meter-fill" in html:
         m = re.search(r"\.meter-fill\s*\{([^}]*)\}", html)
         css = m.group(1) if m else ""
@@ -132,28 +124,6 @@ def main() -> int:
 
     # 7. 打印样式
     check("存在 @media print", "@media print" in html)
-
-    # 8. A 纸感样式（2026-09-06 改造新增）
-    check("存在 @page A4", bool(re.search(r"@page[^{]*\{[^}]*size:\s*A4", html)))
-    print_zone = ""
-    if "@media print" in html:
-        start = html.find("@media print")
-        print_zone = html[start: html.find("</style>", start)]
-    check("纸纹背景存在（屏幕端 feTurbulence 噪点）", "feTurbulence" in html)
-    check("纸纹不打印（print 块去背景图）",
-          "background-image" in print_zone and "none" in print_zone)
-    check("正文列宽 680px", bool(re.search(r"body\s*\{[^}]*max-width:\s*680px", html)))
-
-    # 9. 结构件（单人口径；双人报告本轮只继承 CSS 底，跳过计数）
-    if not is_couple:
-        n_head = len(re.findall(r'class="[^"]*chapter-head', html))
-        n_pull = len(re.findall(r'class="pull"', html))
-        n_track = len(re.findall(r'class="[^"]*bar-track', html))
-        check("章节头 ≥10（00–09）", n_head >= 10, f"实际 {n_head}")
-        check("拉引文 = 9（第 1–9 章每章一条）", n_pull == 9, f"实际 {n_pull}")
-        check("定位条 ≥8 行(.bar-track)", n_track >= 8, f"实际 {n_track}")
-        check("速览卡题记存在(.epigraph)", "epigraph" in html)
-        check("组合卡存在(.combo-card)", "combo-card" in html)
 
     print()
     if failures:
