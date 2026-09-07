@@ -78,7 +78,7 @@ Fi	67.86
 
 ## 4. 得分 JSON 输出规范
 
-每次分析在生成报告 HTML 的同时落盘一份得分 JSON，与 HTML 同目录（默认 `/c/Users/elliot/Desktop/relations/MBTI/`），命名 `mbti_<用户代号>.json`（v2 时 `mbti_<代号>-v2.json`）。
+每次分析在生成报告 HTML 的同时落盘一份得分 JSON，与 HTML 同目录（默认 `~/Desktop/MBTI/`），命名 `mbti_<用户代号>.json`（v2 时 `mbti_<代号>-v2.json`）。
 
 ```json
 {

@@ -1,17 +1,17 @@
 # HTML 输出模板
 
-所有报告 = 来访者直接阅读的终端产品,默认保存到 `/c/Users/elliot/Desktop/relations/MBTI/`(Git Bash 路径)。语言规范见 writing-style.md。
+所有报告 = 来访者直接阅读的终端产品,默认保存到用户桌面 `~/Desktop/MBTI/`。语言规范见 writing-style.md。
 
-> **2026-09-07 版**(用户批复落地):**单人报告 = 参考正文 hero 式**(结构完全以 `jung-8-function-report.html` 为准,纸感令牌 + 静态 SVG + 全件表格化)。单人视觉事实源 = `examples/mbti_sample.html`(lint PASS)——改任何视觉规则前,先看样例实际长什么样。
+> **单人报告 = 参考正文 hero 式**(结构完全以 `jung-8-function-report.html` 为准,纸感令牌 + 静态 SVG + 全件表格化)。单人视觉事实源 = `examples/mbti_sample.html`(lint PASS)——改任何视觉规则前,先看样例实际长什么样。
 >
-> **双人报告已对齐 2026-09-07**(`couple_report.html` 为基准):封面双人雷达 + 00–05 章 + footer,图表**内联 JS 数据驱动**(与单人静态 SVG 不同);规则见 `references/couple-report.md`,组件规范与双人口径 lint 见 §5。双人视觉事实源 = `examples/mbti_sampleA_sampleB.html`(新双人基线,lint 双人口径 PASS);as-built 规格 `docs/2026-09-07-couple-report-design.md`。旧八维度评分/双栏卡/评分条「颜色=人」体系与旧样例已归档 `examples/backup-2026-09-07/`。设计沿革:`docs/2026-09-06-reskin-design.md`、`docs/2026-09-07-reference-content-plan.md`。
+> **双人报告**(`couple_report.html` 为基准):封面双人雷达 + 00–05 章 + footer,图表**内联 JS 数据驱动**(与单人静态 SVG 不同);规则见 `references/couple-report.md`,组件规范与双人口径 lint 见 §5。双人视觉事实源 = `examples/mbti_sampleA_sampleB.html`(lint 双人口径 PASS);as-built 规格 `docs/2026-09-07-couple-report-design.md`。
 
 ## Contents
 - §1 单人报告基础(令牌 / 排版 / 组件类 / 打印样式)
 - §2 单人视觉件(雷达 / 柱状图 / 天平图 / 表格件总表 / 场景块等)
 - §3 单人报告结构模板(hero + 01–07 章 + footer)
 - §4 输出规范与交付前验证
-- §5 双人报告(2026-09-07 新版,JS 数据驱动)
+- §5 双人报告(JS 数据驱动)
 
 ## 1. 单人报告基础
 
@@ -60,9 +60,9 @@
 | `.footer`(+#hero 对应) | 页脚 | `border-top:1px solid var(--border);margin-top:64px;padding:26px 0 0;text-align:center`;`.meta-line` 黑体 .74em muted(报告日期 · 用户代号 · 数据来源);`.disc` 黑体 .8em muted max-width 40em(含临床句) |
 | `.fn` / `.muted` / `p.lead` | 彩色代码 / 弱化小字 / 章引言 | `.fn{衬线 600}`;`.muted{color:var(--muted);font-size:.9em}`;`.lead{font-size:1.02em}` |
 
-**卡框禁用清单(出现即 lint FAIL,防回流)**:`.card`、`.grid2`、`.ov-grid`、`.procon`(2026-09-07 全件表格化);单人报告同时禁用旧结构件:`chapter-head`、`pull`、`epigraph`、`summary-card`、`fnchart/.fn-*`、`axis-block/.axis-*`、`combo-card`、`type-cards`、`meta-header`、`guide-box`、`toc`、剖面图/依恋象限图/类型栈打分表(见 §2.7 废弃清单)。
+**卡框禁用清单(出现即 lint FAIL,防回流)**:`.card`、`.grid2`、`.ov-grid`、`.procon`(全件表格化);单人报告同时禁用旧结构件:`chapter-head`、`pull`、`epigraph`、`summary-card`、`fnchart/.fn-*`、`axis-block/.axis-*`、`combo-card`、`type-cards`、`meta-header`、`guide-box`、`toc`、剖面图/依恋象限图/类型栈打分表(见 §2.7 废弃清单)。
 
-### 1.3 打印样式(必须有——来访者会打印或导 PDF)
+### 1.4 打印样式(必须有——来访者会打印或导 PDF)
 
 逐字使用(与样例一致):
 
@@ -99,9 +99,9 @@
 ### 2.3 天平图 ×4(02 章,SVG,每轴一张)
 
 - `viewBox 0 0 640 210`;支点三角 `M320 142 l-13 20 h26 z`(fill #B9B29F)+ 梁(半长 240,stroke var(--accent) 4px 圆头,圆心 (320,120))
-- **倾角 = clamp(−4°, +4°, (右分−左分)×0.16°/分)**——**分高的一端更重、往下沉**;两端接近时天平放平(2026-09-07 用户批示:与参考报告「强端翘起」方向相反)
+- **倾角 = clamp(−4°, +4°, (右分−左分)×0.16°/分)**——**分高的一端更重、往下沉**;两端接近时天平放平(与参考报告「强端翘起」方向相反)
 - 两端圆点 r7(功能色)+ 外环 r12(同色,透明度 = 点透明度×0.32,stroke 1.5);**点透明度 = 相对高低** `(分−min)/(max−min)×0.75+0.2`
-- 点旁标注两行:①「Ni · 65.5」(衬线 600 功能色 15px,**含精确分**;y = 点 y+32)②轴词一句(黑体 11.5px muted;y = 点 y+50):发散可能↔预见收敛 / 体验当下↔存档与熟路 / 忠于内核↔推进结果 / 回应他人↔自洽建模——**不用昵称层**(2026-09-07 评审废弃)
+- 点旁标注两行:①「Ni · 65.5」(衬线 600 功能色 15px,**含精确分**;y = 点 y+32)②轴词一句(黑体 11.5px muted;y = 点 y+50):发散可能↔预见收敛 / 体验当下↔存档与熟路 / 忠于内核↔推进结果 / 回应他人↔自洽建模——**不用昵称层**(评审废弃)
 - **caption 四分支(固定文案,按分差自动选用;X 用 `<tspan>` 功能色强调,y=196 居中)**:
 
 | 条件 | 文案 |
@@ -184,7 +184,7 @@ footer       .meta-line(报告日期 · 用户代号 · 数据来源)+ .disc(参
 ### 4.1 文件命名与保存
 - 单人:`mbti_<用户代号>.html` + `mbti_<用户代号>.json`;双人:`mbti_<代号A>_<代号B>.html` + 两份单人次 JSON;v2 命名 `mbti_<代号>-v2.*`
 - 用代号不用真名;**日期不进文件名**,只出现在 footer `.meta-line`
-- 保存路径:默认 `/c/Users/elliot/Desktop/relations/MBTI/`;用户另行指定时从其指定
+- 保存路径:默认 `~/Desktop/MBTI/`;用户另行指定时从其指定
 - 得分 JSON 的 schema 与字段规则见 `input-parsing.md` §4
 
 ### 4.2 必须标注的声明
@@ -196,8 +196,6 @@ footer       .meta-line(报告日期 · 用户代号 · 数据来源)+ .disc(参
 
 ### 4.3 交付前验证(强制)
 
-> 环境注记:本机 `python3` 是 Windows Store stub——**命令一律用 `python`**。
-
 1. 运行 lint:`python scripts/lint_report.py <报告文件>`,输出「全部检查通过。」。单人检查项:
    - hero(kicker + h1 定位句 + lede 固定句 + 雷达 svg);柱状图(rect ≥8);天平图 =4;关键词总表 / 对照总表 / 优势表 / 建议表 / 盲区表三列头;候选类型表;rel 四键;兼容表 ≥4 行;duo-t =4;三句句式;07 边界声明;footer 临床句 + meta 行
    - 禁词(writing-style §6,含比喻收缩禁用系);卡框与已废弃件回流 = FAIL;`@page A4`、噪点、680px、@media print
@@ -207,11 +205,11 @@ footer       .meta-line(报告日期 · 用户代号 · 数据来源)+ .disc(参
 4. 基线样例回归:改过 lint 或 CSS 后先跑样例——`python scripts/lint_report.py examples/mbti_sample.html`(必须 PASS)
 5. 全部通过才允许交付
 
-## 5. 双人报告（2026-09-07 新版，JS 驱动）
+## 5. 双人报告（JS 驱动）
 
-**双人报告已对齐 2026-09-07 新基线**：结构 = 封面 + 00–05 章 + footer；图表由内联 `<script>` 从 `A`/`B` 两个数据对象自动重算（双人「换数据即生成」的刻意设计，与单人静态 SVG 不同）。完整规则（定位/数据契约/章节/文案/保留固定文本/口径差异）见 **`references/couple-report.md`**；as-built 设计规格存档 `docs/2026-09-07-couple-report-design.md`。
+结构 = 封面 + 00–05 章 + footer；图表由内联 `<script>` 从 `A`/`B` 两个数据对象自动重算（双人「换数据即生成」的刻意设计，与单人静态 SVG 不同）。完整规则（定位/数据契约/章节/文案/保留固定文本/口径差异）见 **`references/couple-report.md`**；as-built 设计规格存档 `docs/2026-09-07-couple-report-design.md`。
 
-> 视觉事实源 = `examples/mbti_sampleA_sampleB.html`（新双人基线，lint 双人口径 PASS）。旧 01–08 章结构、八维度评分条（.fit-*）、双栏卡（.person-cards）、四阶段/冲突/风险模板、`.pull` 锐评、`.chapter-head`、正文证据标签（ev-tag）**全部废弃**，出现即 FAIL；旧模板与旧样例归档于 `examples/backup-2026-09-07/`。
+> 视觉事实源 = `examples/mbti_sampleA_sampleB.html`（lint 双人口径 PASS）。旧 01–08 章结构、八维度评分条（.fit-*）、双栏卡（.person-cards）、四阶段/冲突/风险模板、`.pull` 锐评、`.chapter-head`、正文证据标签（ev-tag）**全部废弃**，出现即 FAIL。
 
 ### 5.1 组件类与 CSS（新双人，逐字见新样例 `<style>` 块）
 

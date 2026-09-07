@@ -1,13 +1,13 @@
 ---
 name: analyzing-cognitive-functions
-description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, Si) and generates client-ready HTML personality reports — post-Jungian typology analysis (Jung's four functions × two attitudes, developed into the 8-function score model and eight-position stack by Myers-era typology and Beebe; not Jung's own original formulation) with MBTI type inference, attachment inference (transitional module), personality portrait, growth advice — plus couple compatibility reports. Also exports a reusable score JSON. Use when the user provides 8-function scores from the local interactive test page (copied score text or results JSON), or asks for 荣格/八维/认知功能/人格分析, 依恋类型, 恋爱适配, 情侣分析, mbti 报告.
+description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, Si) and generates client-ready HTML personality reports with MBTI type inference, attachment inference, personality portrait, and growth advice — plus couple compatibility reports. Also exports a reusable score JSON. Use when the user provides 8-function scores (copied score text or results JSON), or asks for 荣格/八维/认知功能/人格分析, 依恋类型, 恋爱适配, 情侣分析, mbti 报告.
 ---
 
 # Analyzing Cognitive Functions — 荣格八维人格分析与恋爱适配
 
 ## Goal
 
-以**荣格八维理论为地基**：四条功能轴（感知轴＝实感/直觉，判断轴＝思考/情感）＋ 内倾/外倾态度 ＋ 八位置原型（Beebe），把来访者的测试分数解读成一份「来访者看得懂、咨询师可核对、可证伪」的 HTML 报告 + 一份可复用的得分 JSON。**冠名说明**：荣格本人只提出四种功能（感觉/直觉/思考/情感）× 两种态度（内倾/外倾）；本 skill 使用的"八维"——八个功能的分数框架、16 型功能栈与八位置原型——是荣格之后的发展（迈尔斯等人的类型学实践、Beebe 的八位置原型），并非荣格本人原创，报告中不得将八功能模型表述为荣格本人的原始模型。**MBTI 类型只是窄标签**：仅用于快速定位，并明示类型学的局限，不作为报告的组织框架。依恋推断为过渡模块（证据地位见 `references/attachment-inference.md`）。**读者画像（Goal 级，2026-09-07 定稿）**：无心理学学术基础、受过良好教育、大学毕业的年轻人——语言直观、形象、一次读懂，比喻必须一眼解出（收缩原则见 `references/writing-style.md` §4.1）。**报告形态（2026-09-07 定稿）**：正文结构完全以参考报告为坐标——hero 首屏（定位句 + lede 固定句 + 雷达图）+ 01 总览 / 02 四组对照 / 03 优势 / 04 盲区 / 05 亲密关系 / 06 发展 / 07 边界声明 + 附录得分明细；呈现框架用「四组同能力对照」（Ni–Ne、Se–Si、Fi–Te、Fe–Ti），类型推断算法仍按经典功能轴计算不动；**依恋推断不进单人报告正文**，结果只进咨询师备注。
+把来访者提供的 8 项认知功能分数，解读成一份「来访者看得懂、咨询师可核对」的 HTML 报告 + 一份可复用的得分 JSON，并在对话中向咨询师输出【咨询师备注】。读者是无心理学基础的年轻人：语言直观、形象、一次读懂（画像与语言规范见 `references/writing-style.md` §1）。MBTI 类型只是窄标签：仅用于快速定位，类型学局限的固定说明照录 `references/writing-style.md` §2.3。
 
 ## 角色与产物
 
@@ -15,13 +15,11 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 
 1. **报告 HTML**（终端产品，100% 来访者视角，大白话，零术语）→ 保存为文件
 2. **得分 JSON**（`mbti_<用户代号>.json`，供后续双人分析、复测、跨 skill 复用）→ 与 HTML 同目录
-3. **咨询师备注**（证据地位 ✅🔶⚪、低置信度结论、阈值边界项、作答质量、依恋推断结果、会谈核实建议——2026-09-07 起单人报告正文已无证据标签与依恋章，此为唯一出口）→ 只在对话中汇报，不写进任何文件；咨询师要求时才另存
+3. **咨询师备注**（证据地位 ✅🔶⚪、低置信度结论、阈值边界项、作答质量、依恋推断结果、会谈核实建议——单人报告正文无证据标签与依恋章，备注是唯一出口）→ 只在对话中汇报，不写进任何文件；咨询师要求时才另存
 
-**测试数据来源**：本地测试页 `/c/Users/elliot/Desktop/relations/data/8function_interactive.html`（70 题交互计分，百分制 0-100）；题库与计分公式见 `/c/Users/elliot/Desktop/relations/data/soulstation_8function_70.json`。本 skill 不使用其他来源的分数。
+**输入**：「复制分数」文本或「导出结果 JSON」+ 用户另行提供的来访者代号。解析规则见 `references/input-parsing.md`。
 
-**输入**：测试页产出的两种格式之一（「复制分数」文本 / 「导出结果 JSON」）+ 用户另行提供的来访者代号。解析规则见 `references/input-parsing.md`。
-
-**输出路径**：默认 `/c/Users/elliot/Desktop/relations/MBTI/`（Git Bash 路径）；用户另行指定时从其指定。
+**输出路径**：默认用户桌面 `~/Desktop/MBTI/`；用户另行指定时从其指定。
 
 ## Workflow
 
@@ -37,9 +35,9 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 ### Phase 0: 输入解析与质量检查
 
 1. 识别输入形式（结果 JSON / 复制分数文本），按 `references/input-parsing.md` §1 解析并回显，经用户确认后才可继续
-2. 归一化为固定顺序 `Ne, Ni, Fe, Fi, Te, Ti, Se, Si`（规则见 §2），随后执行质量检查（规则见 `references/scoring-algorithm.md` §3）：完整性 → 十分制护栏 → 扁平剖面检测 → 作答质量模式
-3. 获取/确认**用户代号**：没提供 → 停下反问；目标目录已有同名文件 → 问「加 -v2 还是覆盖」（规则见 `references/input-parsing.md` §3）
-4. 确认人数：1 人 → 单人报告；2 人 → 单人报告 ×2 + 双人报告。**双人报告必须双方数据齐全**，仅一方数据时降级处理（规则见 `references/couple-report.md` §0）
+2. 归一化为固定顺序 `Ne, Ni, Fe, Fi, Te, Ti, Se, Si`（规则见 `references/input-parsing.md` §2），随后执行质量检查（规则见 `references/scoring-algorithm.md` §3）：完整性 → 十分制护栏 → 扁平剖面检测 → 作答质量模式
+3. 获取/确认**用户代号**（规则见 `references/input-parsing.md` §3）；代号缺失或目标目录已有同名文件 → 按 Stop rules 停下反问
+4. 确认人数：1 人 → 单人报告；2 人 → 单人报告 ×2 + 双人报告，**双方数据齐全为硬前置**；仅一方数据 → 按 Stop rules 降级（规则见 `references/couple-report.md` §0）
 
 ### Phase 1: 核心分析
 
@@ -55,24 +53,20 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 | HTML 结构/组件/打印样式 | `references/html-templates.md` | 生成报告前读 |
 
 关键要求：
-- 报告结构（2026-09-07 版）= hero（kicker + 定位句 + lede 固定句 + **雷达图**）→ 01 总览（关键词总表 + **柱状图** + 候选类型表 + 「别把任何标签当身份证」固定句）→ 02 四组对照（引言照录 + 对照总表 + **天平图 ×4** + 强端·代价表 + 双弱轴「福利·代价」表 + 「你是不是也这样」场景块）→ 03 优势表 → 04 盲区表（盲区/真实成本/可以怎么做）→ 05 亲密关系（rel 定义列表 + 兼容表 + 三句句式）→ 06 建议表 → 07 边界声明 + 附录得分明细 + footer（规则 `references/html-templates.md` §2–§3；唯一视觉事实源 = `examples/mbti_sample.html`）
-- 类型推断输出**前两名候选 + 主观置信度**（不得用"概率"），呈现在 01 章候选类型表；类型只是窄标签的固定说明照录（`references/writing-style.md` §2.3）；排序按量化打分表（`references/scoring-algorithm.md` §2.3）执行；偏离只述现象、不编归因（`references/scoring-algorithm.md` §2.4）
-- 荣格解读落在 02 章四组对照（荣格学派口径，冠名不得归荣格本人——引言固定句照录）；8 位置原型仅以附录「角色」列白话近似呈现（`references/writing-style.md` §2.2），英雄/父母等原型名不进正文
-- 依恋推断必须区分**恋爱关系 vs 父母/家人**两个领域；分数落在阈值 ±3 边界上的结论必须标注"对分数波动敏感"；Fe 低时并列替代解释（`references/attachment-inference.md` §1.1）——**结果只进咨询师备注，不进报告正文**（2026-09-07）
+- 类型推断输出**前两名候选 + 主观置信度**（不得用"概率"），呈现于 01 章候选类型表；排序按量化打分表（`references/scoring-algorithm.md` §2.3）执行
+- 荣格解读落在 02 章四组对照，冠名不得归荣格本人（冠名声明见 `references/scoring-algorithm.md` 文首）；8 位置原型仅以附录「角色」列白话近似呈现（`references/writing-style.md` §2.2），原型名不进正文
+- 依恋推断必须区分**恋爱关系 vs 父母/家人**两个领域；分数落在阈值 ±3 边界上的结论必须标注"对分数波动敏感"；Fe 低时并列替代解释（`references/attachment-inference.md` §1.1、§3.3–§3.4）——**结果只进咨询师备注，不进报告正文**
 
 ### Phase 2: 生成报告 HTML + 得分 JSON
 
-- 章节结构（hero + 01–07 章 + footer + 附录得分明细）、视觉件（雷达 / 柱状图 / 天平图 ×4 / 六张 hairline 表格 / rel 定义列表 / 场景块）、组件 CSS、打印样式：严格按 `references/html-templates.md` §1–§3（唯一视觉事实源 = `examples/mbti_sample.html`）；**卡框类(.card/.grid2 等)与旧章件(速览卡/题记/pull/彩条图/轴对立图/剖面图/象限图/栈表/组合卡)禁用——出现即 FAIL**
-- 语言：严格按 `references/writing-style.md`——语气总纲（最高优先级）、读者画像（直观形象一次读懂）、比喻收缩原则（§4.1：比喻必须一眼解出；记账系/暗房系/租客系/机械系统系禁用；昵称层废弃）、术语零容忍（R7）与不给机制性解释（R8）、证据标签退出正文（→ 咨询师备注口径 §7）、§10 语言件规则
-- 深度：严格按 `references/writing-style.md` §5——功能互动动力学、张力由 02 章承载、场景块收束；单人报告 **2800–4000 字**
-- 固定文本块（hero lede / 01 章末标签句 / 02·04 章引言 / 07 边界声明 / footer 收尾句）**照录，不得改写**（writing-style §9）
-- 双人报告：**2026-09-07 新版（JS 数据驱动，已对齐单人新基线）**——封面双人雷达 + 00 速写卡 / 01 四象限矩阵 / 02 四轴光谱条 / 03 亲密关系 / 04 怎么搭 / 05 边界声明 + 附录得分对照表 + footer；结构/数据契约（`A`/`B` 对象）/文案/伦理口径照录 `references/couple-report.md`，组件与视觉规格见 `references/html-templates.md` §5；as-built 规格 `docs/2026-09-07-couple-report-design.md`；成品样例 `examples/mbti_sampleA_sampleB.html`。人物编码：**实心=A、空心=B**，功能色只属于功能；**不判合分、证据标签退出正文**
-- 文件命名（详情见 `references/input-parsing.md` §3-4）：单人 `mbti_<代号>.html` + `mbti_<代号>.json`；双人 `mbti_<A>_<B>.html` + 两份单人次 JSON（v2 时 `mbti_<代号>-v2.*`），保存到 `/c/Users/elliot/Desktop/relations/MBTI/`
+- **单人报告**：章节结构（hero + 01–07 章 + 附录得分明细 + footer）、视觉件、组件 CSS、打印样式严格照录 `references/html-templates.md` §1–§4；唯一视觉事实源 = `examples/mbti_sample.html`；卡框类与已废弃章件禁用——出现即 FAIL（废弃清单见 html-templates §2.7）
+- **语言与深度**：全部按 `references/writing-style.md`——语气总纲（最高优先级）、读者画像（§1）、比喻纪律（§4.1）、术语零容忍与不给机制解释（R7/R8）、证据标签退出正文（§7，备注口径）、语言件规则（§10）、深度规范（张力由 02 章承载，单人 **2800–4000 字**，§5）；固定文本块（hero lede / 01 章末标签句 / 02·04 章引言 / 07 边界声明 / footer 收尾句）**照录，不得改写**（§9）
+- **双人报告**：JS 数据驱动版；结构/数据契约（`A`/`B` 对象）/文案/伦理口径照录 `references/couple-report.md`，组件与视觉规格见 `references/html-templates.md` §5，成品样例 `examples/mbti_sampleA_sampleB.html`；**不判合分**、证据标签退出正文
+- **文件命名**（详情见 `references/input-parsing.md` §3–4）：单人 `mbti_<代号>.html` + `mbti_<代号>.json`；双人 `mbti_<A>_<B>.html` + 两份单人次 JSON（v2 规则同 §3）；保存到默认输出路径（见「角色与产物」）
 
 ### Phase 3: 验证（反馈循环，不通过则修复后重来）
 
-1. 运行 lint：`python scripts/lint_report.py <报告文件路径>`（本机 `python3` 是 Windows Store 占位程序，一律用 `python`）。检查项完整清单见 `references/html-templates.md` §4.3（单人）/ §5.3（双人）——要点：单人口径查 hero（kicker/定位句/lede/雷达）、柱状图、天平图 =4、六张表格件、固定句、禁用词（含比喻收缩禁用系）、卡框与已废弃件回流、@page A4 + 噪点 + 680px + 打印；双人报告走双人口径（`A`/`B` 各 8 键数据对象、renderHeroRadar/renderQuadrant/renderBeam×4 挂载、四轴 L/R 轴词对、速写卡 ×2 + MBTI 参考 ×2、伦理三句「判决书/不是算出来的/不构成临床诊断」、旧双人件与证据标签回流 = FAIL、不判合分、720px），单人结构件自动跳过
-   - 有 FAIL 项 → 修复 → 重新 lint，直到全部 PASS；改过 lint 或 CSS 后，先对两个基线样例回归（`examples/mbti_sample.html` 单人、`examples/mbti_sampleA_sampleB.html` 双人，均须 PASS）再出新报告
+1. 运行 lint：`python scripts/lint_report.py <报告文件路径>`。检查项完整清单见 `references/html-templates.md` §4.3（单人）/ §5.3（双人）；有 FAIL 项 → 修复 → 重新 lint，直到全部 PASS。改过 lint 或 CSS 后，先对两个基线样例回归（`examples/mbti_sample.html` 单人、`examples/mbti_sampleA_sampleB.html` 双人，均须 PASS）再出新报告
 2. JSON 校验：得分 JSON 可解析、`scores` 8 键齐全且顺序为 `Ne,Ni,Fe,Fi,Te,Ti,Se,Si`、与报告中的分数一致
 3. 浏览器渲染检查：打开 HTML 确认视觉件（雷达形状 / 柱状图数值 / 天平倾角=分高端在下 / caption 分支 / hairline 表格）渲染正常、锚点可跳转、打印预览无组件断裂且纸纹不打印（注意浏览器缓存——用带 `?v=时间戳` 的地址强制刷新）
 4. 全部通过才允许交付
@@ -111,21 +105,11 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 - 双人场景仅一方数据 → 降级单人报告 + 一节"从你这方看到的关系模式"，禁止推测缺席方
 - 来访者对类型/关系模式结论有异议 → 以来访者反馈为准，调整报告
 
-## 测评指导语（咨询师可直接发给来访者）
-
-> 请按你**日常的真实状态**作答，不要按你希望自己成为的样子来答。没有对错好坏之分。尽量一次做完，中间不要隔太久。做完后点结果页的**「复制分数」**或**「导出结果 JSON」**，把内容发给我即可。
-
-## 实践注记（给咨询师）
-
-- 依恋推断结果**只进咨询师备注，不进报告正文**（2026-09-07）；来访者提供 ECR-R 短版实测分时实测优先（休眠钩子见 `references/attachment-inference.md` §4.3）
-- 如会谈涉及情绪困扰或需要大五人格画像，另行安排 BFI-2 实测（归 `analyzing-bigfive` skill，与本报告无关）
-- 依恋推断是过渡模块：ECR-R 实测数据源引入后将迁移为独立依恋分析 skill（迁移注记见 `references/attachment-inference.md` 文末）
-
 ## References
 
-- `references/input-parsing.md` — 两种输入格式解析、归一化（固定顺序）、代号规则、得分 JSON schema
-- `references/scoring-algorithm.md` — 轴结构分析（四条经典功能轴）、16 型功能栈、Beebe 原型位置（白话列）、类型推断量化打分表、输入质量检查（**推断算法 2026-09-07 不变**；报告呈现框架 = 四组同能力对照，见 writing-style §2.1）
-- `references/attachment-inference.md` — 功能→依恋映射（证据地位声明）、双领域规则、替代解释、阈值边界敏感规则、休眠钩子（结果只进咨询师备注）
-- `references/couple-report.md` — 双人（恋人）报告规则（2026-09-07 新版，JS 数据驱动）：定位与数据契约、00–05 章 + 封面、四象限/双雷达/四轴光谱视觉件、逐功能对照 + 四轴自比文案、伦理与不判合分口径、与单人差异（旧 `couple-dynamics.md` 八维度评分/天赋/四阶段模板已归档 examples/backup-2026-09-07/）
-- `references/writing-style.md` — 语气总纲、读者画像（直观形象一次读懂）、比喻收缩原则（§4.1 禁记账/暗房/租客/机械系统系）、四组对照与天平 caption 四分支（§2.1）、深度规范（2800–4000 字，§5）、禁用词表、证据标签（→ 备注口径，§7）、固定文本块（§9）、语言件规则（§10，单人 + 双人共用）
-- `references/html-templates.md` — 单人新基线（hero + 01–07 章：雷达 / 柱状图 / 天平图 ×4 / 六张 hairline 表格 / rel 定义列表 / 场景块 / footer；§1–§4）；双人报告 2026-09-07 新版，JS 数据驱动（§5）
+- `references/input-parsing.md` — 输入格式解析、归一化顺序、用户代号规则、得分 JSON schema
+- `references/scoring-algorithm.md` — 轴结构分析、类型推断矩阵与打分表、冠名声明、输入质量检查
+- `references/attachment-inference.md` — 功能→依恋映射（证据地位 §0）、双领域与阈值边界规则、休眠钩子与迁移注记
+- `references/couple-report.md` — 双人报告：定位与数据契约、章节结构、文案与伦理口径
+- `references/writing-style.md` — 语气总纲、命名表与四组对照讲法、比喻纪律、固定文本块、语言件规则
+- `references/html-templates.md` — 单人/双人报告结构与视觉件规格、lint 检查项清单
