@@ -13,9 +13,11 @@
   检查：结构件计数 / 固定句 / 比喻收缩禁词（记账系·暗房系·租客系·机械系统系·昵称层）/
   卡框与旧件回流 = FAIL / @page A4 + 噪点 + 680px + @media print。
   裸功能代码在单人正文解禁（彩色代码 = 身份）；证据标签退出正文。
-- 双人报告 = 2026-09-06 冻结基线：单人结构件自动跳过；走双人口径——
-  裸代码禁令 + 证据标签 + 章节头 =8 + pull =8 + fit-fill ≥16 + 非预测承诺 + 伦理声明。
-2026-09-06 及更早的修订史见文件头存档（git 历史与 docs/）。
+- 双人报告 = 2026-09-07 新版（JS 数据驱动，couple-report.md + docs/2026-09-07-couple-report-design.md）：
+  封面双人雷达 + 00 速写卡 / 01 四象限矩阵 / 02 四轴光谱条 / 03 亲密关系 / 04 怎么搭 / 05 边界 + 附录对照表。
+  走双人口径——JS 结构（renderBeam×4 + renderHeroRadar/renderQuadrant + A/B 8 键数据对象）、
+  伦理声明 + 不判合分承诺 + 临床句、旧双人件回流 = FAIL、证据标签退出正文；单人结构件自动跳过。
+2026-09-06 及更早的修订史见文件头存档（git 历史与 docs/）。旧八维度评分/天赋/四阶段/冲突/风险模板已归档 examples/backup-2026-09-07/couple-dynamics.md。
 """
 import re
 import sys
@@ -64,6 +66,20 @@ FORBIDDEN_LEGACY_SINGLE = [
     "chart-box", 'class="card"', 'class="grid2"', "ov-grid", "procon",
     'id="toc"', 'class="toc"', "meter-bar", "meter-fill",
 ]
+# 双人模式已废弃件（回流 = FAIL；html-templates.md §5——旧 01–08 结构 / 八维度评分 / 颜色=人）
+FORBIDDEN_LEGACY_COUPLE = [
+    "fit-fill", "fit-group", "person-card", "chip-row", "epilogue", "meter-bar",
+    "highlight-box", "warn-box", "p1-tag", "p2-tag", "--p1-color", "--p2-color",
+    "summary-card", "epigraph", "chapter-head", 'class="pull"', "fnchart",
+    "axis-block", "axis-fill", "combo-card", "type-cards", "meta-header",
+]
+# 双人固定文本（05 边界声明 + footer 承载伦理口径，无独立伦理框；needle 标点无关子串）
+COUPLE_REQUIRED = [
+    ("05 边界·不判决", "判决书"),
+    ("05 边界·不判合分", "不是算出来的"),
+    ("footer 临床句", "不构成临床诊断"),
+    ("封面 lede", "荣格八维"),
+]
 # 单人固定句（照录 writing-style §9；needle 用标点无关的稳定子串）
 SINGLE_REQUIRED = [
     ("hero lede 固定句", "提供对意识运作机理的深层内在解释力"),
@@ -106,12 +122,14 @@ def main() -> int:
         if not ok:
             failures.append(name)
 
-    # 双人报告判定（09-06 冻结基线口径）
-    is_couple = "p1-tag" in html or "这段关系可能会怎样发展" in html
+    # 双人报告判定（2026-09-07 新版 JS 驱动）
+    is_couple = ("renderBeam" in html) or ("renderHeroRadar" in html) or ("双人（恋人）" in html)
 
-    # 检查区 = 去掉 <style>、双人灰色括注 .fn-code、可选阅读附录 .appendix-tech
+    # 检查区 = 去掉 <style>、<script>（双人图表由 JS 注入，正文文字不在此内）、
+    # 双人灰色括注 .fn-code、可选阅读附录 .appendix-tech
     body = strip_regions(html, [
         r"<style.*?</style>",
+        r"<script.*?</script>",
         r"<span[^>]*class=\"[^\"]*fn-code[^\"]*\"[^>]*>.*?</span>",
         r"<section[^>]*class=\"[^\"]*appendix-tech[^\"]*\"[^>]*>.*?</section>",
         r"<div[^>]*class=\"[^\"]*appendix-tech[^\"]*\"[^>]*>.*?</div>",
@@ -130,27 +148,46 @@ def main() -> int:
     check("已取消视觉件未回流", not any(c in html for c in FORBIDDEN_CSS),
           "出现: " + ", ".join([c for c in FORBIDDEN_CSS if c in html]))
 
-    # 2. 双人报告专项（09-06 冻结基线）
+    # 2. 双人报告专项（2026-09-07 新版，JS 数据驱动）
     if is_couple:
-        # 裸功能代码禁令保留给双人口径（09-06 纪律）
-        bare = []
-        for code in FUNCTION_CODES:
-            for m in re.finditer(rf"(?<![A-Za-z一-鿿]){code}(?![A-Za-z一-鿿])", text):
-                line = text[: m.start()].count("\n") + 1
-                bare.append(f"{code}(第{line}行)")
-        check("双人报告：正文无裸功能代码", not bare, "出现: " + ", ".join(bare[:8]))
-        check("双人报告：非预测承诺存在", "不是对你们关系的预测" in html,
-              "未找到固定句「不是对你们关系的预测」（couple-dynamics.md §3.4）")
-        check("双人报告：伦理声明存在", "不是对这段关系的判决" in html,
-              "未找到固定句「不是对这段关系的判决」（couple-dynamics.md §6.2）")
-        n_head = len(re.findall(r'class="[^"]*chapter-head', html))
-        n_pull = len(re.findall(r'class="pull"', html))
-        n_fitfill = len(re.findall(r'class="[^"]*fit-fill', html))
-        check("双人报告：章节头 = 8（01–08）", n_head == 8, f"实际 {n_head}")
-        check("双人报告：拉引文 = 8（第 1–8 章每章一条）", n_pull == 8, f"实际 {n_pull}")
-        check("双人报告：评分条行 ≥16（.fit-fill，8 维度 × 双方）", n_fitfill >= 16, f"实际 {n_fitfill}")
-        check("双人报告：阅读指南存在", "怎么读这份报告" in html, "未找到「怎么读这份报告」")
-        check("双人报告：使用证据标签(ev-tag)", bool(re.search(r"ev-(research|theory|hypothesis)", html)))
+        # 数据契约：A、B 两个对象各含 8 功能键
+        for who in ("A", "B"):
+            mo = re.search(rf"const\s+{who}\s*=\s*\{{([^}}]*)\}}", html)
+            block = mo.group(1) if mo else ""
+            miss = [c for c in FUNCTION_CODES if not re.search(rf"\b{c}\s*:", block)]
+            check(f"双人：数据对象 {who} 含 8 功能键", mo is not None and not miss,
+                  f"{'缺 const '+who if mo is None else '缺键:'+','.join(miss)}")
+        # 图表函数挂载
+        check("双人：renderHeroRadar 定义并挂载", "function renderHeroRadar" in html and "renderHeroRadar();" in html)
+        check("双人：renderQuadrant 定义并挂载", "function renderQuadrant" in html and "renderQuadrant();" in html)
+        n_beam = len(re.findall(r"renderBeam\(\s*['\"]beam", html))
+        check("双人：光谱条 renderBeam 挂载 = 4", n_beam == 4, f"实际 {n_beam}")
+        check("双人：四轴 L/R 用轴词对（Ne/Ni、Se/Si、Fi/Te、Fe/Ti）",
+              all(f"'{p[0]}','{p[1]}'" in html or f'"{p[0]}","{p[1]}"' in html
+                  for p in [("Ne", "Ni"), ("Se", "Si"), ("Fi", "Te"), ("Fe", "Ti")]))
+        check("双人：容器 heroRadar/quadrant/beam1-4 齐全",
+              all(x in html for x in ["heroRadar", "quadrant", "beam1", "beam4"]))
+        # 速写卡 ×2 + MBTI 参考
+        n_port = len(re.findall(r'class="portrait\s+[AB]"', html))
+        check("双人：速写卡 = 2（.portrait.A/.portrait.B）", n_port == 2, f"实际 {n_port}")
+        check("双人：MBTI 参考 ×2（仅供参考）", html.count("仅供参考") >= 2)
+        check("双人：封面图例（实线=A/虚线=B）", "实线" in html and "虚线" in html)
+        # 固定文本
+        for name, needle in COUPLE_REQUIRED:
+            check(f"双人固定句: {name}", needle in html, f"未找到「{needle}」")
+        # 附录得分对照表
+        check("双人：附录完整得分对照表", "完整得分对照表" in html and "谁更高" in html)
+        # 旧双人件 / 旧单人次章件回流 = FAIL
+        legacy = [k for k in FORBIDDEN_LEGACY_COUPLE if k in html]
+        check("双人：旧件未回流（八维度评分条/双栏卡/颜色=人/旧单人次章件）", not legacy,
+              "出现: " + ", ".join(legacy[:8]))
+        # 正文证据标签已退出（双人同单人 09-07）
+        check("双人：正文无证据标签（ev-tag 已退出）", not re.search(r"ev-(research|theory|hypothesis)", html),
+              "仍出现 ev-tag")
+        # 不判合分红线：禁断言式判决措辞；「你们合不合」仅允许出现在被否定的免责句里，
+        # 其存在由 05 边界「判决书」+「不是算出来的」正向固定句保证
+        assertive = re.findall(r"匹配度|契合度评分|会不会分手|该不该继续|你们不合适|不适合在一起", html)
+        check("双人：不判合分（无断言式判决措辞）", not assertive, "出现: " + ", ".join(assertive[:6]))
 
     # 3. 单人结构件（hero 新基线）
     if not is_couple:
@@ -206,7 +243,10 @@ def main() -> int:
     check("纸纹背景存在（屏幕端 feTurbulence 噪点）", "feTurbulence" in html)
     check("纸纹不打印（print 块去背景图）",
           "background-image" in print_zone and "none" in print_zone)
-    check("正文列宽 680px", bool(re.search(r"body\s*\{[^}]*max-width:\s*680px", html)))
+    if is_couple:
+        check("双人正文列宽 720px", bool(re.search(r"body\s*\{[^}]*max-width:\s*720px", html)))
+    else:
+        check("单人正文列宽 680px", bool(re.search(r"body\s*\{[^}]*max-width:\s*680px", html)))
 
     print()
     if failures:

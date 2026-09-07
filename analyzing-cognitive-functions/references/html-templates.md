@@ -4,14 +4,14 @@
 
 > **2026-09-07 版**(用户批复落地):**单人报告 = 参考正文 hero 式**(结构完全以 `jung-8-function-report.html` 为准,纸感令牌 + 静态 SVG + 全件表格化)。单人视觉事实源 = `examples/mbti_sample.html`(lint PASS)——改任何视觉规则前,先看样例实际长什么样。
 >
-> **双人报告本轮冻结**:沿用 2026-09-06 基线(卡框系 CSS 底),结构与组件规范见 §5,双人视觉事实源 = `examples/mbti_sampleA_sampleB.html`;单人规范不适用于双人,双人不迁移(迁移另立项)。设计沿革存档:`docs/2026-09-06-reskin-design.md`、`docs/2026-09-07-reference-content-plan.md`。
+> **双人报告已对齐 2026-09-07**(`couple_report.html` 为基准):封面双人雷达 + 00–05 章 + footer,图表**内联 JS 数据驱动**(与单人静态 SVG 不同);规则见 `references/couple-report.md`,组件规范与双人口径 lint 见 §5。双人视觉事实源 = `examples/mbti_sampleA_sampleB.html`(新双人基线,lint 双人口径 PASS);as-built 规格 `docs/2026-09-07-couple-report-design.md`。旧八维度评分/双栏卡/评分条「颜色=人」体系与旧样例已归档 `examples/backup-2026-09-07/`。设计沿革:`docs/2026-09-06-reskin-design.md`、`docs/2026-09-07-reference-content-plan.md`。
 
 ## Contents
 - §1 单人报告基础(令牌 / 排版 / 组件类 / 打印样式)
 - §2 单人视觉件(雷达 / 柱状图 / 天平图 / 表格件总表 / 场景块等)
 - §3 单人报告结构模板(hero + 01–07 章 + footer)
 - §4 输出规范与交付前验证
-- §5 双人报告(2026-09-06 基线,冻结)
+- §5 双人报告(2026-09-07 新版,JS 数据驱动)
 
 ## 1. 单人报告基础
 
@@ -189,10 +189,10 @@ footer       .meta-line(报告日期 · 用户代号 · 数据来源)+ .disc(参
 
 ### 4.2 必须标注的声明
 - hero lede 固定句(照录 writing-style §9.2)
-- 01 章末「类型只是名字」固定句(照录 §9.4)
+- 01 章末「别把任何标签当身份证」固定句(照录 §9.4 / §2.3)
 - 07 边界声明(照录 §9.3,4 条)
 - footer `.disc` 收尾句(照录 §9.3 尾句,含「不构成临床诊断」)
-- 双人报告开头:照录伦理声明(couple-dynamics.md §6.2)
+- 双人报告开头:照录伦理声明(couple-report.md §5.1)
 
 ### 4.3 交付前验证(强制)
 
@@ -201,78 +201,39 @@ footer       .meta-line(报告日期 · 用户代号 · 数据来源)+ .disc(参
 1. 运行 lint:`python scripts/lint_report.py <报告文件>`,输出「全部检查通过。」。单人检查项:
    - hero(kicker + h1 定位句 + lede 固定句 + 雷达 svg);柱状图(rect ≥8);天平图 =4;关键词总表 / 对照总表 / 优势表 / 建议表 / 盲区表三列头;候选类型表;rel 四键;兼容表 ≥4 行;duo-t =4;三句句式;07 边界声明;footer 临床句 + meta 行
    - 禁词(writing-style §6,含比喻收缩禁用系);卡框与已废弃件回流 = FAIL;`@page A4`、噪点、680px、@media print
-   - 双人报告走双人口径(§4.3 旧制:chapter-head=8、pull=8、fit-fill ≥16、非预测承诺、伦理声明),单人结构件自动跳过
+   - 双人报告走双人口径（§5.3：JS 数据契约 + 四轴/雷达/四象限挂载 + 边界/伦理/临床句 + 禁旧件回流 + 不判合分承诺），单人结构件自动跳过
 2. JSON 校验:得分 JSON 可解析、`scores` 8 键齐全且顺序为 `Ne,Ni,Fe,Fi,Te,Ti,Se,Si`、与报告中的分数一致
 3. 浏览器渲染检查:雷达形状与分数相对高低互证、柱状图数值、天平倾角(分高端在下)、caption 分支、表格 hairline、锚点可跳、打印预览(注意浏览器缓存——用带 `?v=时间戳` 的地址强制刷新)无组件断裂、纸纹不打印
 4. 基线样例回归:改过 lint 或 CSS 后先跑样例——`python scripts/lint_report.py examples/mbti_sample.html`(必须 PASS)
 5. 全部通过才允许交付
 
-## 5. 双人报告(2026-09-06 基线,冻结——本轮不迁移)
+## 5. 双人报告（2026-09-07 新版，JS 驱动）
 
-**双人报告沿用 2026-09-06 视觉改造定稿,本节内容为冻结快照;除 lint 双人口径外,2026-09-07 单人改造不影响双人。** 双人 CSS 底 = 09-06 卡框系(纸感令牌 + chapter-head + pull),完整样式块见 `examples/mbti_sampleA_sampleB.html`;单人新基线(§1–§3)不适用于双人。
+**双人报告已对齐 2026-09-07 新基线**：结构 = 封面 + 00–05 章 + footer；图表由内联 `<script>` 从 `A`/`B` 两个数据对象自动重算（双人「换数据即生成」的刻意设计，与单人静态 SVG 不同）。完整规则（定位/数据契约/章节/文案/保留固定文本/口径差异）见 **`references/couple-report.md`**；as-built 设计规格存档 `docs/2026-09-07-couple-report-design.md`。
 
-### 5.0 结构模板(冻结)
+> 视觉事实源 = `examples/mbti_sampleA_sampleB.html`（新双人基线，lint 双人口径 PASS）。旧 01–08 章结构、八维度评分条（.fit-*）、双栏卡（.person-cards）、四阶段/冲突/风险模板、`.pull` 锐评、`.chapter-head`、正文证据标签（ev-tag）**全部废弃**，出现即 FAIL；旧模板与旧样例归档于 `examples/backup-2026-09-07/`。
 
-```
-页眉 .meta-header:报告日期 · 双方代号 · 数据来源(两人各自单独作答)
-伦理声明 .guide-box(照录 couple-dynamics.md §6.2「在读这份报告之前」,置于最前)
-阅读指南 .guide-box(「怎么读这份报告」,双人口径:模式作主语、无对错;末尾加粗附一行一句话总评)
-目录 .toc(01–08 章 + 结语 + 附录)
+### 5.1 组件类与 CSS（新双人，逐字见新样例 `<style>` 块）
 
-01  你们各自是怎样的人 — 双栏卡 ×2(.person-cards:白卡 + border-top 3px 人物色;
-      每卡三段:①一句话画像(h4 白话定性)②关系里常见的一幕(两三句,含对话片段)
-      ③分数两行——最顺手一行、最费力一行,学术名+分数,八项齐全)
-02  你们在这 8 件事上的合拍程度 — 评分条 ×8 组(.fit-*,外包 .wide,组按分数降序;
-      条长 = 维度分×10%,双方各一条、同长同数,颜色 = 人;每组 .fit-head 右侧附中性
-      分工注 .fit-note——「这格谁在扛」,禁评价词禁红绿)
-      + .chart-note + 读图短评(章首写明双刻度换算:单人百分制 → 关系维度 1–10;
-      短评按「最长 / 最短 / 中间合并带过」组织,不逐维一段)
-03  这段关系自带的天赋 — .advice-card ×3–5(结构来源 / 具体表现 / 使用提示)
-04  总体来看,你们的关系长什么样 — .callout 固定说明(couple-dynamics §0.2)+ 综合段
-      (可含 h3「这段关系的短板长什么样」小节)
-05  这段关系可能会怎样发展 — 开头照录非预测承诺(couple-dynamics §3.4,不得改写);
-      四阶段每阶段 ≥1 个 .scene-box 场景(A: / B: 对话,内心独白斜体);全章 ⚪;
-      阶段三必须含逻辑检验(循环为何稳定 / 双方隐性满足 / 打破需要什么)
-06  你们最容易在哪几件事上卡住 — 冲突卡 ×2–3:标题 + 中性 chip 统计行(频次/破坏性/可解性,
-      §5.2 .chip-row)+ .scene-box 对话 + 分析(模式作主语,禁指责任何一方)
-07  需要留意的几个风险 — .caution-row ×2–4(等级 / 描述 / 会怎么变严重 / 前置信号)
-08  具体可以怎么做 — 章头标 🔶;.advice-card ×3–5,每条含目标 / 怎么做 / 对话示例 / 什么时候失灵
+- **底**：与单人 §1.1 同一套纸感令牌 + 噪点 + 八功能色常量；`body max-width:720px`（双人比单人宽 40px，容纳四象限/雷达方形画布），`@page A4` + `@media print`（去背景、`break-inside:avoid`、`print-color-adjust:exact`）。
+- **共用单人同款件**：`.kicker`/`.hero h1`(+`em` 渐变)/`.lede`/`.scrollhint`/`.sec-num`/`h2`/`h3`/`table`(hairline)/`.hl`/`.scene`(左竖线线型)/`.relg`(定义列表)/`.chart-note`/`.bound-list`/`.footer`(`.meta-line`+`.disc`)/`.fn`(彩色代码=身份)。
+- **双人专属件**：
+  - `.hero-radar`（封面双雷达叠加容器）+ `.cover-legend`（图例：实线= A、虚线= B、凸出= 互补入口）
+  - `.quad`（01 四象限矩阵容器）
+  - `.beam`（02 四轴光谱条容器，`figure`+`figcaption`）
+  - `.portraits`/`.portrait`（00 速写卡双列网格，`.A`/`.B` 变体；顶角 `.tag`、`.fn-points`、`.desc`、`.mbti-ref`；≤600px 单列）
+- **人物编码**：实心 = A、空心/描边 = B；**颜色永远属于功能，不属于人**（旧「颜色 = 人 P1紫/P2绿」废弃，无 `--p1-color`/`--p2-color`）。
 
-结语(.epilogue:衬线居中、不编号、无锐评、无图表)
-附录 这份报告的局限(.appendix:局限声明双人口径改写 + 结论依据构成统计行)
-```
+### 5.2 图表函数（内联 `<script>`，数据驱动）
 
-结构规则(冻结,原文照录):
+四个函数读 `A`/`B` 对象产出 SVG：`renderHeroRadar()`（双人雷达叠加）、`renderQuadrant()`（四象限散点）、`renderBeam(id,L,R,nameL,nameR)`×4（对数比值光谱条，L/R 用轴词对）。规格细节（半径归一化公式、log 比值 offset 与 K=256、OFF 偏移表、实心/空心、渐变带不代表错位量、无刻度数字）见 `couple-report.md` §3。数据契约与换数据改哪里见 §1。
 
-- **双人报告为两个人读的同一份**:全程双向「你们」、对双方公平——不得出现偏问某一方的叙述框架(禁「作为 A 的你」式行文);理论分析严格以荣格八维理论为中心,机制解释一律落在功能轴、功能互动与内外倾上,伴侣研究/依恋研究等外部概念最多一句带过,不得作为分析框架
-- `.chapter-head` 恰 **8 个**(num 两位数 **01–08**),每章开头 `.chapter-head` + 一句 `.chapter-sub`;**第 1–8 章章末各一条 `.pull` 锐评(共 8 条,≤22 字)**,结语与附录不放
-- 锚点 `id`:c1–c8、epilogue、appb
-- 评分条:每维度一个**共同分**(couple-dynamics §1),每组两条同长、同数——颜色只负责把两个人都放进图里,`.chart-note` 必须写明这层读法;评分过程数字不进正文(writing-style R8)
-- 冲突 / 风险 / 阶段的描述一律"模式"作主语;场景、对话用 A: / B: 格式,内心独白用斜体
-- 证据统计行先数后写:三个 `ev-tag` 计数必须与附录「✅ × N 处 · 🔶 × N 处 · ⚪ × N 处」一致
-- 字数目标 **6000–9000**;文件命名与两份单人次 JSON 见 §4.1
+### 5.3 双人口径 lint（新）
 
-### 5.1 双人 CSS 底(09-06 版,冻结)
-
-双人报告 `<style>` = **09-06 单人基线全量复制** + 双人组件追加。关键类(逐字 CSS 见 `examples/mbti_sampleA_sampleB.html` 或 `examples/backup-2026-09-07/` 内旧样例):
-
-`.chapter-head`(+`.num` 00–08 式两位数,双细线 #B9B29F)、`.chapter-sub`、`.meta-header`、`.guide-box`、`.toc`、`.pull`(≤22 字锐评,大引号)、`.ev-tag` 三色 chip、`.fn-code`、`.callout`、`.rel-label`、`.scene-box`、`.advice-card`(+`.ac-num`)、`.caution-row`、`.appendix`(+`.term-list`/`.appb`/`.ev-stat`)、`.faq-card`、`.wide`(±90px 破格)、半透明卡清单(`rgba(255,255,255,.72)`)、`@media print`(break-inside 清单)。
-
-### 5.2 双人专属组件(冻结)
-
-**颜色铁律:颜色 = 人。** P1 紫 `--p1-color: #8E5EA2` / P2 绿 `--p2-color: #4F9D69`;人物标签、评分条、双栏卡从这两个变量取色;功能色只用于功能名文字标记(`.fn-code` 体系);不引入红绿档位色。
-
-| 类名 | 用途 | CSS 关键属性 |
-|------|------|-------------|
-| `.fit-group`(+`.fit-head`/`.fit-def`/`.fit-row`/`.fit-who`/`.fit-track`/`.fit-fill`/`.fit-num`/`.fit-note`) | 第 2 章评分条 ×8 组 | 每组 = 维度名 + 一句话定义 + 双方各一条横条(条长 = 维度分×10%,数值条末同人物色,track `#EFEDE5` 高 18px 圆角 5);`.fit-note` 组右端中性分工注(muted,「这格谁在扛」,禁评价词);8 组外包 `.wide`,组按分数降序;`.chart-note` 说明「分数属于两个人,两条只是把双方都放进图里,颜色只区分人,不分好坏」 |
-| `.person-cards` + `.person-card`(+`.cp1`/`.cp2`) | 第 1 章双栏卡 ×2 | grid `1fr 1fr` gap 14px(≤640px 单列);卡 = `rgba(255,255,255,.72)` + 1px var(--border) + 圆角 10 + `border-top:3px solid` 人物色;h4 .98em;p .86em/1.75 |
-| `.chip-row` + `.chip` | 第 6 章冲突统计行 | 行 `display:flex;gap:8px;flex-wrap:wrap`;chip `inline-block .74em/700 圆角 20 padding 2px 10px`,中性色 `#F1F1EA/#5F6B76`——高/中/低只靠文字,禁红绿 |
-| `.p1-tag` / `.p2-tag` | 双人人物标签(lint 必查两者并存) | `inline-block .75em padding 1px 9px 圆角 4 #fff/700`;底色 `var(--p1-color)`/`var(--p2-color)` |
-| `.dialogue` | 对话文本 | `padding-left:14px;border-left:2px solid var(--border);margin:8px 0`;说话人 b 用人物色,内心独白 `<em>` 斜体 |
-| `.epilogue` | 结语 | `border-top:2px dashed var(--border);margin-top:52px;padding-top:30px;text-align:center`;h2 衬线 1.3em;p 居中 |
-
-旧件(`.dual-col`/`.meter-bar` 系/`conflict-header` 红黄绿/`highlight-box`/`warn-box`/`stack-box`)勿再生成;`meter-fill` 向后兼容检查保留。
-
-### 5.3 双人口径 lint(冻结)
-
-chapter-head =8(01–08)、pull =8、评分条行 ≥16(.fit-fill)、p1/p2 标签并存、非预测承诺、伦理声明;单人口径计数(速览卡/题记/彩条图/轴对立图/hero/表格件)自动跳过。
+- **判定**：页面含 `renderHeroRadar` 或 `renderBeam` 或 kicker 含「双人（恋人）」→ 双人口径；单人结构件自动跳过。
+- **结构**：`renderBeam` 挂载恰 4 次（`beam1..beam4`）；`renderHeroRadar()`、`renderQuadrant()` 各挂载 1 次；`id="heroRadar"`、`id="quadrant"` 容器存在；`class="portrait"` = 2；`.portraits` = 1；速写卡 `.mbti-ref` = 2。
+- **数据契约**：`const A={`、`const B={` 均含 8 功能键；`renderBeam(` 四调用的 L/R 为 `Ne/Ni、Se/Si、Fi/Te、Fe/Ti`。
+- **固定文本**（needle 标点无关子串）：lede 固定句、伦理声明「在读这份报告之前」、不判合分承诺「关系是做出来的，不是算出来的」、临床句「不构成临床诊断」、边界「不是…判决书」、meta「报告日期」。
+- **禁词与回流**：writing-style §6 禁词 + 比喻收缩禁用系；**旧双人件回流 = FAIL**（`fit-fill`/`fit-group`/`person-card`/`chip-row`/`epilogue`/`meter-`/`highlight-box`/`p1-tag`/`p2-tag`/`--p1-color`）；**旧单人次章件 + 正文证据标签回流 = FAIL**（`chapter-head`/`class="pull"`/`ev-tag`/`fnchart`/`axis-block`/`combo-card`/`type-cards`）；`@page A4`、噪点、`@media print`、body 720px。
+- **不判合分**：正文禁「你们合不合」「要不要继续」「匹配度/契合度评分」式判决（writing-style §8 防伤害兜底 + 本条）。
+- 基线回归：改 lint/CSS 后先跑 `examples/mbti_sampleA_sampleB.html`（双人）与 `examples/mbti_sample.html`（单人），均须 PASS。

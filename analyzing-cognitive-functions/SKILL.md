@@ -39,7 +39,7 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 1. 识别输入形式（结果 JSON / 复制分数文本），按 `references/input-parsing.md` §1 解析并回显，经用户确认后才可继续
 2. 归一化为固定顺序 `Ne, Ni, Fe, Fi, Te, Ti, Se, Si`（规则见 §2），随后执行质量检查（规则见 `references/scoring-algorithm.md` §3）：完整性 → 十分制护栏 → 扁平剖面检测 → 作答质量模式
 3. 获取/确认**用户代号**：没提供 → 停下反问；目标目录已有同名文件 → 问「加 -v2 还是覆盖」（规则见 `references/input-parsing.md` §3）
-4. 确认人数：1 人 → 单人报告；2 人 → 单人报告 ×2 + 双人报告。**双人报告必须双方数据齐全**，仅一方数据时降级处理（规则见 `references/couple-dynamics.md` §0.1）
+4. 确认人数：1 人 → 单人报告；2 人 → 单人报告 ×2 + 双人报告。**双人报告必须双方数据齐全**，仅一方数据时降级处理（规则见 `references/couple-report.md` §0）
 
 ### Phase 1: 核心分析
 
@@ -50,7 +50,7 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 | 输入解析 + 代号规则 + 得分 JSON | `references/input-parsing.md` | 每次必读 |
 | 轴结构分析 + MBTI 类型推断（窄标签） | `references/scoring-algorithm.md` | 每次必读 |
 | 依恋类型推断（恋爱/家庭双领域） | `references/attachment-inference.md` | 每次必读 |
-| 双人八维度/天赋/阶段/冲突/风险 | `references/couple-dynamics.md` | 仅双人时读 |
+| 双人逐功能对照 / 四轴光谱 / 怎么搭 / 边界（JS 数据驱动） | `references/couple-report.md` | 仅双人时读 |
 | 通俗化语言规范（命名库/禁用词/固定文本块/语气总纲） | `references/writing-style.md` | 每次必读 |
 | HTML 结构/组件/打印样式 | `references/html-templates.md` | 生成报告前读 |
 
@@ -66,13 +66,13 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 - 语言：严格按 `references/writing-style.md`——语气总纲（最高优先级）、读者画像（直观形象一次读懂）、比喻收缩原则（§4.1：比喻必须一眼解出；记账系/暗房系/租客系/机械系统系禁用；昵称层废弃）、术语零容忍（R7）与不给机制性解释（R8）、证据标签退出正文（→ 咨询师备注口径 §7）、§10 语言件规则
 - 深度：严格按 `references/writing-style.md` §5——功能互动动力学、张力由 02 章承载、场景块收束；单人报告 **2800–4000 字**
 - 固定文本块（hero lede / 01 章末标签句 / 02·04 章引言 / 07 边界声明 / footer 收尾句）**照录，不得改写**（writing-style §9）
-- 双人报告：**沿用 2026-09-06 基线（冻结，本轮不迁移）**——结构、章节与组件严格按 `references/html-templates.md` §5 与 `references/couple-dynamics.md`；评分规则、伦理声明与非预测承诺照录；成品样例 `examples/mbti_sampleA_sampleB.html`
+- 双人报告：**2026-09-07 新版（JS 数据驱动，已对齐单人新基线）**——封面双人雷达 + 00 速写卡 / 01 四象限矩阵 / 02 四轴光谱条 / 03 亲密关系 / 04 怎么搭 / 05 边界声明 + 附录得分对照表 + footer；结构/数据契约（`A`/`B` 对象）/文案/伦理口径照录 `references/couple-report.md`，组件与视觉规格见 `references/html-templates.md` §5；as-built 规格 `docs/2026-09-07-couple-report-design.md`；成品样例 `examples/mbti_sampleA_sampleB.html`。人物编码：**实心=A、空心=B**，功能色只属于功能；**不判合分、证据标签退出正文**
 - 文件命名（详情见 `references/input-parsing.md` §3-4）：单人 `mbti_<代号>.html` + `mbti_<代号>.json`；双人 `mbti_<A>_<B>.html` + 两份单人次 JSON（v2 时 `mbti_<代号>-v2.*`），保存到 `/c/Users/elliot/Desktop/relations/MBTI/`
 
 ### Phase 3: 验证（反馈循环，不通过则修复后重来）
 
-1. 运行 lint：`python scripts/lint_report.py <报告文件路径>`（本机 `python3` 是 Windows Store 占位程序，一律用 `python`）。检查项完整清单见 `references/html-templates.md` §4.3——要点：单人口径查 hero（kicker/定位句/lede/雷达）、柱状图、天平图 =4、六张表格件、固定句、禁用词（含比喻收缩禁用系）、卡框与已废弃件回流、@page A4 + 噪点 + 680px + 打印；双人报告走双人口径（chapter-head =8、pull =8、fit-fill ≥16、非预测承诺、伦理声明），单人结构件自动跳过
-   - 有 FAIL 项 → 修复 → 重新 lint，直到全部 PASS；改过 lint 或 CSS 后，先对 `examples/mbti_sample.html` 回归（必须 PASS）再出新报告
+1. 运行 lint：`python scripts/lint_report.py <报告文件路径>`（本机 `python3` 是 Windows Store 占位程序，一律用 `python`）。检查项完整清单见 `references/html-templates.md` §4.3（单人）/ §5.3（双人）——要点：单人口径查 hero（kicker/定位句/lede/雷达）、柱状图、天平图 =4、六张表格件、固定句、禁用词（含比喻收缩禁用系）、卡框与已废弃件回流、@page A4 + 噪点 + 680px + 打印；双人报告走双人口径（`A`/`B` 各 8 键数据对象、renderHeroRadar/renderQuadrant/renderBeam×4 挂载、四轴 L/R 轴词对、速写卡 ×2 + MBTI 参考 ×2、伦理三句「判决书/不是算出来的/不构成临床诊断」、旧双人件与证据标签回流 = FAIL、不判合分、720px），单人结构件自动跳过
+   - 有 FAIL 项 → 修复 → 重新 lint，直到全部 PASS；改过 lint 或 CSS 后，先对两个基线样例回归（`examples/mbti_sample.html` 单人、`examples/mbti_sampleA_sampleB.html` 双人，均须 PASS）再出新报告
 2. JSON 校验：得分 JSON 可解析、`scores` 8 键齐全且顺序为 `Ne,Ni,Fe,Fi,Te,Ti,Se,Si`、与报告中的分数一致
 3. 浏览器渲染检查：打开 HTML 确认视觉件（雷达形状 / 柱状图数值 / 天平倾角=分高端在下 / caption 分支 / hairline 表格）渲染正常、锚点可跳转、打印预览无组件断裂且纸纹不打印（注意浏览器缓存——用带 `?v=时间戳` 的地址强制刷新）
 4. 全部通过才允许交付
@@ -126,6 +126,6 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 - `references/input-parsing.md` — 两种输入格式解析、归一化（固定顺序）、代号规则、得分 JSON schema
 - `references/scoring-algorithm.md` — 轴结构分析（四条经典功能轴）、16 型功能栈、Beebe 原型位置（白话列）、类型推断量化打分表、输入质量检查（**推断算法 2026-09-07 不变**；报告呈现框架 = 四组同能力对照，见 writing-style §2.1）
 - `references/attachment-inference.md` — 功能→依恋映射（证据地位声明）、双领域规则、替代解释、阈值边界敏感规则、休眠钩子（结果只进咨询师备注）
-- `references/couple-dynamics.md` — 八维度评分、关系天赋、阶段/冲突/风险/解决办法模板、伦理声明（双人报告为 2026-09-06 冻结基线，结构模板与组件见 `references/html-templates.md` §5；样例 `examples/mbti_sampleA_sampleB.html`）
-- `references/writing-style.md` — 语气总纲、读者画像（直观形象一次读懂）、比喻收缩原则（§4.1 禁记账/暗房/租客/机械系统系）、四组对照与天平 caption 四分支（§2.1）、深度规范（2800–4000 字，§5）、禁用词表、证据标签（→ 备注口径，§7）、固定文本块（§9）、单人语言件规则（§10）
-- `references/html-templates.md` — 单人新基线（hero + 01–07 章：雷达 / 柱状图 / 天平图 ×4 / 六张 hairline 表格 / rel 定义列表 / 场景块 / footer；§1–§4）；双人报告 2026-09-06 冻结基线（§5）
+- `references/couple-report.md` — 双人（恋人）报告规则（2026-09-07 新版，JS 数据驱动）：定位与数据契约、00–05 章 + 封面、四象限/双雷达/四轴光谱视觉件、逐功能对照 + 四轴自比文案、伦理与不判合分口径、与单人差异（旧 `couple-dynamics.md` 八维度评分/天赋/四阶段模板已归档 examples/backup-2026-09-07/）
+- `references/writing-style.md` — 语气总纲、读者画像（直观形象一次读懂）、比喻收缩原则（§4.1 禁记账/暗房/租客/机械系统系）、四组对照与天平 caption 四分支（§2.1）、深度规范（2800–4000 字，§5）、禁用词表、证据标签（→ 备注口径，§7）、固定文本块（§9）、语言件规则（§10，单人 + 双人共用）
+- `references/html-templates.md` — 单人新基线（hero + 01–07 章：雷达 / 柱状图 / 天平图 ×4 / 六张 hairline 表格 / rel 定义列表 / 场景块 / footer；§1–§4）；双人报告 2026-09-07 新版，JS 数据驱动（§5）

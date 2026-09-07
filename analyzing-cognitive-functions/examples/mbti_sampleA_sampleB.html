@@ -3,573 +3,485 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>荣格八维双人分析报告 · 示例样本 A 与 B（合成数据）</title>
+<title>荣格八维 · 双人（恋人）关系分析报告</title>
 <style>
 :root {
   --bg: #F7F5EF; --fg: #262419; --muted: #6E6A60; --border: #DCD6C8; --card: #FFFFFF;
-  --accent: #1F5F66; --accent-text: #1B4A50;
-  /* 八功能色（常量，不变） */
+  --accent: #1F5F66; --accent-text: #1B4A50; --soft: #FAFAF6; --hairline: #B9B29F;
+  /* 八功能色(常量,与单人版一致) */
   --fi: #c0392b; --ni: #8e44ad; --fe: #2980b9; --ti: #16a085;
   --te: #d35400; --ne: #e67e22; --se: #27ae60; --si: #7f8c8d;
-  --p1-color: #8E5EA2; --p2-color: #4F9D69;
   --font-heading: "Noto Serif SC","Source Han Serif SC","Songti SC",SimSun,serif;
   --font-body: "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;
 }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font-heading); font-size: 16px; line-height: 2.0;
   color: var(--fg); background-color: var(--bg);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-  max-width:680px; margin: 0 auto; padding: 40px 20px 80px;
+  max-width: 720px; margin: 0 auto; padding: 0 20px 80px;
 }
 body p { text-align: justify; }
+strong { font-weight: 700; }
+.fn { font-family: var(--font-heading); font-weight: 600; font-style: normal; }
 
-/* 章节头（双细线） */
-.chapter-head { display: flex; align-items: baseline; gap: 16px; margin: 48px 0 6px;
-  border-bottom: 3px double #B9B29F; padding-bottom: 12px; }
-.chapter-head:first-of-type { margin-top: 8px; }
-.chapter-head .num { font-family: var(--font-heading); font-size: 3.4em; font-weight: 700;
-  color: var(--accent); opacity: .3; line-height: 1; letter-spacing: -.02em; }
-.chapter-head h3 { font-family: var(--font-heading); font-size: 1.5em; font-weight: 700; margin: 0; }
-.chapter-sub { font-family: var(--font-heading); font-size: .85em; color: var(--muted); margin: 0 0 18px; }
+/* ============ hero ============ */
+.hero { min-height: 86vh; display: flex; flex-direction: column; justify-content: center;
+  align-items: center; text-align: center; padding: 72px 0 24px; }
+.kicker { font-family: var(--font-body); font-size: .72em; letter-spacing: .42em;
+  color: var(--muted); text-transform: uppercase; padding-left: .42em; }
+.hero h1 { font-family: var(--font-heading); font-weight: 700; font-size: 2.35em;
+  line-height: 1.35; margin: 14px 0 16px; letter-spacing: .02em; }
+.hero h1 em { font-style: normal; color: transparent;
+  background: linear-gradient(120deg, var(--accent), var(--ni));
+  -webkit-background-clip: text; background-clip: text; }
+.lede { font-family: var(--font-body); font-size: .92em; color: var(--muted);
+  line-height: 2.0; max-width: 30em; margin-bottom: 26px; text-align: center; }
+.scrollhint { font-family: var(--font-body); font-size: .75em; color: var(--muted);
+  letter-spacing: .2em; margin-top: 18px; }
 
-.meta-header { font-size: .78em; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 24px; }
-.guide-box { background: #FAFAF6; border: 1px solid var(--border); border-left: 3px solid var(--accent);
-  border-radius: 10px; padding: 16px 20px; margin: 20px 0; font-size: .92em; }
-.toc { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 22px; font-size: .88em; margin: 20px 0; }
-.toc strong { display: block; margin-bottom: 6px; }
-.toc ol { margin: 0; padding-left: 20px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; row-gap: 2px; }
-.toc a { color: var(--accent-text); text-decoration: none; }
-.toc a:hover { text-decoration: underline; }
+/* 封面：双人雷达叠加 */
+.hero-radar { width: 100%; max-width: 360px; margin: 30px auto 0; }
+.hero-radar svg { width: 100%; height: auto; display: block; }
+.cover-legend { font-family: var(--font-body); font-size: .72em; color: var(--muted);
+  text-align: center; margin-top: 10px; letter-spacing: .04em; line-height: 1.8; }
 
-/* 速览卡 + 题记（单人结构件；双人报告不使用，CSS 底保留以便继承） */
-.summary-card { background: var(--card); border: 1.5px solid rgba(31,95,102,.5); border-radius: 12px;
-  padding: 24px 26px 22px; margin: 8px 0 0; }
-.sum-grid { display: grid; grid-template-columns: 1fr; gap: 18px; align-items: start; }
-.epigraph { font-family: var(--font-heading); font-size: 1.3em; font-weight: 700; color: var(--accent-text);
-  line-height: 1.9; text-align: center; margin: 0; }
-.epigraph-src { font-size: .72em; color: var(--muted); text-align: center; margin: 4px 0 0; }
+/* 01 四象限矩阵 */
+.quad { margin: 22px 0 8px; }
+.quad svg { width: 100%; height: auto; display: block; }
 
-.chart-box { margin: 0 auto; text-align: center; }
-.chart-note { font-size: .8em; color: var(--muted); margin: 10px 0 0; text-align: left; line-height: 1.6; }
-.chart-box svg { max-width: 100%; height: auto; }
-.find-card { background: #FAFAF6; border: 1px solid var(--border); border-radius: 10px;
-  padding: 12px 15px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; }
-.find-card:last-child { margin-bottom: 0; }
-.find-ico { flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px; color: #fff;
-  display: flex; align-items: center; justify-content: center; font-size: .9em; font-weight: 800; margin-top: 2px; }
-.find-card b { font-size: .88em; display: block; margin-bottom: 2px; }
-.find-card p { margin: 0; font-size: .84em; color: var(--muted); line-height: 1.65; }
+/* ============ sections ============ */
+section { border-top: 1px solid var(--border); margin-top: 56px; padding-top: 40px; }
+.sec-num { font-family: var(--font-heading); font-size: .8em; letter-spacing: .3em;
+  color: var(--muted); margin-bottom: 10px; }
+h2 { font-family: var(--font-heading); font-weight: 700; font-size: 1.62em;
+  line-height: 1.6; margin-bottom: 16px; letter-spacing: .01em; }
+h3 { font-family: var(--font-heading); font-weight: 700; font-size: 1.15em; margin: 34px 0 10px; }
+h4 { font-family: var(--font-body); font-size: .82em; font-weight: 700;
+  letter-spacing: .1em; margin-bottom: 6px; }
+section p { margin-bottom: 14px; }
+p.lead { font-size: 1.02em; }
+.muted { color: var(--muted); font-size: .9em; }
 
-/* 证据标签（三色语义 chip，写死） */
-.ev-tag { display: inline-block; font-size: .72em; padding: 2px 9px; border-radius: 20px; vertical-align: middle; margin-left: 6px; white-space: nowrap; }
-.ev-research { background: #E0EBDD; color: #3E7257; }
-.ev-theory { background: #F6ECD9; color: #8A5A2B; }
-.ev-hypothesis { background: #EDEEE8; color: #64748B; }
-.fn-code { font-size: .75em; color: var(--muted); font-weight: 400; }
+/* 00 速写卡（双列网格） */
+.portraits { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 26px 0; }
+@media (max-width: 600px) { .portraits { grid-template-columns: 1fr; } }
+.portrait { border: 1px solid var(--border); background: var(--card); padding: 18px; border-radius: 3px;
+  position: relative; }
+.portrait .tag { display: inline-block; font-family: var(--font-body); font-size: .7em;
+  letter-spacing: .16em; padding: 2px 8px; border-radius: 2px; margin-bottom: 10px; }
+.portrait.A .tag { background: var(--accent); color: #fff; }
+.portrait.B .tag { background: var(--hairline); color: var(--bg); }
+.portrait h4 { font-family: var(--font-heading); font-size: 1.05em; font-weight: 700;
+  letter-spacing: 0; margin-bottom: 8px; }
+.portrait .fn-points { font-family: var(--font-body); font-size: .82em; color: var(--muted);
+  margin-bottom: 6px; }
+.portrait .desc { font-size: .88em; line-height: 1.8; margin-bottom: 10px; }
+.portrait .mbti-ref { font-family: var(--font-body); font-size: .72em; color: var(--muted);
+  border-top: 1px dashed var(--border); padding-top: 8px; }
 
-/* 第 1 章八彩条形图 / 轴对立合并图（单人结构件；双人报告不使用，CSS 底保留以便继承） */
-.fnchart { margin: 18px 0; }
-.fn-row { display: flex; align-items: center; gap: 10px; margin: 9px 0 0; }
-.fn-name { width: 6.5em; flex-shrink: 0; font-weight: 700; font-size: .92em; }
-.fn-track { flex: 1; height: 18px; border-radius: 5px; background: #EFEDE5; position: relative; }
-.fn-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; }
-.fn-num { position: absolute; top: 50%; transform: translateY(-50%); font-size: .78em; font-weight: 700; white-space: nowrap; }
-.fn-desc { margin: 4px 0 0; padding-left: calc(6.5em + 10px); font-size: .78em; color: var(--muted); line-height: 1.6; }
-.axis-block { margin: 24px 0 28px; }
-.axis-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 0 0 10px; }
-.axis-head b { font-size: .98em; }
-.axis-verdict { font-size: .78em; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
-.axis-row { display: flex; align-items: center; gap: 10px; margin: 9px 0 0; }
-.axis-fn { width: 6.5em; flex-shrink: 0; font-weight: 700; font-size: .92em; }
-.axis-track { flex: 1; height: 18px; border-radius: 5px; background: #EFEDE5; position: relative; }
-.axis-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; background: var(--accent); }
-.axis-score { position: absolute; top: 50%; transform: translateY(-50%); font-size: .78em; font-weight: 700; color: var(--accent-text); white-space: nowrap; }
-.axis-desc { margin: 4px 0 0; padding-left: calc(6.5em + 10px); font-size: .78em; color: var(--muted); line-height: 1.6; }
+/* 图注 */
+.chart-note { font-family: var(--font-body); font-size: .8em; color: var(--muted);
+  margin: 10px auto 0; line-height: 1.7; text-align: left; max-width: 580px; }
 
-/* 破格宽幅件 */
-.wide { margin-left: -90px; margin-right: -90px; }
-@media (max-width: 900px) { .wide { margin-left: 0; margin-right: 0; } }
+/* 表格 */
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .9em; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border);
+  vertical-align: top; }
+th { font-family: var(--font-body); color: var(--muted); font-weight: 700;
+  font-size: .78em; letter-spacing: .08em; }
+td .fn { font-size: 1em; }
+.hl { background: linear-gradient(180deg, transparent 60%, rgba(31,95,102,.20) 60%);
+  padding: 0 .08em; border-radius: 2px; }
 
-/* 章末锐评 */
-.pull { border-top: 1px solid #B9B29F; border-bottom: 1px solid #B9B29F;
-  padding: 16px 8px 16px 50px; margin: 24px 0; position: relative;
-  font-family: var(--font-heading); font-size: 1.15em; font-weight: 700; color: var(--accent); line-height: 1.8; white-space: nowrap; }
-.pull::before { content: "“"; position: absolute; left: 2px; top: 0; font-size: 2.4em; color: #B9B29F; }
+/* 02 四轴光谱（A、B 各一个落点） */
+.beam { margin: 24px 0 4px; }
+.beam svg { width: 100%; max-width: 640px; height: auto; display: block; margin: 0 auto; }
+.beam figcaption { font-family: var(--font-body); font-size: .8em; color: var(--muted);
+  text-align: center; margin-top: 0; }
 
-.callout { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent);
-  border-radius: 10px; padding: 14px 18px; margin: 18px 0; }
+/* 场景块 */
+.scene { border-left: 3px solid var(--accent); padding: 6px 0 6px 20px; margin: 22px 0; }
+.scene b { display: block; font-family: var(--font-body); font-size: .74em;
+  letter-spacing: .16em; color: var(--muted); margin-bottom: 4px; }
+.scene p { font-family: var(--font-heading); font-size: .98em; margin: 0; }
 
-/* ───────────── 双人组件（2026-09-06 双人换皮） ───────────── */
+/* 03 亲密关系 · 定义列表 */
+.relg { display: grid; grid-template-columns: 8.5em 1fr; font-size: .94em; margin: 18px 0; }
+.relg div { padding: 12px 12px; border-bottom: 1px solid var(--border); }
+.relg .k { font-family: var(--font-body); font-weight: 700; font-size: .88em;
+  color: var(--muted); }
+.relg div:nth-child(4n+1), .relg div:nth-child(4n+2) { background: rgba(255,255,255,.6); }
+@media (max-width: 640px) { .relg { grid-template-columns: 1fr; }
+  .relg .k { border-bottom: none; padding-bottom: 0; } }
 
-/* 双栏卡（第 1 章）：两张人物卡并排，白卡 + border-top 3px 人物色 */
-.person-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
-.person-card { background: rgba(255,255,255,.72); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
-.person-card.cp1 { border-top: 3px solid var(--p1-color); }
-.person-card.cp2 { border-top: 3px solid var(--p2-color); }
-.person-card h4 { margin: 0 0 4px; font-size: .98em; }
-.person-card p { margin: 7px 0 0; font-size: .86em; line-height: 1.75; }
-.person-card .dialogue { margin: 6px 0 2px; }
-.person-card .dialogue p { font-size: .86em; }
+/* 04 边界 */
+.bound-list { list-style: none; display: flex; flex-direction: column; gap: 8px;
+  font-family: var(--font-body); font-size: .86em; color: var(--muted);
+  line-height: 1.9; margin: 14px 0 0; }
 
-/* 双人评分条（第 2 章）：每维度一组 = 维度名 + 一句话定义 + 双方各一条；
-   条长 = 维度分 ×10%（1–10），颜色 = 人（P1 紫 / P2 绿），数值条末同色 */
-.fit-group { margin: 20px 0 26px; }
-.fit-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 8px; }
-.fit-head b { font-size: .98em; }
-.fit-def { font-size: .78em; color: var(--muted); }
-.fit-row { display: flex; align-items: center; gap: 10px; margin: 7px 0 0; }
-.fit-who { width: 2.5em; flex-shrink: 0; font-weight: 700; font-size: .88em; }
-.fit-track { flex: 1; height: 18px; border-radius: 5px; background: #EFEDE5; position: relative; }
-.fit-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; }
-.fit-num { position: absolute; top: 50%; transform: translateY(-50%); font-size: .78em; font-weight: 700; white-space: nowrap; }
-.fit-note { margin-left: auto; font-size: .74em; color: var(--muted); }
-
-/* 冲突统计 chip 行：中性（不引入红绿档位色，高/中/低只靠文字） */
-.chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 10px; }
-.chip { display: inline-block; font-size: .74em; font-weight: 700; padding: 2px 10px; border-radius: 20px; background: #F1F1EA; color: #5F6B76; white-space: nowrap; }
-
-/* 人物标签（颜色 = 人） */
-.p1-tag, .p2-tag { display: inline-block; font-size: .75em; padding: 1px 9px; border-radius: 4px; color: #fff; font-weight: 700; margin-right: 6px; }
-.p1-tag { background: var(--p1-color); }
-.p2-tag { background: var(--p2-color); }
-
-/* 对话文本：说话人 b 用人物色，内心独白斜体 */
-.dialogue { padding-left: 14px; border-left: 2px solid var(--border); margin: 8px 0; }
-.dialogue p { margin: 3px 0; font-size: .93em; text-align: left; }
-
-/* 结语：衬线居中、不编号 */
-.epilogue { border-top: 2px dashed var(--border); margin-top: 52px; padding-top: 30px; text-align: center; }
-.epilogue h2 { font-family: var(--font-heading); font-size: 1.3em; margin: 0 0 16px; }
-.epilogue p { text-align: center; }
-
-/* 第 5 章标签式结构 */
-.rel-label { display: inline-block; font-weight: 700; font-size: .82em; color: var(--accent-text);
-  letter-spacing: .08em; margin: 18px 0 2px; }
-.rel-label::before { content: ''; display: inline-block; width: 3px; height: 12px; background: var(--accent);
-  border-radius: 2px; margin-right: 7px; vertical-align: -1px; }
-.scene-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-  padding: 12px 16px 13px; margin: 10px 0 16px; }
-.scene-box .rel-label { margin: 0 0 4px; }
-.scene-box p { margin: 2px 0 0; font-size: .95em; }
-
-/* 编号条目卡 / 留意条 */
-.advice-card { display: flex; gap: 14px; background: var(--card); border: 1px solid var(--border);
-  border-radius: 10px; padding: 13px 16px; margin: 10px 0; }
-.ac-num { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff;
-  display: flex; align-items: center; justify-content: center; font-size: .88em; font-weight: 800; margin-top: 2px; }
-.advice-card p { margin: 0; font-size: .92em; line-height: 1.7; }
-.advice-card .dialogue { margin: 8px 0 2px; }
-.caution-row { background: var(--card); border: 1px solid var(--border); border-left: 3px solid #D97706;
-  border-radius: 8px; padding: 12px 16px; margin: 10px 0; font-size: .92em; line-height: 1.7; }
-.caution-row b:first-child { color: #8A5A2B; }
-
-/* 附录 */
-.appendix { border-top: 2px dashed var(--border); margin-top: 52px; padding-top: 26px; }
-.appendix h2 { font-family: var(--font-heading); font-size: 1.3em; margin: 0 0 14px; }
-.term-list li, .appb p { font-size: .95em; }
-.ev-stat { font-size: .85em; color: var(--muted); }
-
-/* 半透明卡清单 */
-.summary-card, .find-card, .advice-card, .caution-row, .scene-box, .person-card {
-  background: rgba(255,255,255,.72); }
-
-@media (max-width: 640px) {
-  .toc ol { grid-template-columns: 1fr; }
-  .pull { white-space: normal; }
-  .person-cards { grid-template-columns: 1fr; }
-}
+/* footer */
+.footer { border-top: 1px solid var(--border); margin-top: 64px; padding: 26px 0 0;
+  text-align: center; }
+.meta-line { font-family: var(--font-body); font-size: .74em; color: var(--muted);
+  letter-spacing: .04em; margin-bottom: 10px; }
+.disc { font-family: var(--font-body); font-size: .8em; color: var(--muted);
+  line-height: 2.0; max-width: 40em; margin: 0 auto; }
 
 @page { size: A4; margin: 16mm 15mm; }
 @media print {
   body { background: #fff; background-image: none; max-width: none; padding: 0 10mm; }
-  .wide { margin-left: 0; margin-right: 0; }
-  .summary-card, .callout, .guide-box, .chart-box, .axis-block, .fnchart, .type-card, .advice-card,
-  .caution-row, .faq-card, .find-card, .scene-box, .person-card, .fit-group { break-inside: avoid; }
-  .toc { display: none; }
+  .hero { min-height: auto; padding: 20px 0 6px; }
+  .scrollhint { display: none; }
+  section { margin-top: 40px; padding-top: 28px; }
+  .beam, .scene, table, .relg, .portrait { break-inside: avoid; }
+  tr { break-inside: avoid; }
   * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
 </style>
 </head>
 <body>
 
-<div class="meta-header">
-  示例双人样本：代号 A · 代号 B（合成数据，非真实来访者）· 报告日期：2026-09-06 · 数据来源：八功能测试（自评，百分制 0–100，两人各自单独作答）
-</div>
+<!-- ============ HERO ============ -->
+<header class="hero" id="hero">
+  <div class="kicker">Jungian Cognitive Functions · 双人（恋人）分析报告</div>
+  <h1>用<em>差异</em>理解彼此<br>用<em>翻译</em>减少摩擦</h1>
+  <p class="lede">荣格八维理论——看见你们俩的认知模式如何各自运作、又在哪里错位</p>
+  <div class="hero-radar" id="heroRadar"></div>
+  <div class="cover-legend">实线（浅填充）= A · 虚线 = B<br>重叠的部分是你们的共同底色，各自凸出的翅膀是互补的入口</div>
+  <div class="scrollhint">↓ 往下读</div>
+</header>
 
-<div class="guide-box">
-  <strong>在读这份报告之前</strong><br>
-  这份报告基于你们各自的自测分数，描述的是你们关系中可能存在的模式。它不是对这段关系的判决，更不应作为继续或分开的依据。报告里每个重要结论旁有一个小标记：✅ 表示有心理学研究支持，🔶 表示来自人格类型理论的推断，⚪ 表示只是一种可能的推测——标着"推测"的地方，请只当参考。每段真实的关系都比任何报告复杂。如果报告中的某些内容让你们不安，或者你们正面临重要的关系决定，请与专业人士一起讨论，而不是仅凭这份报告做决定。
-</div>
+<!-- ============ 00 PORTRAITS ============ -->
+<section id="s0">
+  <div class="sec-num">00 · PORTRAITS</div>
+  <h2>你们各自的八维速写</h2>
+  <p class="lead">在讲"你们俩放一起会怎样"之前，先各自看一张"你是谁"的快照。下面两张卡，各取每人八维里最突出的两个功能，加一句大白话描述。</p>
 
-<div class="guide-box">
-  <strong>怎么读这份报告</strong><br>
-  这份报告用荣格的一套理论来解读你们两人的测试分数，讲的是你们各自心里几种不同的做事方式，以及两套方式碰到一起时会发生什么。报告里每个重要结论旁边有一个小标记：<span class="ev-tag ev-research">✅</span> 表示有心理学研究支持；<span class="ev-tag ev-theory">🔶</span> 表示来自人格类型理论；<span class="ev-tag ev-hypothesis">⚪</span> 表示只是一种可能的推测。标着"推测"的地方，请只当参考。读的时候请记住：这份报告说的是"模式"——模式背后是两种做事方式的碰撞，没有谁对谁错。这份报告不是心理诊断。读完之后，两个人一起慢慢想，不着急。<br>
-  <b>一句话总评：底子厚、情感窄——大事上放心，小事上费口舌。</b>
-</div>
-
-<div class="toc">
-  <strong>目录</strong>
-  <ol>
-    <li><a href="#c1">你们各自是怎样的人</a></li>
-    <li><a href="#c2">总体来看，你们的关系长什么样</a></li>
-    <li><a href="#c3">这段关系自带的天赋</a></li>
-    <li><a href="#c4">容易费劲的地方</a></li>
-    <li><a href="#c5">这段关系可能会怎样发展</a></li>
-    <li><a href="#c6">你们最容易在哪几件事上卡住</a></li>
-    <li><a href="#c7">需要留意的几个风险</a></li>
-    <li><a href="#c8">具体可以怎么做</a></li>
-    <li><a href="#epilogue">结语</a></li>
-    <li><a href="#appb">这份报告的局限</a></li>
-  </ol>
-</div>
-
-<!-- ═══ 第 1 章 你们各自是怎样的人（双栏卡 ×2，人物色顶边） ═══ -->
-<div class="chapter-head" id="c1"><span class="num">01</span><h3>你们各自是怎样的人 <span class="ev-tag ev-theory">🔶</span></h3></div>
-<p class="chapter-sub">这一章回答：你们两个人各自拿着一套什么本事在过日子。</p>
-
-<p>两份单人报告已经各自讲过你们自己——八样本事各是什么、在各自心里排哪儿，那边都教过，这里不再从头讲。这一章只把两套本事并排放，看它们碰到一起时是什么样。</p>
-
-<div class="person-cards">
-  <div class="person-card cp1">
-    <h4><span class="p1-tag">A</span>先想可能性、再顾感受</h4>
-    <p><b>关系里常见的一幕。</b>一个周末怎么过，A 能在心里换三四轮主意，嘴上一个字没说；被问到"到底想怎样"，答的是"先别定"。</p>
-    <div class="dialogue">
-      <p><b style="color:var(--p2-color)">B</b>："那总得定个日子吧？"</p>
-      <p><b style="color:var(--p1-color)">A</b>："再让我想想，快了。"</p>
-      <p><b style="color:var(--p1-color)">A</b> 的内心：<em>想法有，还没攒圆。</em></p>
+  <div class="portraits">
+    <div class="portrait A">
+      <div class="tag">A</div>
+      <h4>用价值与远见导航的人</h4>
+      <div class="fn-points"><span class="fn" style="color:var(--fi)">Fi</span> 67.9（内倾情感·最高）· <span class="fn" style="color:var(--ni)">Ni</span> 65.5（内倾直觉·第二高）</div>
+      <p class="desc">先问"我认不认同"，再决定动不动；做决定时容易看到"那个最可能的未来"，然后收敛到它。</p>
+      <div class="mbti-ref">最接近 <strong>INFP 或 INFJ</strong>（仅供参考，四个字母不是身份证）</div>
     </div>
-    <p><b>最顺手。</b>外倾直觉 68 · 内倾直觉 62 · 内倾情感 60 · 外倾情感 55——出点子、攒方向、拿主意、接场面，前四位是这四样。</p>
-    <p><b>最费力。</b>内倾思考 44 · 内倾感觉 42 · 外倾思考 40 · 外倾感觉 35——追问道理、守节拍、推进收尾、盯眼前，四件都耗神。</p>
-  </div>
-  <div class="person-card cp2">
-    <h4><span class="p2-tag">B</span>先讲通不通、再顾眼前</h4>
-    <p><b>关系里常见的一幕。</b>A 说"我有点难受"，B 先动的是找原因、给办法那条路——关心是真的，先出口的是问题。</p>
-    <div class="dialogue">
-      <p><b style="color:var(--p2-color)">B</b>："怎么了？发生什么了？"</p>
-      <p><b style="color:var(--p1-color)">A</b>："……先别急着解决，陪我说会儿话。"</p>
-      <p><b style="color:var(--p2-color)">B</b> 的内心：<em>还不知道发生了什么，从哪儿陪起？</em></p>
+    <div class="portrait B">
+      <div class="tag">B</div>
+      <h4>用发散与逻辑探索的人</h4>
+      <div class="fn-points"><span class="fn" style="color:var(--ti)">Ti</span> 65.0（内倾思维·最高）· <span class="fn" style="color:var(--ne)">Ne</span> 62.1（外倾直觉·第二高）</div>
+      <p class="desc">喜欢把可能性铺开、再用逻辑筛选；不太在意外部氛围信号，更在意"这事能不能自圆其说"。</p>
+      <div class="mbti-ref">最接近 <strong>ENTP</strong>（仅供参考，四个字母不是身份证）</div>
     </div>
-    <p><b>最顺手。</b>内倾感觉 66 · 外倾思考 62 · 内倾思考 58 · 内倾直觉 53——守节拍、推收尾、追问道理、看方向，前四位是这四样。</p>
-    <p><b>最费力。</b>内倾情感 51 · 外倾感觉 49 · 外倾直觉 38 · 外倾情感 34——情感表达排在最末位；得分靠后不等于不上心，只是不在顺手的名单上。</p>
   </div>
-</div>
 
-<p>两张卡各看一眼就够，先别急着对比——对比放在下一章，那儿有尺子。看的时候留意一件事：每张卡里"最顺手"和"最费力"隔着的那段距离，就是后文所有合拍与卡壳的来源。</p>
+  <p>把两人的八维分放在一起看，有<strong>三处差值特别明显</strong>：Fe（A 高很多）、Ne（B 高很多）、Ti（B 高）。这三道"错位"，既是你们沟通时最容易卡住的地方，也可能是最能互相补位的地方。</p>
+  <p class="muted">下面先看"全局差值"，再逐轴讲透"你们怎么搭"。</p>
+</section>
 
-<div class="pull">A 的心思走两轮才出口，B 的办法总是先到。</div>
+<!-- ============ 01 GLOBAL DELTA SCAN ============ -->
+<section id="s1">
+  <div class="sec-num">01 · GLOBAL DELTA SCAN</div>
+  <h2>全局扫描：你们俩落在四个象限的哪里</h2>
+  <p class="lead">把 A 的分数当横轴、B 的分数当纵轴，八个功能各画一个点。位置本身就在讲故事：<strong>右上角</strong>是"你们都强"（共识区），<strong>左下角</strong>是"你们都弱"（共同盲区），<strong>右下</strong>是"A 强 B 弱"，<strong>左上</strong>是"B 强 A 弱"。离对角线越远，说明这个功能上你们越"不在一个频道"。</p>
 
-<!-- ═══ 第 2 章 总体来看，你们的关系长什么样（总评先行 + 评分条 ×8 组 + 点名解读，外包 .wide） ═══ -->
-<div class="chapter-head" id="c2"><span class="num">02</span><h3>总体来看，你们的关系长什么样 <span class="ev-tag ev-theory">🔶</span></h3></div>
-<p class="chapter-sub">这一章回答：八个分数连起来，是一段什么样的关系。</p>
+  <div class="quad" id="quadrant"></div>
 
-<p><b>底子厚——看重的东西、互补搭手、日子秩序这几格排在前面；连接处薄——接得住情绪、天生易磨排在后面。</b>落到日子里，多半是大事上放心、小事上费口舌。<span class="ev-tag ev-theory">🔶</span></p>
+  <p class="chart-note">点用功能色：实心红/紫/蓝等各自代表一个功能。看哪几个点"分居对角两侧"——Fe 在右下（A 强）、Ne 与 Ti 在左上（B 强），这三处就是你们最大的错位。</p>
 
-<p>你们在这八件事上各有一个共同的分，从高到低排下来。单人报告里是百分制，这里按关系维度折成 1–10 分——两套刻度各算各的，别互相换算。</p>
+  <h3>四象限分类：你们的关系地形</h3>
+  <table>
+    <tr><th>象限</th><th>落在这里的功能</th><th>对你们意味着什么</th></tr>
+    <tr><td><strong>共识区</strong>（都强）</td><td><span class="fn" style="color:var(--fi)">Fi</span> · <span class="fn" style="color:var(--ni)">Ni</span></td><td>你们都用"价值 + 远见"做判断，大方向容易对齐。<strong>但提醒</strong>：两人都强 Fi，一旦"我认不认同"不一致，容易各自守住内核、僵持。</td></tr>
+    <tr><td><strong>共同盲区</strong>（都弱）</td><td><span class="fn" style="color:var(--se)">Se</span> · <span class="fn" style="color:var(--si)">Si</span></td><td>你们都不太靠"身体感、当下、经验规律"过日子。生活上的琐碎（纪念日、作息、杂务）<strong>得靠日历和提醒托住</strong>，别指望谁天生记得。</td></tr>
+    <tr><td><strong>A 带 B</strong>（A 强 B 弱）</td><td><span class="fn" style="color:var(--fe)">Fe</span></td><td>A 更会读空气、主动照顾关系里的情绪；B 这块明显弱——不是不愿，是常常读不到那个信号。很多"你怎么不关心"的误会，来自这里。</td></tr>
+    <tr><td><strong>B 补 A</strong>（B 强 A 弱）</td><td><span class="fn" style="color:var(--ne)">Ne</span> · <span class="fn" style="color:var(--ti)">Ti</span></td><td>B 更发散、更讲逻辑自洽；能帮 A 看见"原来还有别的选项"、把模糊感受拆清楚。A 容易收敛到一条路，B 能打开它。</td></tr>
+    <tr><td><strong>差距不大</strong>（贴对角线）</td><td><span class="fn" style="color:var(--te)">Te</span></td><td>推进力你俩差不多，不太会是主要矛盾点。</td></tr>
+  </table>
+  <p class="muted">这套地形背后，其实是你们在四组核心能力上的不同分工——下面按"四轴对照"讲透，每根轴上你们各自站哪、天平往哪边歪。</p>
+</section>
 
-<div class="callout">
-  <p style="margin:0">这些分数是对你们关系结构的一种可视化描述，帮助你们看到 patterns（模式），不是对这段关系的打分或判决。</p>
-</div>
+<!-- ============ 02 TRADE-OFF AXES ============ -->
+<section id="s2">
+  <div class="sec-num">02 · FOUR TRADE-OFF AXES</div>
+  <h2>四轴对照：你们俩怎么落位、怎么搭</h2>
+  <p class="lead">荣格学派把八个功能配成四组对照——同一种能力的两个版本。对你们来说,重点不是"每组里 A 强还是 B 强",而是"<strong>各自有多偏向哪一版</strong>"。每根轴画成一条<strong>对数光谱</strong>:中间的刻度是<strong>平衡点</strong>（两版相当,1:1）——比值大于 1 偏右、小于 1 偏左。<strong>A 的实心点、B 的空心点</strong>各自站在本人两版的比值上,各自自比,互不换算。</p>
 
-<div class="wide">
-  <!-- 评分条 ×8 组：条长 = 维度分 ×10%，双方各一条（同长同数），颜色 = 人 -->
-  <div class="fit-group">
-    <div class="fit-head"><b>互补搭手</b><span class="fit-def">一方的顺手补另一方的费力</span><span class="fit-note">A 开口子 · B 收结果</span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p1-color)">A</span><span class="fit-track"><span class="fit-fill" style="width:80%;background:var(--p1-color)"></span><span class="fit-num" style="left:calc(80% + 8px);color:var(--p1-color)">8</span></span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p2-color)">B</span><span class="fit-track"><span class="fit-fill" style="width:80%;background:var(--p2-color)"></span><span class="fit-num" style="left:calc(80% + 8px);color:var(--p2-color)">8</span></span></div>
+  <h3>轴一 · <span class="fn" style="color:var(--ni)">Ni</span> 预见 vs <span class="fn" style="color:var(--ne)">Ne</span> 发散</h3>
+  <div class="beam" id="beam1"></div>
+  <p class="chart-note">自比读数：<strong>方向相反</strong>——A 的 Ni 是 Ne 的 1.57 倍 → 明显偏预见；B 的 Ne 是 Ni 的 1.14 倍 → 略偏发散。</p>
+  <p><strong>摩擦点</strong>:A 做决定时需要先看到"那个最可能的未来",然后收敛到它;B 喜欢把可能性铺开、迟迟不收口。A 可能觉得 B "想太多、不落地",B 可能觉得 A "太早关死选项、钻牛角尖"。一起规划旅行路线、职业路径时最容易撞到这个轴。</p>
+  <p><strong>互补点</strong>:B 的 Ne 能帮 A 看见"A 原来看不到的第三条路";A 的 Ni 能帮 B "在发散后做个决定"。你们一起,比单个人更全面。</p>
+  <div class="scene">
+    <b>场景示例 · 一起选度假目的地</b>
+    <p>A 脑子里已经有"这次必须去云南,因为明年可能就去不了了"（Ni 收敛）;B 说"等等,我列了八个选项,咱们先比一比"（Ne 发散）。A 烦:"你到底想不想去?";B 也烦:"你都不让我说完。"<strong>翻译</strong>:A 可以先说一句"我理解你想多看看,但我们能不能今天先定个大方向?";B 可以列完选项后主动收一句"好,那咱们就在这三个里挑"。</p>
   </div>
-  <div class="fit-group">
-    <div class="fit-head"><b>日子秩序</b><span class="fit-def">一起把日子过出秩序的难易</span><span class="fit-note">B 的底账</span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p1-color)">A</span><span class="fit-track"><span class="fit-fill" style="width:80%;background:var(--p1-color)"></span><span class="fit-num" style="left:calc(80% + 8px);color:var(--p1-color)">8</span></span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p2-color)">B</span><span class="fit-track"><span class="fit-fill" style="width:80%;background:var(--p2-color)"></span><span class="fit-num" style="left:calc(80% + 8px);color:var(--p2-color)">8</span></span></div>
+
+  <h3>轴二 · <span class="fn" style="color:var(--se)">Se</span> 体验 vs <span class="fn" style="color:var(--si)">Si</span> 存档</h3>
+  <div class="beam" id="beam2"></div>
+  <p class="chart-note">自比读数：<strong>方向相反、强度都小</strong>——A 两分接近（Si/Se≈0.89）→ 几乎中立、微偏体验；B 的 Si 是 Se 的 1.33 倍 → 偏存档。</p>
+  <p><strong>共同点</strong>:你们都不是"靠身体感官、现场感吃饭"的人（Se 双低）,也都不是"靠经验习惯、守着熟悉的一套"的人（Si 都不算高）。这意味着你们俩都不会天然地"注意到今天天气真好""这个餐厅上菜比上次慢"。</p>
+  <p><strong>摩擦点</strong>:B 的 Si 略高 → B 更在意"规律、可预期、别总变";A 的 Si 最低 → A 更"随缘、不想被过去绑住"。摩擦可能是"B 觉得 A 不够稳（比如总是忘记纪念日）,A 觉得 B 太死板（非要按老规矩来）"。</p>
+  <p><strong>互补点</strong>:B 的 Si 能给关系定下一些<strong>固定的动作</strong>（定期见面、纪念日、小仪式）;A 的灵活性帮你们不被日复一日闷死。你们一起 = 既有可预期的安全感,又有"说走就走"的弹性。</p>
+
+  <h3>轴三 · <span class="fn" style="color:var(--fi)">Fi</span> 价值 vs <span class="fn" style="color:var(--te)">Te</span> 推进</h3>
+  <div class="beam" id="beam3"></div>
+  <p class="chart-note">自比读数：<strong>同向</strong>——A 的 Fi 是 Te 的 1.43 倍 → 明显偏价值；B 两分几乎持平（比值≈0.97）→ 基本中立、微偏价值。这根轴你们不打架。</p>
+  <p><strong>共同点</strong>:你们都是"先问值不值得、再看要不要推进"的人——A 更极端（Fi 67.9,全维最高）,B 稍微平衡一点（Fi 58.0 > Te 56.3,差值不大）。你们不太会吵"要不要忠于自己"这种根本问题。</p>
+  <p><strong>摩擦点</strong>（这根轴的摩擦不是"价值 vs 效率",而是"谁的价值优先"）:你们俩的 Fi 都很强,当"我认不认同"不一致时,容易僵持——A 觉得"这事我不能违心",B 也觉得"我也不能答应"。这时候谁都不肯先让步,因为让步 = 背叛自己的内核。</p>
+  <p><strong>互补点</strong>:你们能理解对方"为什么要忠于自己",不会互相踩底线。一旦找到一个"你们都能认同"的方向,你们的 Fi 会一起驱动、不会有人掉队。</p>
+  <div class="scene">
+    <b>场景示例 · 要不要搬去另一个城市</b>
+    <p>A 的 Fi:"我在这边有朋友、有归属感,我不想去一个完全陌生的地方。" B 的 Fi:"我有我的原则,我也不想为了工作牺牲生活质量。" —— 这时候不是"谁对谁错",而是"你们俩的底线怎么对齐"。解法:别急着找"折中方案",先各自说出"我绝对不想要的是什么",排除掉那些选项,剩下的再讨论。</p>
   </div>
-  <div class="fit-group">
-    <div class="fit-head"><b>看重的东西</b><span class="fit-def">对"什么重要"的判断像不像</span><span class="fit-note">两把尺子，读数接近</span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p1-color)">A</span><span class="fit-track"><span class="fit-fill" style="width:70%;background:var(--p1-color)"></span><span class="fit-num" style="left:calc(70% + 8px);color:var(--p1-color)">7</span></span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p2-color)">B</span><span class="fit-track"><span class="fit-fill" style="width:70%;background:var(--p2-color)"></span><span class="fit-num" style="left:calc(70% + 8px);color:var(--p2-color)">7</span></span></div>
+
+  <h3>轴四 · <span class="fn" style="color:var(--fe)">Fe</span> 氛围 vs <span class="fn" style="color:var(--ti)">Ti</span> 逻辑</h3>
+  <div class="beam" id="beam4"></div>
+  <p class="chart-note">自比读数：<strong>错位最大的一根</strong>——A 两分接近（Ti/Fe≈0.94）→ 几乎中立、微偏氛围；B 的 Ti 是 Fe 的 2.24 倍 → 强烈偏逻辑。</p>
+  <p><strong>你们的错位</strong>:这是三处最大差值里最核心的一根轴——B 在"读空气、照顾大家感受"上分特别低（Fe 29,全维最低）,但"拆逻辑、追求自洽"上分特别高（Ti 65,全维最高）;A 两者接近。这不是谁冷血、谁虚伪,是你们处理"人 vs 道理"的优先级不同。</p>
+  <p><strong>摩擦点（重点）</strong>:</p>
+  <ul style="margin-left:1.5em;margin-bottom:14px;font-size:.95em">
+    <li>A 可能觉得"B 怎么这么不在乎别人的感受"（Fe 差 25）、"B 说话太冲、不会绕弯、不会看脸色";</li>
+    <li>B 可能觉得"A 想太多社交信号了"（B 的 Fe 低到自己根本不敏感）、"B 只是想讨论清楚问题,为什么 A 突然不开心";</li>
+    <li><strong>核心误读</strong>:B 的 Ti 高 ≠ "冷血",是 B 习惯"先把逻辑理顺再考虑感受";A 的 Fe 不算低,所以 A 更在意"当下的氛围对不对、你有没有先回应我的情绪"。</li>
+  </ul>
+  <p><strong>互补点（也要讲透）</strong>:</p>
+  <ul style="margin-left:1.5em;margin-bottom:14px;font-size:.95em">
+    <li>B 的 Ti 能帮 A "把模糊的感受拆清楚"（"你到底是哪里不舒服、是觉得被忽视了还是觉得不公平"）;</li>
+    <li>A 的 Fe 能帮 B "在逻辑之外看见人"（"你这样说话对方会受伤,即使你的论据是对的"）;</li>
+    <li>你们一起 = 既有逻辑深度,又有人情温度。</li>
+  </ul>
+  <div class="scene">
+    <b>场景示例 · 吵架时的翻译指南</b>
+    <p>当你们吵架时:B 容易"讲道理自证"（"我刚才说的三点哪一点不对?"）,A 容易"觉得 B 不在乎我的感受"（"你为什么一直在辩,你根本不关心我难不难过"）。<br><strong>给 B 的话术</strong>:先说一句"我知道你现在很难受,我想先听你说完"（给 A 的 Fe 一个交代,让她知道你看见了她的感受）,再讲逻辑。<br><strong>给 A 的话术</strong>:直接说"我现在需要你听我说完、不是分析对错,我讲完了再讨论"（给 B 一个可执行的指令,B 的 Ti 会照做——他不是不愿意,是不知道你想要什么）。</p>
   </div>
-  <div class="fit-group">
-    <div class="fit-head"><b>身体亲近</b><span class="fit-def">身体层面的合拍与潜力</span><span class="fit-note">两人都靠后，当潜力读</span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p1-color)">A</span><span class="fit-track"><span class="fit-fill" style="width:60%;background:var(--p1-color)"></span><span class="fit-num" style="left:calc(60% + 8px);color:var(--p1-color)">6</span></span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p2-color)">B</span><span class="fit-track"><span class="fit-fill" style="width:60%;background:var(--p2-color)"></span><span class="fit-num" style="left:calc(60% + 8px);color:var(--p2-color)">6</span></span></div>
+
+  <h3>四轴小结</h3>
+  <table>
+    <tr><th>轴</th><th>自比倾向差</th><th>摩擦等级</th><th>互补潜力</th></tr>
+    <tr><td>轴一 · Ni/Ne</td><td>相反（A 明显 · B 温和）</td><td>中</td><td>高</td></tr>
+    <tr><td>轴二 · Se/Si</td><td>相反（都温和）</td><td>低</td><td>中</td></tr>
+    <tr><td>轴三 · Fi/Te</td><td>同向（A 明显 · B 中立）</td><td>中（价值僵持）</td><td>高</td></tr>
+    <tr><td><strong>轴四 · Fe/Ti</strong></td><td><strong>相反（B 强烈 · A 中立）</strong></td><td><strong>高</strong></td><td><strong>很高</strong></td></tr>
+  </table>
+</section>
+
+<!-- ============ 03 INTIMATE PATTERNS ============ -->
+<section id="s3">
+  <div class="sec-num">03 · INTIMATE PATTERNS</div>
+  <h2>亲密关系：你们的互动模式</h2>
+  <p class="lead">基于前面的四轴对照,下面看三个"你们俩特有"的互动场景——吵架、冷战、日常沟通。</p>
+
+  <h3>场景一 · 吵架时,谁先开口</h3>
+  <div class="scene">
+    <b>A 的内心戏</b>
+    <p>A 的 Fi（67.9）在吵完架后会反复回想"我刚才那句话说得对不对、TA 是不是生气了";Ni（65.5）会脑补"这次吵架是不是说明我们根本不合";Fe（53.9）会主动想缓和氛围,但又怕先开口 = 先认输。</p>
   </div>
-  <div class="fit-group">
-    <div class="fit-head"><b>聊得来</b><span class="fit-def">10 分 = 说什么都能接上；5 分 = 深聊接得住，收尾各说各的</span><span class="fit-note">深聊顺 · 收尾各想各的</span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p1-color)">A</span><span class="fit-track"><span class="fit-fill" style="width:50%;background:var(--p1-color)"></span><span class="fit-num" style="left:calc(50% + 8px);color:var(--p1-color)">5</span></span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p2-color)">B</span><span class="fit-track"><span class="fit-fill" style="width:50%;background:var(--p2-color)"></span><span class="fit-num" style="left:calc(50% + 8px);color:var(--p2-color)">5</span></span></div>
+  <div class="scene">
+    <b>B 的内心戏</b>
+    <p>B 的 Ti（65.0）会立刻进入"复盘逻辑"模式（"刚才我说的哪一句有漏洞"）,Fe（29.0）低到 TA 真的<strong>没意识到你需要 TA 先说句软话</strong>——不是不想,是读不到这个信号。Ne（62.1）会让 TA 觉得"这也不是唯一的问题,下次可能还会因为别的吵"。</p>
   </div>
-  <div class="fit-group">
-    <div class="fit-head"><b>互相带动</b><span class="fit-def">这段关系能不能推着两个人往前走</span><span class="fit-note">最费力的，对方都顺手</span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p1-color)">A</span><span class="fit-track"><span class="fit-fill" style="width:50%;background:var(--p1-color)"></span><span class="fit-num" style="left:calc(50% + 8px);color:var(--p1-color)">5</span></span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p2-color)">B</span><span class="fit-track"><span class="fit-fill" style="width:50%;background:var(--p2-color)"></span><span class="fit-num" style="left:calc(50% + 8px);color:var(--p2-color)">5</span></span></div>
+  <p class="chart-note"><strong>翻译建议</strong>:A 不要等 B "猜到你想要什么"——直接说"我现在需要你抱我一下,或者先说句'我理解你'";B 如果不想冷战,可以主动定个时间"我现在需要冷静半小时,半小时后我们再聊"（给 A 一个准信,比沉默好得多）。</p>
+
+  <h3>场景二 · 日常沟通：你们各自的雷区</h3>
+  <div class="relg">
+    <div class="k">A 的雷区</div><div>B 用 Ti 拆逻辑时,A 容易听成"你在否定我的感受"（B 真没这意思,只是 B 处理问题的第一反应是分析）。解法:A 可以直接打断"我现在不想听分析,我想让你先站我这边"。</div>
+    <div class="k">B 的雷区</div><div>A 用 Fe 暗示（"你都不主动找我聊天"）,B 的 Fe 低到<strong>根本听不出这是抱怨还是陈述</strong>。解法:A 把需求说具体"我希望你每天晚上给我发条消息,哪怕一句也行",B 的 Ti 会照做（他需要的是指令,不是暗示）。</div>
+    <div class="k">你们的共同盲区</div><div>两人 Se 都低 → 都不太会"活在当下、享受此刻",容易把约会安排成"吃饭+聊天+回家"的固定模式,很少"说走就走"。解法:每月强制一次"没计划的外出",哪怕只是 random walk,给生活一点意外感。</div>
   </div>
-  <div class="fit-group">
-    <div class="fit-head"><b>天生易磨</b><span class="fit-def">两套做事方式天生相磨的多少——分数越低，磨得越多</span><span class="fit-note">摩擦集中在情感语言</span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p1-color)">A</span><span class="fit-track"><span class="fit-fill" style="width:40%;background:var(--p1-color)"></span><span class="fit-num" style="left:calc(40% + 8px);color:var(--p1-color)">4</span></span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p2-color)">B</span><span class="fit-track"><span class="fit-fill" style="width:40%;background:var(--p2-color)"></span><span class="fit-num" style="left:calc(40% + 8px);color:var(--p2-color)">4</span></span></div>
+
+  <h3>场景三 · 长期相处：你们的关系动力</h3>
+  <p>从八维组合看,你们是<strong>"价值共鸣 + 能力互补"型</strong>:你们都有强 Fi（内核一致）,但 B 的 Ne+Ti 能拉 A 看见更多可能性、逻辑上更清晰,A 的 Ni+Fe 能给 B 提供方向感和人情温度。摩擦主要来自<strong>沟通方式差异</strong>（B 的 Ti vs A 的 Fe）,而不是<strong>根本价值观冲突</strong>。</p>
+  <p>换句话说:你们<strong>吵架的点多在"怎么说"而非"信什么"</strong>——这是好消息,因为"怎么说"是可以训练的,"信什么"很难改。</p>
+</section>
+
+<!-- ============ 04 PLAYBOOK ============ -->
+<section id="s5">
+  <div class="sec-num">04 · PLAYBOOK</div>
+  <h2>怎么搭：你们的相处说明书</h2>
+  <p class="lead">前面讲了"差异在哪"，这里只回答一个问题——知道了这些，具体怎么相处更顺。不判决合分，只给能直接用的动作。</p>
+
+  <h3>把两张图和四根轴，翻译成三条协议</h3>
+  <table class="relg" style="display:block;border:0">
+    <div style="border-bottom:1px solid var(--border);padding:14px 0"><strong style="color:var(--fe)">协议一 · 先情绪，后逻辑（对着 01 右下那颗孤立的 Fe）</strong><br>
+    B 的 Fe 明显弱于 A。吵完架，A 常卡在"你有没有先在乎我的感受"，而 B 直接跳进"刚才哪句逻辑不对"。<strong>做法</strong>：B 在讲道理前，先补一句"我知道你现在难受，我先听你说完"；这句话对 B 不难，但能省掉 A 一半的委屈。</div>
+    <div style="border-bottom:1px solid var(--border);padding:14px 0"><strong style="color:var(--ne)">协议二 · 给 B 的发散一个出口（对着 02 第一根各歪一边的天平）</strong><br>
+    A 靠 Ni 收敛、早早定了方向；B 靠 Ne 想铺开更多可能。硬碰硬会变成"A 觉得 B 不落地、B 觉得 A 关太早"。<strong>做法</strong>：A 先说一句"我有个方向，但想听你有没有别的角度"；B 铺完选项后主动收一句"那就这三里挑"。一个给空间，一个肯收口。</div>
+    <div style="border-bottom:1px solid var(--border);padding:14px 0"><strong style="color:var(--si)">协议三 · 盲区交给日历，不交给记性（对着 01 左下那团都弱的 Se/Si）</strong><br>
+    你俩都不擅长盯生活细节——纪念日、账单、作息，谁也别指望对方"自然记得"。<strong>做法</strong>：重要的日子全部进共享日历、设提前提醒。这不是浪漫，是你们这种组合能长期不踩雷的<strong>笨办法</strong>。</div>
+  </table>
+
+  <h3>你们的关系类型：同内核，两套思路</h3>
+  <p>把四张图叠起来看，你们最突出的特征是——<strong>01 右上角挤着几个点（Fi、Ni、Ti 都强），左下角偏空（Se、Si 都弱）</strong>。这意味着：你们<strong>共享一个"重视意义、爱用脑"的内核</strong>，却各自握着<strong>两套不同的思路</strong>——A 那一套是"价值 + 预见"（Fi/Ni），B 那一套是"逻辑 + 发散"（Ti/Ne）。两套思路指向同一个方向时，你们比大多数情侣都合拍；一旦要处理"当下、情绪、生活琐事"，两套会一起卡住，因为那正是你们俩都陌生的地方。</p>
+  <p class="muted">所以你们的关系课题，不是"理解对方的价值观"（那已经懂了），而是<strong>"在你们都不擅长的现实层面，一起把办法提前定下来"</strong>——把 Fe 的照顾、Se/Si 的打理，变成约定和日历提醒，而不是考验谁记性好。</p>
+
+  <div class="scene">
+    <b>如果只记一句</b>
+    <p>你们不缺默契，缺的是<strong>在"都嫌麻烦"的地方，替对方多想一步</strong>——B 替 A 多想一步感受，A 替 B 多说一句需求，俩人一起替生活多设一个提醒。</p>
   </div>
-  <div class="fit-group">
-    <div class="fit-head"><b>接得住情绪</b><span class="fit-def">情绪说出去，对方接不接得住</span><span class="fit-note">两人一起练</span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p1-color)">A</span><span class="fit-track"><span class="fit-fill" style="width:30%;background:var(--p1-color)"></span><span class="fit-num" style="left:calc(30% + 8px);color:var(--p1-color)">3</span></span></div>
-    <div class="fit-row"><span class="fit-who" style="color:var(--p2-color)">B</span><span class="fit-track"><span class="fit-fill" style="width:30%;background:var(--p2-color)"></span><span class="fit-num" style="left:calc(30% + 8px);color:var(--p2-color)">3</span></span></div>
-  </div>
-  <p class="chart-note">每个维度只有一个共同的分（1–10）：紫、绿两条一样长——分数属于你们俩，两条只是把两个人都放进图里。颜色只区分人，不分好坏。</p>
-</div>
+</section>
 
-<p>先看两条最长的：互补搭手、日子秩序。这两格的分从哪儿来、怎么用才不浪费，第 3 章的天赋接着讲。<span class="ev-tag ev-theory">🔶</span></p>
+<!-- ============ 05 BOUNDARIES ============ -->
+<section id="s4">
+  <div class="sec-num">05 · BOUNDARIES</div>
+  <h2>边界声明：这份报告能做什么、不能做什么</h2>
+  <ul class="bound-list">
+    <li>· 得分来自你们各自的自陈问卷,<strong>分数会波动</strong>——状态、心境、人生阶段都会改变它;这份报告是此刻的快照,不是永恒判决。</li>
+    <li>· 八维模型是理解差异的透镜之一,<strong>不是"你们合不合"的判决书</strong>;它只能帮你看清"你们的认知模式放一起会怎样",不能替代真实的相处。</li>
+    <li>· 看到"摩擦"别慌——<strong>摩擦说明你们有不同,有摩擦面才有互补空间</strong>;没有摩擦的关系,往往也没有张力。</li>
+    <li>· MBTI 四字母（A≈INFP/INFJ、B≈ENTP）只是帮助记忆的参考标签,<strong>别拿它限制自己或对方</strong>;人是活的,功能是工具,不是牢笼。</li>
+    <li>· <strong>最后</strong>:如果这份报告让你们更愿意理解对方、少一些"你怎么这样",它就有用了。关系是做出来的,不是算出来的。</li>
+  </ul>
+  <h3 style="margin-top:40px">附录 · 完整得分对照表</h3>
+  <table style="font-size:.85em">
+    <tr><th>功能</th><th>A</th><th>B</th><th>差值</th><th>谁更高</th></tr>
+    <tr><td><span class="fn" style="color:var(--fi)">Fi</span> 内倾情感</td><td>67.9</td><td>58.0</td><td>+9.9</td><td>A 略高</td></tr>
+    <tr><td><span class="fn" style="color:var(--ni)">Ni</span> 内倾直觉</td><td>65.5</td><td>54.5</td><td>+11.0</td><td>A 略高</td></tr>
+    <tr><td><span class="fn" style="color:var(--fe)">Fe</span> 外倾情感</td><td><strong>53.9</strong></td><td><strong>29.0</strong></td><td><strong>+24.9</strong></td><td><strong>A 明显高</strong></td></tr>
+    <tr><td><span class="fn" style="color:var(--ti)">Ti</span> 内倾思维</td><td>50.5</td><td>65.0</td><td>-14.5</td><td><strong>B 明显高</strong></td></tr>
+    <tr><td><span class="fn" style="color:var(--te)">Te</span> 外倾思维</td><td>47.6</td><td>56.3</td><td>-8.7</td><td>B 略高</td></tr>
+    <tr><td><span class="fn" style="color:var(--ne)">Ne</span> 外倾直觉</td><td>41.9</td><td><strong>62.1</strong></td><td><strong>-20.2</strong></td><td><strong>B 明显高</strong></td></tr>
+    <tr><td><span class="fn" style="color:var(--se)">Se</span> 外倾感觉</td><td>41.8</td><td>34.8</td><td>+7.0</td><td>A 略高</td></tr>
+    <tr><td><span class="fn" style="color:var(--si)">Si</span> 内倾感觉</td><td>37.1</td><td>46.4</td><td>-9.3</td><td>B 略高</td></tr>
+  </table>
+  <p class="muted" style="margin-top:20px;font-size:.85em">按差值绝对值降序:Fe（+24.9）、Ne（-20.2）、Ti（-14.5）是你们三大错位点,报告重点围绕这三处展开。其他五处差值在 15 分以内,属于正常范围内的个体差异。</p>
+</section>
 
-<p>最短的一条：接得住情绪，3 分。为什么短、短成什么样，第 4 章逐条讲——第 8 章的所有做法都以它为靶心。<span class="ev-tag ev-theory">🔶</span></p>
+<footer class="footer">
+  <div class="meta-line">双人（恋人）分析报告 SAMPLE-PAIR-01 · 报告日期：2026-09-07 · 数据来源：A、B 各自八维测试（自评，百分制 0–100）</div>
+  <div class="disc">荣格八维 · 双人关系分析 — 基于你们俩的测评分数做的理论分析。本报告不构成临床诊断,也不判断"你们合不合"。数据是快照,不是宿命;理解是开始,相处才是答案。</div>
+</footer>
 
-<p>中间五格一并带过：看重的东西 7、身体亲近 6、聊得来 5、互相带动 5、天生易磨 4。长的几面在第 3 章，磨的那面在第 4 章，当场吵起来的样子在第 6 章。<span class="ev-tag ev-theory">🔶</span></p>
+<script>
+// ---------- 数据 ----------
+const A={Fi:67.86,Ni:65.54,Fe:53.94,Ti:50.46,Te:47.56,Ne:41.86,Se:41.76,Si:37.12};
+const B={Ti:64.95,Ne:62.06,Fi:58.00,Te:56.26,Ni:54.52,Si:46.40,Se:34.79,Fe:29.00};
+const C={fi:'#c0392b',ni:'#8e44ad',fe:'#2980b9',ti:'#16a085',te:'#d35400',ne:'#e67e22',se:'#27ae60',si:'#7f8c8d'};
+const DESC={Fi:'内倾情感',Ni:'内倾直觉',Fe:'外倾情感',Ti:'内倾思维',Te:'外倾思维',Ne:'外倾直觉',Se:'外倾感觉',Si:'内倾感觉'};
 
-<div class="pull">底子是真的厚，费口舌也是真的多。</div>
+// ---------- 封面：双人雷达叠加 ----------
+function renderHeroRadar(){
+  const order=['Fi','Ni','Te','Se','Fe','Ne','Ti','Si']; // 对置成轴: 1-5,2-6,3-7,4-8
+  const vals=[]; order.forEach(f=>{vals.push(A[f],B[f]);});
+  const mn=Math.min(...vals), mx=Math.max(...vals);
+  const W=560, cx=W/2, cy=W/2, R=180;
+  const pt=(i,r)=>{const a=-Math.PI/2+i*Math.PI/4;return [cx+r*Math.cos(a),cy+r*Math.sin(a)];};
+  const rOf=v=>R*(0.30+0.62*((v-mn)/(mx-mn))); // 两人共用同一标尺，形状可比较
+  const poly=P=>order.map((f,i)=>pt(i,rOf(P[f])).map(n=>n.toFixed(1)).join(',')).join(' ');
+  let svg=`<svg viewBox="0 0 ${W} ${W}" xmlns="http://www.w3.org/2000/svg">
+    <defs><style>.rl{font-family:Noto Serif SC,serif;font-size:16px;font-weight:600}</style></defs>`;
+  for(let g=1;g<=4;g++){
+    let ring=''; for(let i=0;i<8;i++){const p=pt(i,R*g/4); ring+=(i?' ':'')+p[0].toFixed(1)+','+p[1].toFixed(1);}
+    svg+=`<polygon points="${ring}" fill="none" stroke="#DCD6C8" stroke-width="1"/>`;
+  }
+  let spokes=''; for(let i=0;i<8;i++){const p=pt(i,R); spokes+=`<line x1="${cx}" y1="${cy}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="#DCD6C8" stroke-width="1"/>`;}
+  svg+=spokes;
+  svg+=`<polygon points="${poly(B)}" fill="none" stroke="#262419" stroke-width="1.6" stroke-dasharray="6 4" opacity="0.55"/>`;
+  svg+=`<polygon points="${poly(A)}" fill="rgba(31,95,102,.12)" stroke="var(--accent)" stroke-width="1.8"/>`;
+  order.forEach((f,i)=>{
+    const p=pt(i,R), l=pt(i,R+34);
+    svg+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.4" fill="var(--${f.toLowerCase()})"/>`;
+    svg+=`<text x="${l[0].toFixed(1)}" y="${l[1].toFixed(1)}" class="rl" text-anchor="middle" dominant-baseline="middle" paint-order="stroke" stroke="#F7F5EF" stroke-width="3" fill="var(--${f.toLowerCase()})">${f}</text>`;
+  });
+  svg+='</svg>';
+  document.getElementById('heroRadar').innerHTML=svg;
+}
 
-<!-- ═══ 第 3 章 天赋（advice-card ×4） ═══ -->
-<div class="chapter-head" id="c3"><span class="num">03</span><h3>这段关系自带的天赋 <span class="ev-tag ev-theory">🔶</span></h3></div>
-<p class="chapter-sub">这一章回答：不靠努力就有的那几样，是什么、怎么别浪费掉。</p>
+// ---------- 01 章：2×2 四象限散点矩阵 ----------
+function renderQuadrant(){
+  const W=560, H=560, pad=70, plot=W-2*pad;
+  const sx=v=>pad+(v/100)*plot, sy=v=>pad+plot-(v/100)*plot; // X=A,Y=B
+  const mid=sx(50);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs><style>.lbl{font-family:Noto Sans SC,sans-serif;font-size:11px}.fn-lbl{font-family:Noto Serif SC,serif;font-size:13px;font-weight:600}
+    .quad-name{font-family:Noto Serif SC,serif;font-size:14px;font-weight:600;letter-spacing:.08em}</style></defs>`;
+  // 四象限底色
+  svg+=`<rect x="${pad}" y="${pad}" width="${plot/2}" height="${plot/2}" fill="var(--te)" opacity="0.04"/>`; // 左上 A低B高
+  svg+=`<rect x="${mid}" y="${pad}" width="${plot/2}" height="${plot/2}" fill="var(--fi)" opacity="0.04"/>`; // 右上 A高B高
+  svg+=`<rect x="${pad}" y="${mid}" width="${plot/2}" height="${plot/2}" fill="var(--si)" opacity="0.04"/>`; // 左下 A低B低
+  svg+=`<rect x="${mid}" y="${mid}" width="${plot/2}" height="${plot/2}" fill="var(--fe)" opacity="0.04"/>`; // 右下 A高B低
+  // 网格线
+  for(let v=20;v<=80;v+=20){
+    svg+=`<line x1="${sx(v)}" y1="${pad}" x2="${sx(v)}" y2="${pad+plot}" stroke="#DCD6C8" stroke-width="0.5" opacity="0.5"/>`;
+    svg+=`<line x1="${pad}" y1="${sy(v)}" x2="${pad+plot}" y2="${sy(v)}" stroke="#DCD6C8" stroke-width="0.5" opacity="0.5"/>`;
+  }
+  // 50 中线 + 对角线
+  svg+=`<line x1="${mid}" y1="${pad}" x2="${mid}" y2="${pad+plot}" stroke="#B9B29F" stroke-width="1" stroke-dasharray="2 2"/>`;
+  svg+=`<line x1="${pad}" y1="${mid}" x2="${pad+plot}" y2="${mid}" stroke="#B9B29F" stroke-width="1" stroke-dasharray="2 2"/>`;
+  svg+=`<line x1="${pad}" y1="${pad+plot}" x2="${pad+plot}" y2="${pad}" stroke="#262419" stroke-width="1" opacity="0.15"/>`; // 对角线
+  // 坐标轴
+  svg+=`<line x1="${pad}" y1="${pad+plot}" x2="${pad+plot}" y2="${pad+plot}" stroke="#B9B29F" stroke-width="1.5"/>`;
+  svg+=`<line x1="${pad}" y1="${pad}" x2="${pad}" y2="${pad+plot}" stroke="#B9B29F" stroke-width="1.5"/>`;
+  svg+=`<text x="${pad+plot/2}" y="${H-8}" text-anchor="middle" class="lbl">A 的分数 →</text>`;
+  svg+=`<text x="20" y="${pad+plot/2}" transform="rotate(-90 20 ${pad+plot/2})" text-anchor="middle" class="lbl">B 的分数 →</text>`;
+  for(let v=20;v<=80;v+=20){
+    svg+=`<text x="${sx(v)}" y="${pad+plot+16}" text-anchor="middle" class="lbl" fill="#6E6A60">${v}</text>`;
+    svg+=`<text x="${pad-8}" y="${sy(v)+4}" text-anchor="end" class="lbl" fill="#6E6A60">${v}</text>`;
+  }
+  // 四个象限标注（角名）
+  svg+=`<text x="${pad+8}" y="${pad+16}" class="quad-name" fill="#6E6A60">B 补 A</text>`;
+  svg+=`<text x="${pad+plot-8}" y="${pad+16}" class="quad-name" fill="#6E6A60" text-anchor="end">共识区</text>`;
+  svg+=`<text x="${pad+8}" y="${pad+plot-8}" class="quad-name" fill="#6E6A60">共同盲区</text>`;
+  svg+=`<text x="${pad+plot-8}" y="${pad+plot-8}" class="quad-name" fill="#6E6A60" text-anchor="end">A 带 B</text>`;
+  // 8 个点：每个功能一个点(x=A分,y=B分)
+  const pts=Object.keys(A).map(f=>({f,x:sx(A[f]),y:sy(B[f])}));
+  const OFF={Fi:[10,-2,'start'],Ni:[-10,18,'end'],Ti:[4,-12,'middle'],Te:[-10,2,'end'],
+             Ne:[-10,-8,'end'],Fe:[10,6,'start'],Se:[10,8,'start'],Si:[-10,-8,'end']};
+  pts.forEach(p=>{
+    const col='var(--'+p.f.toLowerCase()+')';
+    svg+=`<circle cx="${p.x}" cy="${p.y}" r="8" fill="${col}" opacity="0.85"/>`;
+    const o=OFF[p.f];
+    svg+=`<text x="${p.x+o[0]}" y="${p.y+o[1]}" text-anchor="${o[2]}" class="fn-lbl" fill="${col}">${p.f}</text>`;
+  });
+  svg+='</svg>';
+  document.getElementById('quadrant').innerHTML=svg;
+}
 
-<p>下面四条是从分数里长出来的，属于这段关系自带的配置——不靠努力就有，但各有各的用法和保质期。</p>
+// ---------- 02 章：四轴光谱（单轨双点；对数比值刻度，中点=1:1） ----------
+function renderBeam(id,L,R,nameL,nameR){
+  const colL='var(--'+L.toLowerCase()+')', colR='var(--'+R.toLowerCase()+')';
+  const W=640, H=150, x0=96, x1=544, y=88, cx=(x0+x1)/2;
+  const K=256;                                    // log 比值 → 像素
+  const off=P=>{const r=Math.log(P[R]/P[L]);return Math.max(-215,Math.min(215,r*K));};
+  const ax=cx+off(A), bx=cx+off(B);
+  const favA=off(A)>=0?R:L, favB=off(B)>=0?R:L;
+  const gid='grad_'+id;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs><style>.endl{font-family:Noto Serif SC,serif;font-size:15px;font-weight:600}
+    .endd{font-family:Noto Sans SC,sans-serif;font-size:10.5px;fill:#6E6A60}
+    .ml{font-family:Noto Sans SC,sans-serif;font-size:12px;font-weight:700}
+    .half{font-family:Noto Sans SC,sans-serif;font-size:9px;fill:#8A857A}</style>
+    <linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="${colL}"/><stop offset="1" stop-color="${colR}"/>
+    </linearGradient></defs>`;
+  // 轨道 + 平衡点（只标这一个，无刻度文字）
+  svg+=`<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="#DCD6C8" stroke-width="3" stroke-linecap="round"/>`;
+  svg+=`<line x1="${cx}" y1="${y-10}" x2="${cx}" y2="${y+10}" stroke="#B9B29F" stroke-width="1.5"/>`;
+  // 两点之间的渐变带（视觉连接，不代表错位量）
+  const lo=Math.min(ax,bx), hi=Math.max(ax,bx);
+  svg+=`<rect x="${lo.toFixed(1)}" y="${y-6}" width="${(hi-lo).toFixed(1)}" height="12" rx="6" fill="url(#${gid})" opacity="0.30"/>`;
+  // 两端标签
+  svg+=`<text x="${x0}" y="${y-40}" class="endl" fill="${colL}">${L}</text>`;
+  svg+=`<text x="${x0}" y="${y-25}" class="endd">${nameL}</text>`;
+  svg+=`<text x="${x1}" y="${y-40}" class="endl" fill="${colR}" text-anchor="end">${R}</text>`;
+  svg+=`<text x="${x1}" y="${y-25}" class="endd" text-anchor="end">${nameR}</text>`;
+  // A 点（标签在上） / B 点（标签在下）
+  svg+=`<circle cx="${ax.toFixed(1)}" cy="${y}" r="9" fill="var(--${favA.toLowerCase()})"/>`;
+  svg+=`<text x="${ax.toFixed(1)}" y="${y-15}" class="ml" text-anchor="middle" fill="#262419">A · 偏${favA}</text>`;
+  svg+=`<circle cx="${bx.toFixed(1)}" cy="${y}" r="8" fill="var(--bg)" stroke="var(--${favB.toLowerCase()})" stroke-width="2.6"/>`;
+  svg+=`<text x="${bx.toFixed(1)}" y="${y+40}" class="ml" text-anchor="middle" fill="#6E6A60">B · 偏${favB}</text>`;
+  svg+='</svg>';
+  document.getElementById(id).innerHTML=`<figure>${svg}</figure>`;
+}
 
-<div class="advice-card">
-  <span class="ac-num">1</span>
-  <p><strong>能聊别人聊不了的天</strong>：把事情往深里想的习惯两个人都有（内倾直觉 A 62、B 53）。一段对话能从"晚饭吃什么"滑到"五年后我们想在哪儿住"，两个人都不觉得跳；一个话题能往下接三层，还都记得上一层说到哪儿了。<b>什么时候会浪费</b>：赶时间的时候——深聊需要整块的、不被打断的时间，电梯里的三十秒聊不出来。</p>
-</div>
-<div class="advice-card">
-  <span class="ac-num">2</span>
-  <p><strong>两块最费的板，正好互相补上</strong>：A 的收尾短板（外倾思考 40）对着 B 的顺手项（62），B 的想象力短板（外倾直觉 38）对着 A 的第一顺手项（68）。A 卡住的时候 B 递得出下一步，B 想保守的时候 A 递得出新选项。<b>什么时候会浪费</b>：气头上——互补在合作时是资源，在争执里会变成"你根本不懂"的话柄。</p>
-</div>
-<div class="advice-card">
-  <span class="ac-num">3</span>
-  <p><strong>不用演的关系</strong>：两人都拿内倾情感当主尺（A 60、B 51），对"什么重要"的判断接近，也都把排场和仪式往后放（外倾感觉 A 35、B 49）。纪念日送错了礼物，多半吵不起来。<b>什么时候会浪费</b>：省下来的表面功夫没有去处——两个人都省，关系里会缺一点"特意为对方做点什么"的痕迹。</p>
-</div>
-<div class="advice-card">
-  <span class="ac-num">4</span>
-  <p><strong>日子有人兜底</strong>：B 的内倾感觉和外倾思考都坐在顺手名单最前面，A 的这两项都在后半段。要交的材料、要办的手续、要囤的菜，B 记着；A 负责提醒"别把自己排太满"。<b>什么时候会浪费</b>：兜底变成理所当然的分工——B 全包会积怨，A 全撒手会生疏。</p>
-</div>
-
-<p>还有一层值得说破：你们的互补是有方向的——A 补的是 B 的想象力，B 补的是 A 的推进力。方向对了，分工就顺；方向用反了，拿自己的顺手处去要求对方，互补就成了指责的素材。判断的办法很简单：冒出"对方怎么这样"的念头时，先想想这一格是不是本来就该自己这头多出一点。<span class="ev-tag ev-theory">🔶</span></p>
-
-<div class="pull">省下来的表面功夫，记得给对方留一份。</div>
-
-<!-- ═══ 第 4 章 容易费劲的地方（短板整章：总括 + 4 条短板，各带十秒画面 + 互链） ═══ -->
-<div class="chapter-head" id="c4"><span class="num">04</span><h3>容易费劲的地方 <span class="ev-tag ev-theory">🔶</span></h3></div>
-<p class="chapter-sub">这一章回答：这段关系的短板长什么样——费在哪儿、各自长成什么样；当场吵起来的样子在第 6 章。</p>
-
-<p>总括一句：这段关系的费劲集中在"情感语言"这一处——接得住情绪 3 分排在最末，天生易磨的摩擦也多半从这里来；另外两条轻些的，是仪式感薄、身体表达绕行。逐条看它们长什么样：<span class="ev-tag ev-theory">🔶</span></p>
-
-<p><b>接得住情绪，3 分，最短的一格。</b>B 的情感表达路子窄（外倾情感 34），A 的又快又外放（55）——同一个在乎，一个说了一箩筐，一个接住半句。信号发出去、没人接：第 5 章阶段二那个门口的画面（包放在平时不放的椅子上，"回来了""嗯，饭好了"）就是它最日常的样子。这个模式不吵不闹，只是天天发生；这一格的分低，说的只是"现在"——第 6 章冲突一会看到它怎么卡壳，第 8 章做法一、做法二就是解法。<span class="ev-tag ev-theory">🔶</span></p>
-
-<p><b>天生易磨，4 分，摩擦的固定源头。</b>外倾情感 A 55、B 34，一要回应、一给方案，每次错频的瞬间都是它——好在摩擦集中在情感语言一处，别处并不多，争执大多到不了伤根基的那层。十秒画面：A 讲今天多委屈，话没讲完，B 盯着屏幕问"那你打算怎么办"——办法给得没错，A 已经不想说了。第 6 章冲突一、冲突三都从这里长出来，第 8 章的做法一、做法三在两边各接一段。<span class="ev-tag ev-theory">🔶</span></p>
-
-<p><b>仪式感薄。</b>两个人都把排场往后放（外倾感觉 A 35、B 49 都在后半段），省下来的功夫没有去处。十秒画面：纪念日当天，两个人各自想起、各自没提，晚上一句"今天啊"就翻篇。第 7 章风险四讲它会怎么慢慢变重，第 3 章天赋三留了省钱的补法。<span class="ev-tag ev-theory">🔶</span></p>
-
-<p><b>身体表达绕行。</b>情绪不走嘴，改走身体：压力先变成失眠、肩颈发紧、胃口变差，两个人都可能拖到扛不住才说。十秒画面：连续一周"累"字当头，又都说不清哪里累。第 7 章风险三列了前置信号，抓到了就用第 8 章的做法二，把"我需要休息"说出口。<span class="ev-tag ev-theory">🔶</span></p>
-
-<p>这段关系的功课因此很集中：谁都不用改，要装的是两套表达之间的一套固定翻译习惯——第 8 章的四条做法，全都围绕这一件事。</p>
-
-<div class="pull">信号发出去了，没被接住。</div>
-
-<!-- ═══ 第 5 章 四阶段推演（开头照录非预测承诺；全章 ⚪） ═══ -->
-<div class="chapter-head" id="c5"><span class="num">05</span><h3>这段关系可能会怎样发展 <span class="ev-tag ev-hypothesis">⚪</span></h3></div>
-<p class="chapter-sub">这一章回答：按这套理论推演，你们可能经过哪几步——整章都是推测。</p>
-
-<div class="callout">
-  <p style="margin:0">以下四个阶段是一种理论视角下的推演（<span class="ev-tag ev-hypothesis">⚪</span> 探索性假设），不是对你们关系的预测，也没有时间表。真实的关系不由分数决定：任何阶段都可能跳过、反复或倒退，走向由你们两个人书写。</p>
-</div>
-
-<h3>阶段一：智识蜜月</h3>
-<p>最可能的起点是"这个人接得住我的思路"。两个人的内倾直觉都顺手，A 递出新可能，B 能把它落到"以前怎么办过、这次行不行"上——对话又深又落地，两个人都觉得遇到了同类。<span class="ev-tag ev-hypothesis">⚪</span></p>
-<div class="scene-box">
-  <span class="rel-label">场景</span>
-  <div class="dialogue">
-    <p><b style="color:var(--p1-color)">A</b>："你说，人为什么非要有纪念日？"</p>
-    <p><b style="color:var(--p2-color)">B</b>："把重要的日子定下来，就不用每次重新决定它重不重要。"</p>
-    <p><b style="color:var(--p1-color)">A</b> 的内心：<em>这种话居然有人接得住。</em></p>
-  </div>
-  <p>盲区：这个阶段容易把"聊得来"当成"我们处处都合拍"的凭据——聊得来只是八格里的一格。<span class="ev-tag ev-hypothesis">⚪</span></p>
-</div>
-
-<h3>阶段二：差异浮现</h3>
-<p>"聊得来"和"处得来"开始分家。A 的情绪信号发得又快又密，B 的接收端偏偏是八项里最靠后的一项（外倾情感 34）——多数时候没接住，是因为压根没看见有信号进来。这个阶段还有一个容易忽略的角落：越熟越省略，A 的话越来越短，信号越来越弱，接收端的门槛却在变高。<span class="ev-tag ev-hypothesis">⚪</span></p>
-<div class="scene-box">
-  <span class="rel-label">场景</span>
-  <p>A 开完一个糟心的会回家，进门没说话，把包放在了平时不放的椅子上。</p>
-  <div class="dialogue">
-    <p><b style="color:var(--p1-color)">A</b>（声音比平时平）："回来了。"</p>
-    <p><b style="color:var(--p2-color)">B</b>（头没抬）："嗯，饭好了。"</p>
-    <p><b style="color:var(--p1-color)">A</b> 的内心：<em>我都这样了，你没看出来？</em></p>
-    <p><b style="color:var(--p2-color)">B</b> 的内心：<em>话这么少，可能是累了。先吃饭。</em></p>
-  </div>
-  <p>误解就此成型：A 觉得发了信号，B 觉得一切正常。<span class="ev-tag ev-hypothesis">⚪</span></p>
-</div>
-
-<h3>阶段三：模式固化</h3>
-<p>放着不管，最可能长成的循环是：A 含蓄发射信号，B 没收到或读成了任务；A 加倍含蓄，B 退回做事；A 坐实"果然不在乎"，B 觉得"我做了这么多"。<span class="ev-tag ev-hypothesis">⚪</span></p>
-<p>这个循环为什么稳：双方都从里面拿到了隐性好处——A 保住了"不用直说"的体面，B 保住了"我在解决问题"的问心无愧。靠"更努力"打不破它——双方都在努力，只是努力的方向错开；需要的是一套两个人都认的翻译规则（第 8 章），外加一次把循环摆上桌面的谈话。<span class="ev-tag ev-hypothesis">⚪</span></p>
-<div class="scene-box">
-  <span class="rel-label">场景</span>
-  <div class="dialogue">
-    <p><b style="color:var(--p1-color)">A</b>："没事，你去忙吧。"</p>
-    <p><b style="color:var(--p2-color)">B</b>："好，那我改一下这份表格。"</p>
-    <p><b style="color:var(--p1-color)">A</b> 的内心：<em>算了，说了也听不懂。</em></p>
-    <p><b style="color:var(--p2-color)">B</b> 的内心：<em>没事就好，刚才吓我一跳。</em></p>
-  </div>
-  <p>盲区：两个人都在等对方先改——"等"本身就是循环的一部分。<span class="ev-tag ev-hypothesis">⚪</span></p>
-</div>
-
-<h3>阶段四：分岔</h3>
-<p>走到这里，关系会分成两条路。消耗路径：A 的失落记成一本没给人看过的账，B 的"怎么做都不对"越积越厚，两个人各自退回自己的世界，距离在都没有恶意的情况下越拉越远。成长路径：把翻译规则装上——A 练习一句话直说，B 练习先回应再解决（第 8 章）。<span class="ev-tag ev-hypothesis">⚪</span></p>
-<div class="scene-box">
-  <span class="rel-label">场景：同一次"你根本没在听"的争吵，两种走法</span>
-  <div class="dialogue">
-    <p><b>消耗版</b>——<b style="color:var(--p1-color)">A</b>："算了。"（关门）<b style="color:var(--p2-color)">B</b>：（继续改表格）两个多小时没说话。</p>
-    <p><b>成长版</b>——<b style="color:var(--p1-color)">A</b>："我现在需要你听我说五分钟，不用给办法。"</p>
-    <p><b style="color:var(--p2-color)">B</b>："好，五分钟，我听着。"</p>
-  </div>
-  <p>两条路的分岔口，往往就是有没有这一句话。<span class="ev-tag ev-hypothesis">⚪</span></p>
-</div>
-
-<div class="pull">把"聊得来"当成全部，是这一章最大的坑。</div>
-
-<!-- ═══ 第 6 章 冲突（标题 + 中性 chip 统计行 + scene-box 对话 + 分析） ═══ -->
-<div class="chapter-head" id="c6"><span class="num">06</span><h3>你们最容易在哪几件事上卡住 <span class="ev-tag ev-theory">🔶</span></h3></div>
-<p class="chapter-sub">这一章回答：具体卡在哪儿，卡住的时候两个人各自在想什么。这一章是吵架现场——高频、有具体对话、当场能解的。</p>
-
-<h3>冲突一 · 要回应，还是要方案 <span class="ev-tag ev-theory">🔶</span></h3>
-<div class="chip-row">
-  <span class="chip">频次：高</span>
-  <span class="chip">破坏性：高</span>
-  <span class="chip">可解性：中</span>
-</div>
-<div class="scene-box">
-  <span class="rel-label">场景</span>
-  <div class="dialogue">
-    <p><b style="color:var(--p1-color)">A</b>："我今天好累，事情全堆在一起了。"</p>
-    <p><b style="color:var(--p2-color)">B</b>（放下手里的东西）："哪几件？先分个轻重，做不完的推到明天。"</p>
-    <p><b style="color:var(--p1-color)">A</b> 的内心：<em>我想听的哪是排期。</em></p>
-    <p><b style="color:var(--p1-color)">A</b>（说出口）："算了，没事。"</p>
-    <p><b style="color:var(--p2-color)">B</b> 的内心：<em>我刚给了办法，怎么就算没事了。</em></p>
-  </div>
-</div>
-<p>谁都没有做错：A 用外倾情感接世界，先要情绪上的回应；B 用内倾思考接世界，先看到要处理的事。两个人在各自的框架里都对，误解出在交接的那一步——A 把"给方案"读成"不想听我说"，B 把"没事"读成"真没事"。破这个局不需要谁变成另一种人：A 把要的东西换成一句话，B 把方案往后挪一句（第 8 章的做法一和做法二）。<span class="ev-tag ev-theory">🔶</span></p>
-
-<h3>冲突二 · 一个想定下来，一个想再看看 <span class="ev-tag ev-theory">🔶</span></h3>
-<div class="chip-row">
-  <span class="chip">频次：中</span>
-  <span class="chip">破坏性：中</span>
-  <span class="chip">可解性：高</span>
-</div>
-<div class="scene-box">
-  <span class="rel-label">场景</span>
-  <p>计划十一月的旅行。</p>
-  <div class="dialogue">
-    <p><b style="color:var(--p1-color)">A</b>："要不要留两天空白，到时候看心情走？"</p>
-    <p><b style="color:var(--p2-color)">B</b>："住宿不定下来，价格翻一倍。前四天我排好了，你看一眼。"</p>
-    <p><b style="color:var(--p1-color)">A</b> 的内心：<em>又来了，什么都提前锁死。</em></p>
-    <p><b style="color:var(--p2-color)">B</b> 的内心：<em>到了没地方住才叫扫兴。</em></p>
-  </div>
-</div>
-<p>A 的外倾直觉喜欢留着口子，B 的内倾直觉习惯早早收成定案——发散和收敛在同一个决定上顶牛。好在这件事有现成的折中：排骨架、留血肉，大交通和住宿定死，每天留一个下午随走随定。<span class="ev-tag ev-theory">🔶</span></p>
-
-<h3>冲突三 · 一个追，一个退 <span class="ev-tag ev-theory">🔶</span></h3>
-<div class="chip-row">
-  <span class="chip">频次：中</span>
-  <span class="chip">破坏性：高</span>
-  <span class="chip">可解性：中</span>
-</div>
-<div class="scene-box">
-  <span class="rel-label">场景</span>
-  <p>冷战的第二天。</p>
-  <div class="dialogue">
-    <p><b style="color:var(--p1-color)">A</b>（等对方先开口，把手机翻来覆去看了十遍）</p>
-    <p><b style="color:var(--p2-color)">B</b>（在阳台上待了一小时，觉得"晾一晾就过去了"）</p>
-  </div>
-</div>
-<p>A 的外倾情感一直盯着"我们之间现在怎么样"这个读数，读数一低就加码发射信号；B 的内倾思考一时找不到处理办法，就把事情收进内倾感觉——回到底账和熟悉的节拍里，"晾一晾，以前也这样过去的"。一个往外要回应，一个往里收着办，于是 A 越追、B 越退，B 越退、A 越要追。伴侣研究管这类循环叫"追逐与退缩"，很多关系里都有，只是强度不同。<span class="ev-tag ev-theory">🔶</span></p>
-<p>循环本身拆不掉，能改的是它的半径：B 退之前说明去向和时长（第 8 章的做法三），A 在 B 退的时候把"被丢下"改读成"对方在充电"——半径一小，互相加码就起不来。<span class="ev-tag ev-hypothesis">⚪</span></p>
-
-<div class="pull">卡壳多半卡在同一处：一个要回应，一个递方案。</div>
-
-<!-- ═══ 第 7 章 风险（caution-row ×3） ═══ -->
-<div class="chapter-head" id="c7"><span class="num">07</span><h3>需要留意的几个风险 <span class="ev-tag ev-theory">🔶</span></h3></div>
-<p class="chapter-sub">这一章回答：哪几种走向值得提前留意，信号是什么。这一章是慢变量——不吵架也在慢慢发生的事。</p>
-
-<div class="caution-row"><b>失落的记账本（等级：高）</b>：从接得住情绪这格长出来——A 把一次次没被接住的小失落记下来不说，攒到某件小事上一起算总账；B 到那天才知道有这本账，之前毫无预警。会怎么变严重：记账期越长，最后清算的规模越大。<b>前置信号</b>：A 分享糟心事的次数明显变少，"没事"的使用频率变高。<span class="ev-tag ev-hypothesis">⚪</span></div>
-
-<div class="caution-row"><b>追与退互相加码（等级：中）</b>：从第 6 章冲突三那个循环长出来——放着不管它会自己长大：A 的外倾情感没等到回应就越发要靠近，B 的内倾思考越是被靠近越需要独处，两边都没有恶意，距离却越拉越远。会怎么变严重：从"追一天退一天"变成"追一周退一周"，两个人的世界越来越各自自足。<b>前置信号</b>：B 的"我想自己待会儿"变密，A 的试探性提问变多。<span class="ev-tag ev-hypothesis">⚪</span></div>
-
-<div class="caution-row"><b>身体双双迟钝（等级：中）</b>：从身体亲近这格长出来——两个人盯眼前、感身体的本事都靠后，压力先走身体——失眠、肩颈发紧、胃口变差，而且都可能拖到扛不住才说。会怎么变严重：一个人垮了，另一个人可能连前因都不知道。<b>前置信号</b>：连续一周"累"字当头，又说不清哪里累。<span class="ev-tag ev-theory">🔶</span></div>
-
-<div class="caution-row"><b>仪式感赤字（等级：低）</b>：从第 3 章天赋三的另一面长出来——两个人都把排场和仪式往后放，省下来的功夫没有去处，日子会慢慢缺一点"特意为对方"的痕迹。会怎么变严重：从"不需要仪式"滑到"什么都懒得讲究"，把省事过成了凑合。<b>前置信号</b>：纪念日变成"过不过都行"，节日问候变成转发。<span class="ev-tag ev-hypothesis">⚪</span></div>
-
-<div class="pull">失落记在账上，对方连账本都看不见。</div>
-
-<!-- ═══ 第 8 章 具体可以怎么做（advice-card + 对话示例 + 失灵条件） ═══ -->
-<div class="chapter-head" id="c8"><span class="num">08</span><h3>具体可以怎么做 <span class="ev-tag ev-theory">🔶</span></h3></div>
-<p class="chapter-sub">这一章回答：从这一周开始，能练的几件具体的事。</p>
-
-<p>四条做法都不难，难的是前三周：旧路子跑惯了，新路子要靠"照着做"先跑起来，再谈自然。</p>
-
-<div class="advice-card">
-  <span class="ac-num">1</span>
-  <p><strong>先回应，再解决</strong>：目标——让 A 的情绪先落地，B 的方案再出场。怎么做——B 听到"累、烦、难受"时，第一句只回应，办法等对方点头之后再给。<b>什么时候会失灵</b>：B 自己也见了底——那就直说"我现在的电量只够听十分钟"。</p>
-  <div class="dialogue">
-    <p><b style="color:var(--p1-color)">A</b>："我今天好累。"</p>
-    <p><b style="color:var(--p2-color)">B</b>："辛苦了。过来，先坐会儿。"</p>
-    <p><b style="color:var(--p1-color)">A</b>："……嗯。其实也没什么大事。"</p>
-    <p><b style="color:var(--p2-color)">B</b>："想说的时候说，我先听着。"</p>
-  </div>
-</div>
-
-<div class="advice-card">
-  <span class="ac-num">2</span>
-  <p><strong>把含蓄换成一句话直说</strong>：目标——给 A 一条比"发信号"省力的路。怎么做——需要什么直接说，说清要什么、不要什么。<b>什么时候会失灵</b>：吵到正凶时拉不下脸——允许事后二十四小时内补说，补说也算数。</p>
-  <div class="dialogue">
-    <p><b style="color:var(--p1-color)">A</b>："我现在需要你听五分钟，不用给办法。"</p>
-    <p><b style="color:var(--p2-color)">B</b>："好，五分钟，我听着。"</p>
-    <p><b style="color:var(--p1-color)">A</b>（说完）："就说这么多。"</p>
-    <p><b style="color:var(--p2-color)">B</b>："听到了。要抱一下吗？"</p>
-  </div>
-</div>
-
-<div class="advice-card">
-  <span class="ac-num">3</span>
-  <p><strong>给"自己待着"报备去向和时长</strong>：目标——让 B 的独处不再被 A 读成疏远。怎么做——B 需要独处时说清两件事：去哪儿、多久回来；A 这边把它读成充电，别读成被丢下。<b>什么时候会失灵</b>：A 正处在不安的顶点——那就先回应两句再独处，顺序别反。</p>
-  <div class="dialogue">
-    <p><b style="color:var(--p2-color)">B</b>："我脑子有点满，去楼下走二十分钟，回来继续。"</p>
-    <p><b style="color:var(--p1-color)">A</b>："好，带钥匙了吗？"</p>
-    <p><b style="color:var(--p2-color)">B</b>："带了。回来给你讲今天那个笑话。"</p>
-  </div>
-</div>
-
-<div class="advice-card">
-  <span class="ac-num">4</span>
-  <p><strong>卡住时，回到共同的尺子上</strong>：目标——用两个人都认的"真实"当裁判（看重的东西是你们最长的一项之一）。怎么做——争执不下时，各自只说一句真话："我现在真实的感受是……"不辩论、不反驳，说完再决定下一步。<b>什么时候会失灵</b>：一方还在气头上——真话会变成武器，那就改天。</p>
-  <div class="dialogue">
-    <p><b style="color:var(--p1-color)">A</b>："我现在真实的感受是，刚才那句让我有点难过。"</p>
-    <p><b style="color:var(--p2-color)">B</b>："我现在真实的感受是，我怕说错话，所以先讲了道理。"</p>
-    <p><b style="color:var(--p1-color)">A</b>："……行，那这页先翻过去。"</p>
-    <p><b style="color:var(--p2-color)">B</b>："翻过去。晚上想吃什么？"</p>
-  </div>
-</div>
-
-<div class="pull">先回应再讲理，就这一条，本周就能试。</div>
-
-<!-- ═══ 结语（衬线居中、不编号、无锐评） ═══ -->
-<div class="epilogue" id="epilogue">
-<h2>结语</h2>
-<p>你们一个把心思攒两轮再出口，一个把办法先递到手；一个用气氛说在乎，一个用安排说在乎。底子厚，要补的是中间那道翻译——这段关系里没有反派，只有两套都值得留下来的做事方式。</p>
-<p>报告里的推测不一定全对：对得上的留下，对不上的划掉。真正决定走向的，从来都是你们两个人接下来怎么做。</p>
-<p>如果这份报告只让你们带走一件事，就带走第 8 章的第一条：先回应，再解决。</p>
-</div>
-
-<!-- ═══ 附录 这份报告的局限（双人口径）+ 证据统计 ═══ -->
-<div class="appendix" id="appb">
-<h2>这份报告的局限</h2>
-<p class="appb">本报告基于两份测试分数的理论分析，不构成临床诊断，不作为任何重大决定的依据。报告使用的"八维"框架是荣格理论在后世的发展——荣格本人只提出了四种功能与内/外倾两种态度，八功能模型来自迈尔斯等人的类型学实践与毕比的原型理论，并非荣格本人的原始表述。测试分数反映的是各自作答时的自我认知，可能受当时状态影响。如需正式评估，请寻求专业的心理评估服务。</p>
-<p class="appb">双人报告再多三条局限。其一，八个维度的分数是按这套理论算出来的结构描述，加减的口径是分析约定、没有实证常模——它们的作用是让两个人讨论时有共同的抓手，不是给关系做测量。其二，第 5、6 章里"追与退"的判断来自分数的理论推断，未经任何实测验证；想确认，可以做一份正式的依恋问卷，再和这份报告对照着读。其三，两个人作答时的状态不同步，可能放大或缩小某些差距——差距越大的维度，重测之后越值得再看一眼。</p>
-<p class="ev-stat"><strong>结论依据构成：</strong> ✅ 研究支持 × 0 处 · 🔶 理论推断 × 24 处 · ⚪ 探索性假设 × 15 处（不计阅读指南图例）</p>
-</div>
+// ---------- 挂载 ----------
+renderHeroRadar();
+renderQuadrant();
+renderBeam('beam1','Ne','Ni','发散可能','预见收敛');
+renderBeam('beam2','Se','Si','体验当下','存档与熟路');
+renderBeam('beam3','Fi','Te','忠于内核','推进结果');
+renderBeam('beam4','Fe','Ti','回应他人','自洽建模');
+</script>
 
 </body>
 </html>
