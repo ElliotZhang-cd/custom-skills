@@ -18,13 +18,13 @@ analyzing-cognitive-functions/
 - `SKILL.md` — 入口：Goal / Workflow（Phase 0–4）/ Success criteria / Stop rules
 - `references/input-parsing.md` — 两种输入格式解析、归一化、代号规则、得分 JSON schema
 - `references/scoring-algorithm.md` — 轴结构分析与类型推断算法（含输入质量检查）
-- `references/attachment-inference.md` — 依恋推断映射（过渡模块，结果只进咨询师备注）
 - `references/couple-report.md` — 双人（恋人）报告规则（JS 数据驱动版）
-- `references/writing-style.md` — 语言规范（读者画像 / 比喻收缩 / 四组对照 / 固定文本块）
+- `references/writing-style.md` — 语言规范（读者画像 / 比喻收缩 / 四条轴 / 固定文本块）
 - `references/html-templates.md` — 单人报告结构/视觉件规格（hero + 01–07 章）与双人 JS 数据驱动版（§5）
 - `scripts/lint_report.py` — 交付前 lint（单人口径 35 项 / 双人口径专项）
 - `examples/mbti_sample.html`、`mbti_sampleA_sampleB.html` — 视觉事实源基线样例
-- `docs/2026-09-07-couple-report-design.md` — 双人报告 as-built 设计规格；`evals/evals.json` — 期望行为用例
+- `docs/2026-09-07-couple-report-design.md` — 双人报告设计记录与复现要点
+- `evals/evals.json` — 期望行为用例
 
 ## Usage
 

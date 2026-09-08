@@ -29,12 +29,12 @@
 解析规则：
 1. 取 `scores` 对象的 8 个功能键值（键名即功能缩写，顺序不依赖 JSON 内的排列顺序）
 2. 校验：8 键齐全、每项浮点、0–100；缺键或超界 → 退回要求重发
-3. 若缺 `scores` 字段但有 `sorted` 数组 → 从 `sorted` 恢复（每项取 `function` + `score`），并在咨询师备注中注明数据来源为降序表
+3. 若缺 `scores` 字段但有 `sorted` 数组 → 从 `sorted` 恢复（每项取 `function` + `score`）
 4. `metadata` 与 `answers` 不参与分析，忽略
 
 ### 1.2 复制分数文本（测试页「复制分数」按钮产出）
 
-格式（tab 分隔，功能名在左、分数在右，固定顺序 Se/Si/Ne/Ni/Te/Ti/Fe/Fi，两位小数）：
+格式（tab 分隔，功能名在左、分数在右，固定顺序 Se、Si、Ne、Ni、Te、Ti、Fe、Fi，两位小数）：
 
 ```
 荣格八维评分结果
@@ -98,7 +98,7 @@ Fi	67.86
 
 字段规则：
 - `user_code`：与报告文件名中的代号一致
-- `assessed_at`：测评日期（YYYY-MM-DD）。用户主动提供了测评日期就用提供的；没提供则默认取报告生成日，并在咨询师备注中注明「assessed_at 为报告生成日，非实际测评日」
+- `assessed_at`：测评日期（YYYY-MM-DD）。用户主动提供了测评日期就用提供的；没提供则默认取报告生成日
 - `source`：固定 `8function_interactive.html`
 - `scores`：8 键齐全、浮点、0–100，**顺序固定 `Ne, Ni, Fe, Fi, Te, Ti, Se, Si`**
 - `sorted`：按分数降序排列的完整 8 项，`label` 用中文功能名（外倾感觉/内倾感觉/外倾直觉/内倾直觉/外倾思考/内倾思考/外倾情感/内倾情感）
