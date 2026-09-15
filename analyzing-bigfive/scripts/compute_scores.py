@@ -12,8 +12,8 @@ skill 内置常模（references/bfi2_norms_cn.json，Zhang et al. 2022 Table 1�
   两种输入任选其一；--norm 默认 cn_college。--couple 输出 A/B 统计 + Δz +
   选桥/共鸣复算（口径与双人模板 HTML 的 JS 规则严格一致，供 Phase 0 回显与 lint 复算）。
 
-输入 A：交互页导出（bfi2_results.json）
-  含 scores.raw（负性情绪方向）与 scores.stability（情绪稳定性方向），
+输入 A：平台导出 JSON（计分平台固定输出，含 scores 字段）
+  含 scores.raw（负性情绪方向）与 scores.stability（情绪稳定性方向）两份副本，
   每条形如 {"label":..., "score":...}，第4域 facets 始终本义方向。
   → 自动取 scores.stability.domains / .facets（direction_convention 已声明稳定性方向）。
 
@@ -23,6 +23,7 @@ skill 内置常模（references/bfi2_norms_cn.json，Zhang et al. 2022 Table 1�
     "extraversion": 2.42, "agreeableness": 4.0, "conscientiousness": 3.0, "open_mindedness": 4.0,
     "facets": {"sociability": 2.25, ... 15 项英文键 或 社交/果断/... 15 项中文 label ...}
   }
+  第4域也接受中文键："情绪稳定性"（稳定性方向）/"负性情绪"（负性方向），其余四域接受中文域名。
 
 输出（JSON → stdout 或 --out 文件）：
 {
@@ -47,15 +48,11 @@ import sys
 from pathlib import Path
 
 # 域常模键（与 bfi2_norms_cn.json.domains 一致）
-DOMAIN_KEYS = ["extraversion", "agreeableness", "conscientiousness",
-               "negative_emotionality", "open_mindedness"]
 DOMAIN_LABELS = {"extraversion": "外向性", "agreeableness": "宜人性",
                  "conscientiousness": "尽责性", "negative_emotionality": "情绪稳定性",
                  "open_mindedness": "开放性"}
-# 稳定性方向展示时第4域用 emotional_stability 作 key（对齐交互页 stability.domains）
+# 稳定性方向展示时第4域用 emotional_stability 作 key（对齐平台导出 stability.domains）
 STAB_KEY = "emotional_stability"
-# 负向子维度：始终本义方向
-NEG_FACETS = {"anxiety", "depression", "emotional_volatility"}
 
 # 中文 label → 英文 facet key（输入 B 允许中文）
 FACET_LABEL_TO_KEY = {
@@ -66,9 +63,6 @@ FACET_LABEL_TO_KEY = {
     "好奇": "intellectual_curiosity", "审美": "aesthetic_sensitivity", "想象": "creative_imagination",
 }
 FACET_KEYS = list(FACET_LABEL_TO_KEY.values())
-DOMAIN_LABEL_TO_KEY = {"外向性": "extraversion", "宜人性": "agreeableness",
-                       "尽责性": "conscientiousness", "情绪稳定性": "negative_emotionality",
-                       "开放性": "open_mindedness"}
 
 
 def phi(z: float) -> float:
@@ -102,7 +96,7 @@ def load_norm(norms_all: dict, norm_key: str):
 
 
 def parse_export(data: dict) -> dict:
-    """交互页导出 → {domain_key: score, 'facets': {facet_key: score}}（第4域取稳定性方向）。"""
+    """平台导出 JSON → {domain_key: score, 'facets': {facet_key: score}}（第4域取稳定性方向）。"""
     if "scores" not in data or not isinstance(data["scores"], dict):
         sys.exit("ERROR: 导出缺 scores 字段（应为 {raw, stability}）")
     block = data["scores"].get("stability")
@@ -121,14 +115,18 @@ def parse_export(data: dict) -> dict:
 
 
 def parse_flat(data: dict) -> dict:
-    """扁平分数（手工表）→ 同结构。自动识别第4域方向。"""
+    """扁平分数（手工表）→ 同结构。自动识别第4域方向（英文键或中文标签均可）。"""
     out = {"facets": {}}
     if "negative_emotionality" in data:
         out["negative_emotionality"] = {"score": data["negative_emotionality"], "stab_dir": False}
     elif "emotional_stability" in data:
         out["negative_emotionality"] = {"score": data["emotional_stability"], "stab_dir": True}
+    elif "负性情绪" in data:
+        out["negative_emotionality"] = {"score": data["负性情绪"], "stab_dir": False}
+    elif "情绪稳定性" in data:
+        out["negative_emotionality"] = {"score": data["情绪稳定性"], "stab_dir": True}
     else:
-        sys.exit("ERROR: 缺第4域（negative_emotionality 或 emotional_stability）")
+        sys.exit("ERROR: 缺第4域（negative_emotionality / emotional_stability / 负性情绪 / 情绪稳定性）")
     for zh, en in [("外向性", "extraversion"), ("宜人性", "agreeableness"),
                    ("尽责性", "conscientiousness"), ("开放性", "open_mindedness")]:
         if en in data:
@@ -193,8 +191,8 @@ def couple_select(res_a: dict, res_b: dict, norm: dict) -> dict:
     """双人选桥/共鸣复算（与模板 HTML 的 JS 规则逐行同构，用于 Phase 0 回显与 lint 复算）。
 
     数值口径：HTML 的 normalize() 不四舍五入 z——pct/band/Δz 全用全精度 z，
-    展示时才 toFixed(2)。本函数镜像该口径（与单人的"round 后再算"有意不同，
-    两侧各自与其渲染器严格一致；边界差 <1 个百分点，不影响档位结论）。
+    展示时才 toFixed(2)。本函数镜像该口径：**阈值与排序用全精度 Δz，输出 dz 才四舍五入到 2 位**
+    （与单人的"round 后再算"有意不同，两侧各自与其渲染器严格一致）。
     """
     order = list(FACET_LABEL_TO_KEY.items())  # [(中文, facet key)]，顺序 = HTML facet 序
     pairs = []
@@ -205,14 +203,15 @@ def couple_select(res_a: dict, res_b: dict, norm: dict) -> dict:
         zb_full = (b["score"] - fn["M"]) / fn["SD"]
         band_a = band_of(round(phi(za_full) * 100))
         band_b = band_of(round(phi(zb_full) * 100))
+        dz_full = abs(za_full - zb_full)
         pairs.append({"name": zl, "a": a["score"], "b": b["score"],
                       "za": round(za_full, 2), "zb": round(zb_full, 2),
                       "bandA": band_a, "bandB": band_b,
-                      "dz": round(abs(za_full - zb_full), 2)})
-    ranked = sorted(pairs, key=lambda x: -x["dz"])
-    bridges = [x for x in ranked if x["dz"] >= 0.7][:6]  # 下限 0：不硬凑，空集合由模板渲染「同频声明」空态
-    resonance = sorted([x for x in pairs if x["dz"] <= 0.35 and x["bandA"] == x["bandB"]],
-                       key=lambda x: x["dz"])[:3]
+                      "dz": round(dz_full, 2), "dz_full": dz_full})
+    ranked = sorted(pairs, key=lambda x: -x["dz_full"])
+    bridges = [x for x in ranked if x["dz_full"] >= 0.7][:6]  # 下限 0：不硬凑，空集合由模板渲染「同频声明」空态
+    resonance = sorted([x for x in pairs if x["dz_full"] <= 0.35 and x["bandA"] == x["bandB"]],
+                       key=lambda x: x["dz_full"])[:3]
     return {"pairs": pairs,
             "bridges": [{"name": x["name"], "dz": x["dz"]} for x in bridges],
             "resonance": [{"name": x["name"], "dz": x["dz"]} for x in resonance]}
@@ -228,8 +227,8 @@ def load_person_data(path: Path, norm: dict):
 def main():
     ap = argparse.ArgumentParser(description="BFI-2 原始分 → z/百分位/档位；--couple 输出双人统计")
     src = ap.add_mutually_exclusive_group(required=True)
-    src.add_argument("--export", help="交互页导出 JSON（含 scores.stability）")
-    src.add_argument("--scores", help="扁平分数 JSON（自动识别第4域方向）")
+    src.add_argument("--export", help="平台导出 JSON（含 scores.stability，自动取稳定性方向）")
+    src.add_argument("--scores", help="扁平分数 JSON（固定文本表先转此格式；自动识别第4域方向）")
     src.add_argument("--couple", nargs=2, metavar=("A.json", "B.json"),
                      help="双人两份分数文件（export 或扁平均可），输出 A/B 统计 + Δz + 选桥/共鸣（复算口径同模板 HTML）")
     ap.add_argument("--norm", default="cn_college",

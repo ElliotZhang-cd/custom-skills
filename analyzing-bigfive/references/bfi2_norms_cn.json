@@ -2,7 +2,7 @@
   "metadata": {
     "source": "Zhang, B., Li, Y. M., Li, J., Luo, J., Ye, Y., Yin, L., Chen, Z., Soto, C. J., & John, O. P. (2022). The Big Five Inventory-2 in China: A comprehensive psychometric evaluation in four diverse samples. Assessment, 29(6), 1262-1284. https://doi.org/10.1177/10731911211008245",
     "table": "Table 1（PDF 第 41 页，accepted manuscript）",
-    "extraction": "pdftotext -layout 逐行解析 + 锚点断言（13 处三点锚 + 值域检查 + 与 bfi2_chinese.json 既有 norms_cn_college 20 行全值比对一致）；样本档案 N/性别/年龄逐项在方法学页（PDF 第 10、23 页）原文确认",
+    "extraction": "pdftotext -layout 逐行解析 + 锚点断言（13 处三点锚 + 值域检查；历史注记：曾与旧管线外部文件 bfi2_chinese.json 的 norms_cn_college 20 行全值比对一致，该文件不在本 skill 内、已不作依赖）；样本档案 N/性别/年龄逐项在方法学页（PDF 第 10、23 页）原文确认",
     "scale": "1-5 Likert 条目均值（反向题已反转）。z = (score - M) / SD",
     "direction_note": "negative_emotionality 为负性情绪/神经质方向（高=更负面）；本管线按情绪稳定性方向翻转：M'=6-M，z 取反",
     "excluded": "CN-Substance use 样本（n=765）未收录：物质滥用治疗临床人群、监督性纸笔施测存在社会赞许偏差、部分子维度信度过低（Intellectual Curiosity α=.28），不适用于一般来访者",

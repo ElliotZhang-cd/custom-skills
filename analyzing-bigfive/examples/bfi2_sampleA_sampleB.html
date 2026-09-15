@@ -3,23 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>两个人的大五差异 · BFI-2 双人关系工具书 · 样例</title>
+<title>两个人的大五差异 · BFI-2 双人关系工具书</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
-/* ── 设计规范：见同目录 DESIGN_SPEC.md ──
+/* ── 设计规范：见 references/design-spec.md ──
    三层语义色：纸面/中性 ｜ 五维身份色(维度) ｜ 人物身份色(A/B)
    五维身份色(与单人报告一致)：--e 外向橙 #E07A4F · --a 宜人绿 #7C9B6D · --c 尽责蓝 #5A7CA6 · --es 情绪紫 #9A7FB8 · --o 开放金 #D9A441
-   人物身份色(仅双人)：--pa A 深青 #1B6B5F(实线/实心) · --pb B 赭棕 #C0531F(虚线/空心) · --aA/--aB 浅底
+   人物身份色(仅双人)：--pa A 深青 #1B6B5F(实线/实心) · --pb B 赭棕 #C0531F(虚线/空心)
    规则：维度色=是哪个维度；人物色=是哪个人；红绿不用来表示好坏；A/B 靠线型也能在黑白打印区分 */
 :root{
   --paper:#FAF7F2; --paper2:#F2EBE0; --card:#FFFDF9;
   --ink:#2B2B2B; --soft:#5C564C; --muted:#8A8378;
   --line:#E6DECF; --tick:#C9BFA8; --seg-bg:#F2EFE8; --seg-border:#D3CCBD; --seg:#E6E1D4;
   --e:#E07A4F; --a:#7C9B6D; --c:#5A7CA6; --es:#9A7FB8; --o:#D9A441;
-  --pa:#1B6B5F; --pb:#C0531F; --aA:#DBEBE7; --aB:#F7E0CF; --amber:#C98F2E;
-  --gap:#D8CBB0;
+  --pa:#1B6B5F; --pb:#C0531F; --amber:#C98F2E;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -70,7 +69,6 @@ h5{font-size:16.5px;font-weight:700;margin-bottom:6px}
 .pt-z{font-size:11.5px;color:var(--muted);white-space:nowrap}
 .pt-band{position:relative;display:flex;gap:2px;height:16px;border:1px solid var(--seg-border);border-radius:7px;background:var(--seg-bg);padding:2px}
 .pt-seg{border-radius:4px;background:var(--seg)}
-.pt-seg.hot{background:var(--seg)}
 .pt-seg.on{background:color-mix(in srgb,var(--dc) 42%,#FBF8F1);box-shadow:inset 0 0 0 1.6px var(--dc)}
 .pt-marker{position:absolute;top:-6px;bottom:-6px;left:0;width:0;transition:left 1s cubic-bezier(.25,.7,.25,1) .2s}
 .in .pt-marker{left:var(--p)}
@@ -82,7 +80,6 @@ h5{font-size:16.5px;font-weight:700;margin-bottom:6px}
 .pt-labels{display:flex;gap:3px;margin-top:5px}.pt-labels span{font-size:10.5px;color:var(--muted);text-align:center;white-space:nowrap}
 .bridge{position:relative;display:flex;gap:2px;height:16px;margin:26px 0 7px;border:1px solid var(--seg-border);border-radius:7px;background:var(--seg-bg);padding:2px}
 .bridge .pt-seg{border-radius:4px;background:var(--seg)}
-.bridge .pt-seg.hot{background:var(--seg)}
 .bridge .pt-marker.pa,.bridge .pt-marker.pb{top:1px;bottom:1px}
 .bcap{display:flex;justify-content:space-between;font-size:12px;color:var(--soft);margin:2px 0 4px}
 .bcap .a{font-weight:700;color:var(--pa)}.bcap .b{font-weight:700;color:var(--pb)}
@@ -166,7 +163,7 @@ td.a{color:var(--pa)}td.b{color:var(--pb)}
 
 <section class="chapter" id="ch-b"><div class="eyebrow">03 · B 画像</div><h2><span class="avatar b">B</span>在关系里的 B</h2><p class="lead">B 的关系轮廓：更强烈的独处边界，秩序感高，审美和好奇心突出；情绪感受浓，但很少当场爆发。</p><div id="persona-b"></div></section>
 
-<section class="chapter" id="ch-snapshot"><div class="eyebrow">04 · 共鸣</div><h2>你们最易共鸣的三处</h2><p class="lead">这一章讲你们“听得懂”的部分：下面三个维度里，两人位于人群的同一端——这是你们互相理解的基础，也是共同盲区所在。容易误读的差异交给下一章。</p><div id="top-gaps"></div><div class="script"><span class="label">共同前提</span>相同不是必然优势，差异也不是必然缺陷；重要的是知道——哪些地方天然同频，哪些地方需要翻译。</div></section>
+<section class="chapter" id="ch-resonance"><div class="eyebrow">04 · 共鸣</div><h2 id="resonance-title">你们最易共鸣的地方</h2><p class="lead" id="resonance-lead">这一章讲你们“听得懂”的部分。</p><div id="top-gaps"></div><div class="script"><span class="label">共同前提</span>相同不是必然优势，差异也不是必然缺陷；重要的是知道——哪些地方天然同频，哪些地方需要翻译。</div></section>
 
 <section class="chapter" id="ch-bridges"><div class="eyebrow">05 · 差异桥</div><h2 id="bridges-title">核心差异</h2><p class="lead">每一对都按同一结构：事实、各自体验、常见误读、翻译、可执行微约定。读的时候可以先各自说一遍“我这边是什么”，再看报告有没有写偏。</p><div id="bridges"></div></section>
 
@@ -190,6 +187,8 @@ td.a{color:var(--pa)}td.b{color:var(--pb)}
    数值契约：z/百分位/档位/Δz/选桥全部由浏览器端按下方 NORM 表计算——
    模型不填任何派生数值；NORM 表须与 references/bfi2_norms_cn.json 一致（lint 校验）。
    本块内不得写注释（lint 按 JSON 解析校验）。置 null 则整体回退内置范文。
+   ⚠ 本文件是 examples/bfi2_sampleA_sampleB.html 基线样例（合成 A/B 数据，非模板原文）；
+     模板 templates/couple-report-template.html 的 COUPLE_CONTENT 为 null，P 另有一套示例分数。
    ════════════════════════════════════════════════════════════ */
 const COUPLE_CONTENT = {
  "meta": {
@@ -350,6 +349,7 @@ function normalize(person){
  person.domains.forEach(d=>{const n=NORM.domains[d.key];d.z=(d.score-n.M)/n.SD;d.pct=pct(d.z);d.band=bandOf(d.pct);d.facets.forEach(f=>{const fn=NORM.facets[f.name];f.z=(f.score-fn.M)/fn.SD;f.pct=pct(f.z);f.band=bandOf(f.pct);f.tick=fn.M/5*100})});
  return person;
 }
+/* 以下 P 为基线样例的合成 A/B 数据（与模板内示例分数同源） */
 const P={
  a:{id:'A',name:'A',color:'var(--pa)',domains:[
   {key:'ex',name:'外向性',score:2.58,color:'var(--e)',line:'独处是 A 的充电方式；低社交不代表不爱，只是热闹对 A 成本更高。',facets:[{name:'社交',score:2},{name:'果断',score:3},{name:'活力',score:2.75}]},
@@ -370,7 +370,6 @@ normalize(P.a);normalize(P.b);
 const GAP=(x,y)=>Math.abs(x.z-y.z);
 const FD={'社交':'e','果断':'e','活力':'e','同情':'a','谦恭':'a','信任':'a','条理':'c','效率':'c','负责':'c','焦虑':'es','抑郁':'es','易变':'es','好奇':'o','审美':'o','想象':'o'};
 function domain(person,key){return person.domains.find(d=>d.key===key)}
-function facet(person,key,name){return domain(person,key).facets.find(f=>f.name===name)}
 /* ---------- 结构选择（固定规则）：桥 = |Δz|≥0.7 的子维度（至多 6、下限 0 不硬凑，按 Δz 降序）；共鸣 = 同档位且 |Δz|≤0.35 ---------- */
 const PM=p=>p.domains.flatMap(d=>d.facets.map(f=>({name:f.name,score:f.score,z:f.z,pct:f.pct,band:f.band})));
 const PA=PM(P.a),PB=PM(P.b);
@@ -379,13 +378,15 @@ const BRIDGES=PAIRS.filter(x=>x.dz>=.7).sort((x,y)=>y.dz-x.dz).slice(0,6);
 BRIDGES.forEach(x=>{x.id='bridge-'+x.name});
 const RESONANCE=PAIRS.filter(x=>x.dz<=.35&&x.a.band===x.b.band).sort((x,y)=>x.dz-y.dz).slice(0,3);
 const W=[10,25,30,25,10],L=['远低','偏低','中间','偏高','远高'];
-function trackHTML(d,cls='',extra=''){const idx=d.pct<10?0:d.pct<35?1:d.pct<65?2:d.pct<90?3:4;const segs=W.map((w,i)=>`<div class="pt-seg${i===2?' hot':''}${i===idx?' on':''}" style="flex:${w}"></div>`).join('');const labs=W.map((w,i)=>`<span style="flex:${w}${i===idx?';color:var(--dc);font-weight:700':''}">${L[i]}</span>`).join('');return `<div class="pct-track reveal ${cls}" style="--dc:${d.color}"><div class="pt-head"><span class="pt-cap">${d.name}高于约 <b>${d.pct}%</b> 的人</span><span class="pt-z">z ${fmtZ(d.z)} · 原始 ${d.score.toFixed(2)}${extra}</span></div><div class="pt-band">${segs}<div class="pt-marker" style="--p:${d.pct}%"></div></div><div class="pt-labels">${labs}</div></div>`}
+function trackHTML(d,cls='',extra=''){const idx=d.pct<10?0:d.pct<35?1:d.pct<65?2:d.pct<90?3:4;const segs=W.map((w,i)=>`<div class="pt-seg${i===idx?' on':''}" style="flex:${w}"></div>`).join('');const labs=W.map((w,i)=>`<span style="flex:${w}${i===idx?';color:var(--dc);font-weight:700':''}">${L[i]}</span>`).join('');return `<div class="pct-track reveal ${cls}" style="--dc:${d.color}"><div class="pt-head"><span class="pt-cap">${d.name}高于约 <b>${d.pct}%</b> 的人</span><span class="pt-z">z ${fmtZ(d.z)} · 原始 ${d.score.toFixed(2)}${extra}</span></div><div class="pt-band">${segs}<div class="pt-marker" style="--p:${d.pct}%"></div></div><div class="pt-labels">${labs}</div></div>`}
 function bridgeHTML(x){const a=x.a,b=x.b;const p1=Math.max(0,Math.min(100,a.pct)),p2=Math.max(0,Math.min(100,b.pct));const ia=a.pct<10?0:a.pct<35?1:a.pct<65?2:a.pct<90?3:4,ib=b.pct<10?0:b.pct<35?1:b.pct<65?2:b.pct<90?3:4;const cc=(C?.bridges||[]).find(c=>c.facet===x.name)||{};const tag='相距 '+x.dz.toFixed(2)+' 个标准差';const labs=W.map((w,i)=>`<span style="flex:${w}${i===ia?';color:var(--pa);font-weight:700':''}${i===ib?';color:var(--pb);font-weight:700':''}">${L[i]}</span>`).join('');return `<div class="scene reveal" id="${x.id}" style="--dc:var(--${FD[x.name]||'es'})"><h5>${x.name}<span class="tag">${tag}</span></h5><p class="lead" style="margin-top:8px">${cc.trigger||`A 在「${x.name}」上 ${a.band}（z ${fmtZ(a.z)}），B ${b.band}（z ${fmtZ(b.z)}）——同一个面子，两种默认反应。`}</p><div class="bridge"><div class="pt-seg" style="flex:10"></div><div class="pt-seg" style="flex:25"></div><div class="pt-seg" style="flex:30"></div><div class="pt-seg" style="flex:25"></div><div class="pt-seg" style="flex:10"></div><div class="pt-marker pa" style="--p:${p1}%"></div><div class="pt-marker pb" style="--p:${p2}%"></div></div><div class="bcap"><span class="${p1<=p2?'a':'b'}">${p1<=p2?'A':'B'}：${(p1<=p2?a:b).band}（z ${(p1<=p2?a:b).z>=0?'+':'−'}${Math.abs((p1<=p2?a:b).z).toFixed(2)}）</span><span class="${p1<=p2?'b':'a'}">${(p1<=p2?'B':'A')}：${(p1<=p2?b:a).band}（z ${(p1<=p2?b:a).z>=0?'+':'−'}${Math.abs((p1<=p2?b:a).z).toFixed(2)}）</span></div><div class="pt-labels">${labs}</div><div class="duo-grid"><div class="card duo-a"><b>A 这边</b><p>${cc.aSide||`A 在「${x.name}」上 ${a.band}（z ${fmtZ(a.z)}）。`}${'社交'===x.name?' 可能一边需要安静，一边又担心安静被读成不在乎。':''}</p></div><div class="card duo-b"><b>B 这边</b><p>${cc.bSide||`B 在「${x.name}」上 ${b.band}（z ${fmtZ(b.z)}）。`}${'社交'===x.name?' 可能更需要边界，又不希望边界被说成冷淡。':''}</p></div></div><div class="misread">${cc.misread||'“这是态度问题。”'}</div><div class="translate">${cc.translate||'差异不是态度，是各自的默认方案。'}</div><div class="script"><span class="label">微约定</span>${cc.pact||'把这件事变成一句话约定，先试一周。'}</div></div>`}
 function sceneCard(title,a,b,mis,trans,options){return `<div class="scene reveal"><h5>${title}</h5><div class="duo-grid"><div class="card duo-a"><b>A 可能倾向</b><p>${a}</p></div><div class="card duo-b"><b>B 可能倾向</b><p>${b}</p></div></div><div class="misread">${mis}</div><div class="translate">${trans}</div><div class="script"><span class="label">协商选项</span><ol class="tight">${options.map(o=>`<li>${o}</li>`).join('')}</ol></div></div>`}
 function personaHTML(p,cls){const pc=(C?.personas?.[cls]||C?.personas?.[cls.toUpperCase()])||{};return p.domains.map(d=>trackHTML(d,cls)).join('')+`<div class="grid2"><div class="card person-${cls}"><h5>关系里的默认反应</h5><p>${pc.defaultReaction||p.domains.find(d=>d.key==='es').line+' '+p.domains.find(d=>d.key==='co').line}</p></div><div class="card person-${cls}"><h5>最容易被误读的点</h5><p>${pc.mostMisread||(cls==='a'?'A 的安静不等于不爱；A 的低效率不等于不负责。A 常常需要先确认安全，才敢往前走。':'B 的秩序不等于控制；B 的沉默不等于冷漠。B 常常是在避免失控，而不是在远离。')}</p></div></div>`}
 document.getElementById('persona-a').innerHTML=personaHTML(P.a,'a');
 document.getElementById('persona-b').innerHTML=personaHTML(P.b,'b');
-document.getElementById('top-gaps').innerHTML=RESONANCE.map((r,i)=>{const rc=(C?.resonance||[])[i]||{};const a=r.a,b=r.b;const segs=W.map((w,j)=>`<div class="pt-seg" style="flex:${w}"></div>`).join('');const labs=W.map((w,j)=>`<span style="flex:${w}">${L[j]}</span>`).join('');return `<div class="scene reveal"><h5>共鸣 ${i+1} · ${r.name}<span class="tag">${r.dz<.1?'几乎同频':'同一端'}</span></h5><div class="pt-band">${segs}<div class="pt-marker pa" style="--p:${a.pct}%"></div><div class="pt-marker pb" style="--p:${b.pct}%"></div></div><div class="bcap"><span class="a">A：${a.band}（z ${fmtZ(a.z)}）</span><span class="b">B：${b.band}（z ${fmtZ(b.z)}）</span></div><p class="lead" style="margin:14px 0 0">${rc.why||`两人在「${r.name}」上站在人群同一端（${a.band}）。`}</p><div class="blindbox">${rc.blind||'共同盲区：这一端的特点也可能一起变成盲区。'}</div></div>`}).join('');
+document.getElementById('resonance-title').textContent = RESONANCE.length ? `你们最易共鸣的 ${RESONANCE.length} 处` : '你们最易共鸣的地方';
+document.getElementById('resonance-lead').textContent = RESONANCE.length ? `这一章讲你们“听得懂”的部分：下面 ${RESONANCE.length} 个维度里，两人位于人群的同一端——这是你们互相理解的基础，也是共同盲区所在。容易误读的差异交给下一章。` : '这一章讲你们“听得懂”的部分：按同一把尺逐面比对后，暂时没有两人同档、差距又小的子维度——相似之处更分散，先读差异桥和场景菜单，也一样能读到彼此。';
+document.getElementById('top-gaps').innerHTML = RESONANCE.length ? RESONANCE.map((r,i)=>{const rc=(C?.resonance||[]).find(c=>c.name===r.name)||{};const a=r.a,b=r.b;const segs=W.map((w,j)=>`<div class="pt-seg" style="flex:${w}"></div>`).join('');const labs=W.map((w,j)=>`<span style="flex:${w}">${L[j]}</span>`).join('');return `<div class="scene reveal"><h5>共鸣 ${i+1} · ${r.name}<span class="tag">${r.dz<.1?'几乎同频':'同一端'}</span></h5><div class="pt-band">${segs}<div class="pt-marker pa" style="--p:${a.pct}%"></div><div class="pt-marker pb" style="--p:${b.pct}%"></div></div><div class="bcap"><span class="a">A：${a.band}（z ${fmtZ(a.z)}）</span><span class="b">B：${b.band}（z ${fmtZ(b.z)}）</span></div><p class="lead" style="margin:14px 0 0">${rc.why||`两人在「${r.name}」上站在人群同一端（${a.band}）。`}</p><div class="blindbox">${rc.blind||'共同盲区：这一端的特点也可能一起变成盲区。'}</div></div>`}).join('') : `<div class="card" style="text-align:center;padding:26px 20px"><h5 style="margin:0 0 8px">暂时没有两人同档、差距又小的子维度</h5><p style="margin:0;color:var(--soft)">这不代表你们不像——只是相似的地方分散在不同维度上，凑不出“同一端”的线。先看下面的差异桥，再看场景菜单，一样能读到彼此。</p></div>`;
 /* 选桥下限 0：若无 |Δz|≥0.7 的显著差异，不硬凑桥，改渲染「同频声明」空态，差异交给共鸣章与场景章承载 */
 document.getElementById('bridges').innerHTML = BRIDGES.length
   ? BRIDGES.map(bridgeHTML).join('')
@@ -409,14 +410,14 @@ document.getElementById('dirnote').textContent=(C&&C.meta)?(
  `本报告统一使用「情绪稳定性」方向：分数越高 = 越平稳；焦虑 / 抑郁 / 易变子维度保留「敏感性」本义，分数越高 = 越敏感。`
  +(C.meta.flippedA?` ${C.meta.aliasA||'A'} 原始导出为负性情绪方向，本报告已翻转（情绪稳定性分数 = 6 − 负性情绪分数，z 同）。`:'')
  +(C.meta.flippedB?` ${C.meta.aliasB||'B'} 原始导出为负性情绪方向，本报告已翻转（同上）。`:'')
- +` z 分按${C.meta.normLabel}由本文件内置常模表计算（Zhang et al., 2022, Table 1）。若双方不属于该人群，应更换常模后重算。`
+ +` z 分按${C.meta.normLabel}由本文件内置常模表计算（Zhang et al., 2022, Table 1）。若双方不属于该人群，应更换常模后重算。本报告填写于 ${C.meta.date}。`
 ):`本样稿统一使用“情绪稳定性”方向：分数越高 = 越平稳；焦虑 / 抑郁 / 易变子维度保留“敏感性”本义，分数越高 = 越敏感。z 分默认按中国大学生常模（CN-College，Zhang et al., 2022, N=1194, 17–28 岁）重算。若双方不属于该年龄段或身份，应更换常模后重算。`;
 document.getElementById('table').innerHTML=`<table><tr><th>维度 / 子维度</th><th>A 分数</th><th>A z</th><th>B 分数</th><th>B z</th><th>z 差距</th></tr>${rows.join('')}</table><p class="small-print">z 分按当前内置常模表重算；情绪稳定性方向已统一（翻转过负性情绪的一方在附录「方向与常模说明」标注）。</p>`;
 const RADAR_ORDER=['op','ex','ag','es','co'],AXCOL={op:'var(--o)',ex:'var(--e)',ag:'var(--a)',es:'var(--es)',co:'var(--c)'};function ptFor(person,i,r){const d=person.domains.find(x=>x.key===RADAR_ORDER[i]);const z=Math.max(-2,Math.min(2,d.z));const ang=(-90+72*i)*Math.PI/180;const R=130*((z+2)/4);return [280+R*Math.cos(ang),210+R*Math.sin(ang)]}
 function radarSVG(){let s='<svg viewBox="0 0 560 420" role="img" aria-label="双人雷达叠图">';for(let lv=-2;lv<=2;lv++){let pts=RADAR_ORDER.map((_,i)=>{const ang=(-90+72*i)*Math.PI/180,R=130*(lv+2)/4;return [280+R*Math.cos(ang),210+R*Math.sin(ang)].map(v=>v.toFixed(1)).join(',')}).join(' ');s+=`<polygon points="${pts}" fill="none" stroke="${lv===0?'#B9B1A4':'#E6DECF'}" stroke-width="1" ${lv===0?'stroke-dasharray="4 3"':''}/>`}RADAR_ORDER.forEach((k,i)=>{const ang=(-90+72*i)*Math.PI/180;const [x,y]=[280+130*Math.cos(ang),210+130*Math.sin(ang)];s+=`<line x1="280" y1="210" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${AXCOL[k]}" stroke-width="1.7" opacity="0.55"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="${AXCOL[k]}" stroke="#FAF7F2" stroke-width="1"/>`});const pa=RADAR_ORDER.map((_,i)=>ptFor(P.a,i).map(v=>v.toFixed(1)).join(',')).join(' ');const pb=RADAR_ORDER.map((_,i)=>ptFor(P.b,i).map(v=>v.toFixed(1)).join(',')).join(' ');s+=`<polygon points="${pa}" fill="var(--pa)" fill-opacity="0.10" stroke="var(--pa)" stroke-width="2.6"/><polygon points="${pb}" fill="var(--pb)" fill-opacity="0.07" stroke="var(--pb)" stroke-width="2.6" stroke-dasharray="7 5"/>`;RADAR_ORDER.forEach((k,i)=>{const da=domain(P.a,k),db=domain(P.b,k);const [ax,ay]=ptFor(P.a,i),[bx,by]=ptFor(P.b,i);s+=`<circle cx="${ax.toFixed(1)}" cy="${ay.toFixed(1)}" r="3.2" fill="var(--pa)" stroke="#FBF8F2" stroke-width="1"/><circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="3.2" fill="#FBF8F2" stroke="var(--pb)" stroke-width="1.4"/>`;const ang=(-90+72*i)*Math.PI/180,c=Math.cos(ang),sin=Math.sin(ang),anchor=c>0.3?'start':c<-0.3?'end':'middle',lx=280+162*Math.cos(ang),ly=210+162*Math.sin(ang),dy=sin<-.3?-16:sin>.3?12:0;
 s+=`<text x="${lx.toFixed(1)}" y="${(ly+dy).toFixed(1)}" text-anchor="${anchor}" font-size="12.5" font-weight="700" fill="${AXCOL[k]}">${da.name}</text><text x="${lx.toFixed(1)}" y="${(ly+dy+16).toFixed(1)}" text-anchor="${anchor}" font-size="11.5" font-weight="700"><tspan dx="3" fill="var(--pa)" stroke="#FFFDF9" stroke-width="14" stroke-linecap="round" paint-order="stroke">${'A '+fmtZ(da.z)}</tspan></text><text x="${lx.toFixed(1)}" y="${(ly+dy+32).toFixed(1)}" text-anchor="${anchor}" font-size="11.5" font-weight="700"><tspan dx="3" fill="var(--pb)" stroke="#FFFDF9" stroke-width="14" stroke-linecap="round" paint-order="stroke">${'B '+fmtZ(db.z)}</tspan></text>`});return s+'</svg>'}
 document.getElementById('radar').innerHTML=radarSVG();
-const NAV=[['hero','封面'],['ch-guide','说明'],['ch-a','A画像'],['ch-b','B画像'],['ch-snapshot','共鸣'],['ch-bridges','差异桥'],['ch-conflict','冲突'],['ch-scenes','场景'],['ch-letters','说明书'],['ch-growth','实验'],['ch-appendix','附录']];
+const NAV=[['hero','封面'],['ch-guide','说明'],['ch-a','A画像'],['ch-b','B画像'],['ch-resonance','共鸣'],['ch-bridges','差异桥'],['ch-conflict','冲突'],['ch-scenes','场景'],['ch-letters','说明书'],['ch-growth','实验'],['ch-appendix','附录']];
 const dots=document.getElementById('navdots'),cur=document.getElementById('navcur');NAV.forEach(([id,label],i)=>{const a=document.createElement('a');a.className='dot';a.href='#'+id;a.title=label;a.addEventListener('click',()=>setCur(i));dots.appendChild(a)});function setCur(i){dots.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('active',j===i));cur.textContent=NAV[i][1]}setCur(0);
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=NAV.findIndex(([id])=>id===e.target.id);if(i>-1)setCur(i)}}),{rootMargin:'-40% 0px -55% 0px'});NAV.forEach(([id])=>{const el=document.getElementById(id);if(el)so.observe(el)});

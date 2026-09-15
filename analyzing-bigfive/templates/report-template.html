@@ -91,7 +91,6 @@ h1{font-family:'Noto Serif SC','Songti SC','SimSun',serif;
 .pt-z{font-size:11.5px;color:var(--muted);white-space:nowrap}
 .pt-band{position:relative;display:flex;gap:2px;height:16px;border:1px solid var(--seg-border);border-radius:7px;background:var(--seg-bg);padding:2px}
 .pt-seg{border-radius:4px;background:var(--seg)}
-.pt-seg.hot{background:var(--seg)}
 .pt-seg.on{background:color-mix(in srgb,var(--dc) 42%,#FBF8F1);box-shadow:inset 0 0 0 1.6px var(--dc)}
 .pt-marker{position:absolute;top:-6px;bottom:-6px;left:0;width:0;transition:left 1s cubic-bezier(.25,.7,.25,1) .25s}
 .in .pt-marker{left:var(--p)}
@@ -236,11 +235,11 @@ td.ind{color:var(--muted);font-size:12.5px}
   <p class="lead">你完成的是 BFI-2 量表：60 道题，测 5 个大维度、15 个子维度，每题 1–5 分。单看 1–5 分没有意义，这份报告里每个分数都会换算成你在人群中的位置。</p>
   <div class="pct-track reveal" style="--dc:#8A8378;margin:18px 0 10px">
     <div class="pt-head"><span class="pt-cap">示例：某项特质高于约 <b id="demo-pct"></b>% 的人</span><span class="pt-z">示意</span></div>
-    <div class="pt-band">
-      <div class="pt-seg" style="flex:10"></div><div class="pt-seg" style="flex:25"></div><div class="pt-seg" style="flex:30"></div><div class="pt-seg on" style="flex:25"></div><div class="pt-seg" style="flex:10"></div>
-      <div class="pt-marker" id="demo-marker" style="--p:68%"></div>
+    <div class="pt-band" id="demo-band">
+      <div class="pt-seg" style="flex:10"></div><div class="pt-seg" style="flex:25"></div><div class="pt-seg" style="flex:30"></div><div class="pt-seg" style="flex:25"></div><div class="pt-seg" style="flex:10"></div>
+      <div class="pt-marker" id="demo-marker"></div>
     </div>
-    <div class="pt-labels"><span style="flex:10">远低</span><span style="flex:25">偏低</span><span style="flex:30">中间</span><span style="flex:25">偏高</span><span style="flex:10">远高</span></div>
+    <div class="pt-labels" id="demo-labels"><span style="flex:10">远低</span><span style="flex:25">偏低</span><span style="flex:30">中间</span><span style="flex:25">偏高</span><span style="flex:10">远高</span></div>
     <p class="radar-note" style="text-align:left">把 100 个人按这项特质从低到高排队，游标就是你的位置；中间一格，装着大多数普通人。</p>
   </div>
   <ul class="cards">
@@ -249,6 +248,7 @@ td.ind{color:var(--muted);font-size:12.5px}
     <li class="card"><b>一次测试有误差。</b>心情和睡眠都会影响答案。把它当作一张清晰的快照，而不是终身标签。</li>
   </ul>
   <p class="small-print" id="norm-foot"></p>
+  <p class="small-print" id="quality-note" style="display:none"></p>
 </section>
 
 <!-- ═══════════ 02 五个维度 ═══════════ -->
@@ -319,6 +319,8 @@ td.ind{color:var(--muted);font-size:12.5px}
    模板不再计算——改任何数字都要同步跑 lint。
    固定字段（不可改）：domains[].key / name / color / 域顺序 / facets 名与分数。
    注意：本对象内不得写注释（lint 按 JSON 解析校验数值）。
+   ⚠ 本模板自带示例数据（alias=zyh、date=2026-09-05、全部文案），生成报告时必须整块替换；
+     只改一半会被 lint「未替换模板示例」检查判 FAIL（alias/date/封面文案三项同时命中示例值时触发）。
    ════════════════════════════════════════════════════════════ */
 const REPORT = {
   meta: {
@@ -327,7 +329,8 @@ const REPORT = {
     normId: "cn_college",
     normLabel: "中国大学生样本（N=1194，17–28 岁，Zhang et al. 2022）",
     normDetail: "中国大学生样本 CN-College（N=1194，17–28 岁，470 男 / 724 女；Zhang et al., 2022, Table 1）",
-    domain4Note: "第四域按「情绪稳定性」方向呈现（分数越高越平稳），其子维度保持「敏感性」本义方向。"
+    domain4Note: "第四域按「情绪稳定性」方向呈现（分数越高越平稳），其子维度保持「敏感性」本义方向。",
+    qualityNote: ""
   },
   cover: {
     chips: ["安静的观察者", "心软的共情者", "绷着一根弦的梦想家"],
@@ -430,16 +433,16 @@ const REPORT = {
     cards:[
       {title:"1 · 给焦虑设「办公时间」",
        body:"每天固定 15 分钟，专门处理担忧：把烦心事写下来，只在这段时间里想。其他时间冒出来的担忧，记一句「到点再想」。",
-       tags:["对应：焦虑 4.00","原理：对高敏感的人，「压抑不想」总会失败，「预约着想」反而有效"]},
+       tags:["对应：焦虑 · 偏高","原理：对高敏感的人，「压抑不想」总会失败，「预约着想」反而有效"]},
       {title:"2 · 用「五分钟启动法」对付启动困难",
-       body:"不要求自己做完，只要求开始做五分钟。你的条理感（3.75）会接手后续——你缺的从来不是计划，是第一脚油门。",
-       tags:["对应：效率 2.00"]},
+       body:"不要求自己做完，只要求开始做五分钟。你的条理感会接手后续——你缺的从来不是计划，是第一脚油门。",
+       tags:["对应：效率 · 远低"]},
       {title:"3 · 维护三段深关系，而不是拓展人脉",
        body:"内向者的社交最优解不是变外向，是把有限的电量花在最值得的人身上。每月主动约一次那两三个人，就够了。",
-       tags:["对应：社交 2.25"]},
+       tags:["对应：社交 · 偏低"]},
       {title:"4 · 练习说「半个需求」",
        body:"不用一步到位变成强硬的人。先从小事开始说「我更想……」——说半个需求，好过让对方猜。",
-       tags:["对应：谦恭 4.00 × 果断 2.50"]}
+       tags:["对应：谦恭 · 中间 × 果断 · 偏低"]}
     ]
   },
   faq:[
@@ -460,8 +463,13 @@ document.getElementById('ndate').textContent = REPORT.meta.date;
 document.getElementById('ndate2').textContent = REPORT.meta.date;
 document.getElementById('norm-foot').textContent =
   `注：百分位按${REPORT.meta.normLabel}精确计算；如属于在职成人或青少年群体，可切换对应常模重算。`;
+if(REPORT.meta.qualityNote){const qn=document.getElementById('quality-note');qn.textContent=REPORT.meta.qualityNote;qn.style.display='';}
 document.getElementById('demo-pct').textContent = REPORT.demoPct;
 document.getElementById('demo-marker').style.setProperty('--p', REPORT.demoPct+'%');
+/* 01 章示例游标：高亮段与档名随 demoPct 切换（不再写死偏高） */
+const demoIdx = REPORT.demoPct<10?0:REPORT.demoPct<35?1:REPORT.demoPct<65?2:REPORT.demoPct<90?3:4;
+document.querySelectorAll('#demo-band .pt-seg').forEach((el,i)=>el.classList.toggle('on',i===demoIdx));
+document.querySelectorAll('#demo-labels span').forEach((el,i)=>{if(i===demoIdx){el.style.color='var(--dc)';el.style.fontWeight='700';}});
 
 /* 封面 */
 document.getElementById('chips').innerHTML = REPORT.cover.chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('');
@@ -471,7 +479,7 @@ document.getElementById('oneliner').innerHTML = REPORT.cover.oneliner.join('<br>
 const PCT_BANDS=[[10,'远低'],[25,'偏低'],[30,'中间'],[25,'偏高'],[10,'远高']];
 function trackHTML(d){
   const idx=d.pct<10?0:d.pct<35?1:d.pct<65?2:d.pct<90?3:4;
-  const segs=PCT_BANDS.map(([w,l],i)=>`<div class="pt-seg${i===2?' hot':''}${i===idx?' on':''}" style="flex:${w}"></div>`).join('');
+  const segs=PCT_BANDS.map(([w,l],i)=>`<div class="pt-seg${i===idx?' on':''}" style="flex:${w}"></div>`).join('');
   const labs=PCT_BANDS.map(([w,l],i)=>`<span style="flex:${w}${i===idx?';color:var(--dc);font-weight:700':''}">${l}</span>`).join('');
   return `<div class="pct-track reveal" style="--dc:${d.color}">
     <div class="pt-head"><span class="pt-cap">${d.name}高于约 <b>${d.pct}%</b> 的人</span><span class="pt-z">z ${fmtZ(d.z)}</span></div>
@@ -480,17 +488,19 @@ function trackHTML(d){
   </div>`;
 }
 
-/* 雷达图（z 分制：每环 = 1 个标准差，z=0 为人群平均；轴序高低交错） */
-const RADAR_ORDER=['op','ex','ag','es','co'];
+/* 雷达图（z 分制：每环 = 1 个标准差，z=0 为人群平均；轴序高低交错）
+   最内环留 RADAR_R0 最小半径：z ≤ −2 的极端值不落圆心，避免多顶点重叠、轮廓自交 */
+const RADAR_ORDER=['op','ex','ag','es','co'],RADAR_R0=0.12;
 function radarSVG(){
   const cx=200,cy=162,R=104,N=5;
   const byKey={};REPORT.domains.forEach(d=>byKey[d.key]=d);
   const ang=i=>(-90+72*i)*Math.PI/180;
-  const rOf=z=>R*((Math.max(-2,Math.min(2,z))+2)/4);
+  const ringR=lv=>R*(RADAR_R0+(1-RADAR_R0)*((Math.max(-2,Math.min(2,lv))+2)/4));
+  const rOf=z=>ringR(z);
   const pt=(i,r)=>[cx+r*Math.cos(ang(i)),cy+r*Math.sin(ang(i))];
   let s='<svg viewBox="0 0 400 336" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="五维度雷达图（z 分）">';
   [-2,-1,0,1,2].forEach(lv=>{
-    const pts=RADAR_ORDER.map((_,i)=>pt(i,R*(lv+2)/4).map(v=>v.toFixed(1)).join(',')).join(' ');
+    const pts=RADAR_ORDER.map((_,i)=>pt(i,ringR(lv)).map(v=>v.toFixed(1)).join(',')).join(' ');
     s+=`<polygon points="${pts}" fill="none" stroke="${lv===0?'#B9B1A4':'#E6DECF'}" stroke-width="1" ${lv===0?'stroke-dasharray="4 3"':''}/>`;
   });
   RADAR_ORDER.forEach((k,i)=>{

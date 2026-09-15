@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """BFI-2 报告 HTML 质量检查（v3）
 
-三种报告自动分流：
+两种报告自动分流：
 - 新版单人：含 `const REPORT = ` → lint_new_single（schema + 常模复算 z/pct/tick + 档位标签 + 禁词 + 固定结构）
 - 新版双人：含 `const COUPLE_CONTENT = ` → lint_new_couple（内嵌分数抽取 + 浏览器端计算契约
   + Δz/选桥/共鸣复算 + 内容 schema + 双人禁词 + 固定结构）
-- 旧版（历史文件）：其余 → lint_old（双人过渡期旧版基线；不再维护）
+其余文件直接 FAIL：v2 遗留格式已停止支持（2026-09-09 起 lint_old 分支删除）。
 
 双人数值契约（与 templates/couple-report-template.html 的 JS 口径一致）：
 模型只填 40 项原始分与文案；z/pct/band/Δz/选桥/共鸣全部由 HTML 浏览器端计算。
@@ -16,7 +16,6 @@ import json
 import os
 import re
 import sys
-import math
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import compute_scores  # noqa: E402  复用 phi/band_of/常模键映射
@@ -44,6 +43,15 @@ FORBIDDEN_EXCEPTIONS = ["心理咨询师"]
 FORBIDDEN_COUPLE = ["冷暴力", "你应该", "你总是", "谁对谁错", "匹配分", "伤害", "离开"]
 
 DOMAIN_KEYS = ["es", "ex", "ag", "co", "op"]              # 单人模板显示序
+EXPECTED_DOMAIN_META = {                                   # 单人域 key → (固定名称, 固定身份色)
+    "es": ("情绪稳定性", "#9A7FB8"), "ex": ("外向性", "#E07A4F"),
+    "ag": ("宜人性", "#7C9B6D"), "co": ("尽责性", "#5A7CA6"),
+    "op": ("开放性", "#D9A441"),
+}
+COUPLE_DOM_NAME = {"ex": "外向性", "ag": "宜人性", "co": "尽责性",
+                   "es": "情绪稳定性", "op": "开放性"}
+COUPLE_DOM_COLOR = {"ex": "var(--e)", "ag": "var(--a)", "co": "var(--c)",
+                    "es": "var(--es)", "op": "var(--o)"}
 COUPLE_DOM_ORDER = ["ex", "ag", "co", "es", "op"]         # 双人模板 P 序（雷达另轴序）
 FACET_NAMES = {
     "es": ["焦虑", "抑郁", "易变"], "ex": ["社交", "果断", "活力"],
@@ -54,7 +62,6 @@ FACET_NAMES = {
 FACET_ORDER = ["社交", "果断", "活力", "同情", "谦恭", "信任", "条理", "效率",
                "负责", "焦虑", "抑郁", "易变", "好奇", "审美", "想象"]
 LABEL_TO_NORMKEY = compute_scores.FACET_LABEL_TO_KEY  # 中文→常模 facet 键
-BANDS = ["远低", "偏低", "中间", "偏高", "远高"]
 
 
 def band_of(pct):
@@ -117,6 +124,23 @@ def js_to_json(blob):
     return json.loads(s)
 
 
+def _check_corr_tag(tag, pct_by_name):
+    """校验成长卡标签「对应：<子维度> · <档位>」（可多段用 × 连接）→ 返回错误列表。"""
+    body = str(tag)[len("对应："):]
+    errs = []
+    for term in [x.strip() for x in body.split("×")]:
+        m = re.match(r"^([\u4e00-\u9fff]+)\s*·\s*(远低|偏低|中间|偏高|远高)$", term)
+        if not m:
+            errs.append(f"格式应为「对应：<子维度> · <档位>」（可多段 × 连接），实际「{term}」")
+            continue
+        name, band_word = m.group(1), m.group(2)
+        if name not in pct_by_name:
+            errs.append(f"未知子维度「{name}」")
+        elif band_of(pct_by_name[name]) != band_word:
+            errs.append(f"{name} 档位应为 {band_of(pct_by_name[name])}（pct {pct_by_name[name]}%），标签写 {band_word}")
+    return errs
+
+
 # ────────────────────────── 新版单人 ──────────────────────────
 
 def lint_new_single(filepath, html):
@@ -140,16 +164,27 @@ def lint_new_single(filepath, html):
             for fld in ("name", "color", "score", "z", "pct", "line"):
                 if fld not in d:
                     fails.append(f"FAIL: 域 {k} 缺字段 {fld}")
+            exp = EXPECTED_DOMAIN_META.get(k)
+            if exp:
+                if d.get("name") != exp[0]:
+                    fails.append(f"FAIL: 域 {k} 名称应为 {exp[0]}，实际 {d.get('name')}")
+                if str(d.get("color", "")).upper() != exp[1].upper():
+                    fails.append(f"FAIL: 域 {k} 颜色应为 {exp[1]}，实际 {d.get('color')}")
+            if not (isinstance(d.get("score"), (int, float)) and 1 <= d["score"] <= 5):
+                fails.append(f"FAIL: 域 {k} score 应在 1–5，实际 {d.get('score')!r}")
             if [f.get("name") for f in d.get("facets", [])] != FACET_NAMES.get(k):
                 fails.append(f"FAIL: 域 {k} 子维度名/顺序错误")
             for f in d.get("facets", []):
                 for fld in ("score", "z", "pct", "tick", "line"):
                     if fld not in f:
                         fails.append(f"FAIL: {k}/{f.get('name')} 缺字段 {fld}")
+                if not (isinstance(f.get("score"), (int, float)) and 1 <= f["score"] <= 5):
+                    fails.append(f"FAIL: {k}/{f.get('name')} score 应在 1–5，实际 {f.get('score')!r}")
             if len(d.get("behaviors", [])) != 3:
                 fails.append(f"FAIL: 域 {k} behaviors 应为 3 条")
             for b in d.get("behaviors", []):
-                if not str(b).strip().endswith(("。", "！", "？")):
+                core = str(b).strip().rstrip("」』”’）)]】》")   # 允许句末引号/括号收尾
+                if not core.endswith(("。", "！", "？")):
                     fails.append(f"FAIL: 域 {k} behavior 未以句号结尾：{str(b)[:20]}…")
 
     cover = rep.get("cover", {})
@@ -157,10 +192,15 @@ def lint_new_single(filepath, html):
         fails.append("FAIL: 封面标签应为 3 个")
     if not cover.get("oneliner"):
         fails.append("FAIL: 封面缺少一句话")
+    # 扁平剖面判定（先于数量检查：全维度 |z|≤0.3 → strengths/flaws/growth 放宽为 2–5）
+    flat = (isinstance(doms, list) and len(doms) == 5
+            and all(isinstance(d.get("z"), (int, float)) for d in doms)
+            and all(abs(d["z"]) <= 0.3 for d in doms))
+    mn = 2 if flat else 3
     for group in ("strengths", "flaws"):
         cards = rep.get(group, [])
-        if len(cards) < 2:
-            fails.append(f"FAIL: {group} 卡应 ≥2 张")
+        if not (mn <= len(cards) <= 5):
+            fails.append(f"FAIL: {group} 卡应为 {mn}–5 张，实际 {len(cards)}")
         for c in cards:
             for fld in ("title", "body", "tags"):
                 if fld not in c:
@@ -169,21 +209,44 @@ def lint_new_single(filepath, html):
     for k, n in (("patterns", 3), ("pitfalls", 3), ("phrases", 3)):
         if len(love.get(k, [])) != n:
             fails.append(f"FAIL: 亲密 {k} 应为 {n} 条")
+    for fld in ("h2", "lead", "partnerTitle"):
+        if not str(love.get(fld, "")).strip():
+            fails.append(f"FAIL: 亲密缺字段 love.{fld}")
     if not love.get("partner"):
         fails.append("FAIL: 亲密缺少「给在意的人的一段话」")
-    if len(rep.get("growth", {}).get("cards", [])) < 3:
-        fails.append("FAIL: 成长卡应 ≥3 条")
-    if len(rep.get("faq", [])) < 3:
-        fails.append("FAIL: FAQ 应 ≥3 问")
-    if rep.get("meta", {}).get("alias") in (None, "", "示例"):
+    growth_cards = rep.get("growth", {}).get("cards", [])
+    if not (mn <= len(growth_cards) <= 5):
+        fails.append(f"FAIL: 成长卡应为 {mn}–5 条，实际 {len(growth_cards)}")
+    if not (3 <= len(rep.get("faq", [])) <= 5):
+        fails.append(f"FAIL: FAQ 应为 3–5 问，实际 {len(rep.get('faq', []))}")
+    meta = rep.get("meta", {})
+    if meta.get("alias") in (None, "", "示例"):
         fails.append("FAIL: meta.alias（来访者代号）缺失")
-    if not re.match(r"^\d{4}-\d{2}-\d{2}$", str(rep.get("meta", {}).get("date", ""))):
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", str(meta.get("date", ""))):
         fails.append("FAIL: meta.date 应为 YYYY-MM-DD")
+    for fld in ("normId", "normLabel", "normDetail", "domain4Note"):
+        if not str(meta.get(fld, "")).strip():
+            fails.append(f"FAIL: meta.{fld} 缺失（按所选常模填写）")
+    demo = rep.get("demoPct")
+    if not (isinstance(demo, (int, float)) and 0 <= demo <= 100):
+        fails.append(f"FAIL: demoPct 应为 0–100 的数字，实际 {demo!r}")
+    es_dom = next((d for d in (doms or []) if d.get("key") == "es"), None)
+    if es_dom is not None and not str(es_dom.get("note", "")).strip():
+        fails.append("FAIL: es 域缺 note（方向小注）")
+    # 模板示例数据未替换守卫（模板/基线自身豁免）
+    if os.path.basename(filepath) not in ("report-template.html", "bfi2_sample.html"):
+        tpl_oneliner = ["你把世界感受得很深，把别人放得很重。", "你的温柔和你的紧张，常常来自同一份敏感。"]
+        if meta.get("alias") == "zyh" and meta.get("date") == "2026-09-05" \
+                and cover.get("oneliner") == tpl_oneliner:
+            fails.append("FAIL: 疑似未替换模板示例数据（alias=zyh / date=2026-09-05 / 封面文案为模板原文）")
+    # 扁平剖面：全维度 |z| ≤ 0.3 → 必须给降权提示（01 章渲染）
+    if flat and not str(meta.get("qualityNote", "")).strip():
+        fails.append("FAIL: 扁平剖面（全维度 |z|≤0.3）必须在 meta.qualityNote 写降权提示")
 
     # 常模复算
     try:
         all_norms = json.load(open(NORMS_PATH, encoding="utf-8"))["norms"]
-        norm_key = rep["meta"].get("normId", "cn_college")
+        norm_key = meta.get("normId", "cn_college")
         if norm_key not in all_norms:
             fails.append(f"FAIL: 常模 {norm_key} 不存在")
         else:
@@ -196,43 +259,63 @@ def lint_new_single(filepath, html):
                     "ex": "extraversion", "ag": "agreeableness", "co": "conscientiousness",
                     "es": "negative_emotionality", "op": "open_mindedness"}[k]]
                 M = (6 - nm["M"]) if k == "es" else nm["M"]
-                z = round((d["score"] - M) / nm["SD"], 2)
+                sc = d.get("score")
+                if not isinstance(sc, (int, float)):
+                    continue  # 缺 score 已在上方 schema 检查报 FAIL，避免此处崩栈
+                z = round((sc - M) / nm["SD"], 2)
                 pct = round(phi(z) * 100)
-                if abs(d["z"] - z) > 0.005:
-                    fails.append(f"FAIL: 域 {k} z 应为 {z}（常模复算），实际 {d['z']}")
-                if d["pct"] != pct:
-                    fails.append(f"FAIL: 域 {k} pct 应为 {pct}（常模复算），实际 {d['pct']}")
+                if not isinstance(d.get("z"), (int, float)) or abs(d["z"] - z) > 0.005:
+                    fails.append(f"FAIL: 域 {k} z 应为 {z}（常模复算），实际 {d.get('z')}")
+                if d.get("pct") != pct:
+                    fails.append(f"FAIL: 域 {k} pct 应为 {pct}（常模复算），实际 {d.get('pct')}")
             for d in doms or []:
                 for f in d.get("facets", []):
                     fk = LABEL_TO_NORMKEY.get(f.get("name"))
-                    if not fk:
+                    if not fk or not isinstance(f.get("score"), (int, float)):
                         continue
                     fn = n["facets"][fk]
                     z = round((f["score"] - fn["M"]) / fn["SD"], 2)
                     pct = round(phi(z) * 100)
                     tick = round(fn["M"] / 5 * 100, 1)
-                    if abs(f["z"] - z) > 0.005:
-                        fails.append(f"FAIL: 子维度 {f['name']} z 应为 {z}，实际 {f['z']}")
-                    if f["pct"] != pct:
-                        fails.append(f"FAIL: 子维度 {f['name']} pct 应为 {pct}，实际 {f['pct']}")
+                    if not isinstance(f.get("z"), (int, float)) or abs(f["z"] - z) > 0.005:
+                        fails.append(f"FAIL: 子维度 {f['name']} z 应为 {z}，实际 {f.get('z')}")
+                    if f.get("pct") != pct:
+                        fails.append(f"FAIL: 子维度 {f['name']} pct 应为 {pct}，实际 {f.get('pct')}")
                     if abs(f.get("tick", -1) - tick) > 0.05:
                         fails.append(f"FAIL: 子维度 {f['name']} tick 应为 {tick}，实际 {f.get('tick')}")
     except OSError as e:
         fails.append(f"FAIL: 常模文件读取失败：{e}")
 
-    # 档位标签一致性
-    if doms:
-        pct_by_name = {}
-        for d in doms:
+    # 档位标签一致性（未知名称不再静默跳过）
+    pct_by_name = {}
+    for d in (doms or []):
+        if "name" in d and isinstance(d.get("pct"), (int, float)):
             pct_by_name[d["name"]] = d["pct"]
-            for f in d.get("facets", []):
+        for f in d.get("facets", []):
+            if "name" in f and isinstance(f.get("pct"), (int, float)):
                 pct_by_name[f["name"]] = f["pct"]
+    if doms:
         for group in ("strengths", "flaws"):
             for c in rep.get(group, []):
                 for tag in c.get("tags", []):
                     m = re.match(r"^(.+?) · (远低|偏低|中间|偏高|远高)$", str(tag))
-                    if m and m.group(1) in pct_by_name and band_of(pct_by_name[m.group(1)]) != m.group(2):
-                        fails.append(f"FAIL: {group}「{tag}」与实际百分位 {pct_by_name[m.group(1)]}%（应为 {band_of(pct_by_name[m.group(1)])}）不符")
+                    if not m:
+                        continue
+                    nm, band_word = m.group(1), m.group(2)
+                    if nm not in pct_by_name:
+                        fails.append(f"FAIL: {group} 标签「{tag}」中的「{nm}」不是已知维度/子维度名")
+                    elif band_of(pct_by_name[nm]) != band_word:
+                        fails.append(f"FAIL: {group}「{tag}」与实际百分位 {pct_by_name[nm]}%（应为 {band_of(pct_by_name[nm])}）不符")
+
+    # 成长卡「对应：<子维度> · <档位>」格式与档位一致性
+    for c in growth_cards:
+        corr = [str(t) for t in c.get("tags", []) if str(t).startswith("对应：")]
+        if not corr:
+            fails.append(f"FAIL: 成长卡「{c.get('title', '?')}」缺「对应：<子维度> · <档位>」标签")
+            continue
+        for t in corr:
+            for e in _check_corr_tag(t, pct_by_name):
+                fails.append(f"FAIL: 成长卡「{c.get('title', '?')}」标签「{t}」：{e}")
 
     # 禁词：REPORT 字符串值 + 静态可见文本
     scan = " ".join(strings_of(rep))
@@ -305,7 +388,13 @@ def lint_new_couple(filepath, html):
                         fails.append(f"FAIL: {side.upper()}/{d.get('key')} 域分数越界")
                     if not str(d.get("line", "")).strip():
                         fails.append(f"FAIL: {side.upper()}/{d.get('key')} 缺 line 文案")
-                    if [f.get("name") for f in d.get("facets", [])] != FACET_NAMES.get(d.get("key")):
+                    k = d.get("key")
+                    if k in COUPLE_DOM_NAME:
+                        if d.get("name") != COUPLE_DOM_NAME[k]:
+                            fails.append(f"FAIL: {side.upper()}/{k} 域名称应为 {COUPLE_DOM_NAME[k]}，实际 {d.get('name')}")
+                        if str(d.get("color", "")).replace(" ", "") != COUPLE_DOM_COLOR[k]:
+                            fails.append(f"FAIL: {side.upper()}/{k} 域颜色应为 {COUPLE_DOM_COLOR[k]}，实际 {d.get('color')}")
+                    if [f.get("name") for f in d.get("facets", [])] != FACET_NAMES.get(k):
                         fails.append(f"FAIL: {side.upper()}/{d.get('key')} 子维度名/顺序错误")
                     for f in d.get("facets", []):
                         if not (1 <= f.get("score", 0) <= 5):
@@ -315,9 +404,9 @@ def lint_new_couple(filepath, html):
         except json.JSONDecodeError as e:
             fails.append(f"FAIL: P 分数块解析失败：{e}")
 
-    # ---- 浏览器端契约：不得有服务端注入 z ----
-    if re.search(r"z\s*:\s*[-+]?\d", html):
-        fails.append("FAIL: 双人契约=浏览器端计算：P 数据块不得注入 z/pct（z: 字段不应出现在 HTML 数据区）")
+    # ---- 浏览器端契约：不得有服务端注入 z / pct ----
+    if re.search(r"\b(?:z|pct)\s*:\s*[-+]?\d", html):
+        fails.append("FAIL: 双人契约=浏览器端计算：数据区不得注入 z/pct（`z:` / `pct:` 字段不应出现）")
 
     # ---- NORM 表 vs 内置常模 JSON ----
     all_norms = json.load(open(NORMS_PATH, encoding="utf-8"))["norms"]
@@ -385,17 +474,25 @@ def lint_new_couple(filepath, html):
                 fails.append(f"FAIL: COUPLE_CONTENT 缺少 {k}")
         if not (0 <= len(C.get("bridges", [])) <= 6):
             fails.append(f"FAIL: bridges 数量 {len(C.get('bridges',[]))} 超出 0–6")
+        if not (0 <= len(C.get("resonance", [])) <= 3):
+            fails.append(f"FAIL: resonance 数量 {len(C.get('resonance',[]))} 超出 0–3")
         cv = C.get("cover", {})
         if not (1 <= len(cv.get("chips", [])) <= 3):
             fails.append("FAIL: 双人封面 chips 应为 1–3 个")
         if not str(cv.get("oneliner", "")).strip():
             fails.append("FAIL: 双人封面缺 oneliner")
         ps = C.get("personas", {})
-        for side in ("a", "b", "A", "B"):
-            if side in ps:
+        if not isinstance(ps, dict):
+            fails.append("FAIL: personas 应为对象 {a:{…},b:{…}}")
+        else:
+            for side, alt in (("a", "A"), ("b", "B")):
+                key = side if side in ps else (alt if alt in ps else None)
+                if key is None:
+                    fails.append(f"FAIL: personas 缺 {side}/{alt} 一侧")
+                    continue
                 for fld in ("defaultReaction", "mostMisread"):
-                    if len(str(ps[side].get(fld, "")).strip()) < 6:
-                        fails.append(f"FAIL: personas.{side}.{fld} 过短")
+                    if len(str(ps[key].get(fld, "")).strip()) < 6:
+                        fails.append(f"FAIL: personas.{key}.{fld} 过短")
         for b in C.get("bridges", []):
             for fld in ("trigger", "aSide", "bSide", "misread", "translate", "pact"):
                 if len(str(b.get(fld, "")).strip()) < 6:
@@ -441,7 +538,7 @@ def lint_new_couple(filepath, html):
                          ("深青实线", "A 图例"), ("赭棕虚线", "B 图例")]:
         if probe not in html:
             fails.append(f"FAIL: 缺少{label}（'{probe}'）")
-    for anchor in ("hero", "ch-guide", "ch-a", "ch-b", "ch-snapshot", "ch-bridges",
+    for anchor in ("hero", "ch-guide", "ch-a", "ch-b", "ch-resonance", "ch-bridges",
                    "ch-conflict", "ch-scenes", "ch-letters", "ch-growth", "ch-appendix"):
         if f'id="{anchor}"' not in html:
             fails.append(f"FAIL: 缺少章节锚点 #{anchor}")
@@ -456,39 +553,6 @@ def lint_new_couple(filepath, html):
 
 
 # ────────────────────────── 旧版（历史双人基线） ──────────────────────────
-
-def lint_old(filepath, html):
-    fails = []
-    old_forbidden = [
-        "情绪温度计", "信任基石", "效率引擎", "稳定性指标", "神经质", "负性情绪",
-        "系统", "架构", "机制", "流程", "输入", "输出", "通道", "带宽", "负载",
-        "算法", "迭代", "反馈", "模块", "组件", "审查", "监控", "容器", "支架",
-        "空转", "宕机", "重启", "调试", "程序", "数据库", "接口", "回路", "闭环",
-        "触发器", "运算", "处理器", "默认设置", "双核", "双引擎",
-        "认知功能", "心理功能", "感觉功能", "判断功能", "功能栈", "功能结构",
-        "意识位置", "在场感", "叙事", "价值标准", "价值判断", "内在安抚",
-        "自洽", "感官体验", "感官投入", "收拢",
-        "获取和消耗能量", "目标导向行为",
-        "咨询师", "会谈", "咨询中",
-    ]
-    for w in old_forbidden:
-        if w in html:
-            fails.append(f"FAIL(旧): forbidden word '{w}'")
-    if "怎么读这份报告" not in html:
-        fails.append("FAIL(旧): 缺少阅读指南")
-    if "不构成临床诊断" not in html:
-        fails.append("FAIL(旧): 缺少局限声明")
-    basename = os.path.basename(filepath)
-    if len(basename.split("_")) > 2:
-        if "p1-tag" not in html or "p2-tag" not in html:
-            fails.append("FAIL(旧): 双人报告须含 .p1-tag 与 .p2-tag")
-        if "这份报告基于双方的人格测评数据分析" not in html:
-            fails.append("FAIL(旧): 双人缺少伦理声明")
-        for cls in ("meters-table", "meter", "scard"):
-            if cls not in html:
-                fails.append(f"FAIL(旧): 双人缺少 .{cls}")
-    return fails
-
 
 def main():
     if len(sys.argv) < 2:
@@ -505,7 +569,8 @@ def main():
     elif "const COUPLE_CONTENT = " in html:
         kind, fails = "新版双人", lint_new_couple(fp, html)
     else:
-        kind, fails = "旧版", lint_old(fp, html)
+        print("FAIL: 不是 v3 报告（缺少 `const REPORT = ` 或 `const COUPLE_CONTENT = ` 标记）；v2 遗留格式已停止支持")
+        sys.exit(1)
     if fails:
         for msg in fails:
             print(msg)

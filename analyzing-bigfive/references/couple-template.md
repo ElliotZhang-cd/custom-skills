@@ -9,7 +9,7 @@
 - **模型只填原始分**（两人 × 5 维 + 15 子维度，写在 `const P = {a,b}`）与文案；
 - **z / 百分位 / 档位 / Δz / 选桥 / 共鸣全部由模板浏览器端计算**（内嵌 `NORM` 表 + `phi()`）；
 - `NORM` 表必须与 `references/bfi2_norms_cn.json` 逐值一致（lint 复算校验，按 `meta.norm` 选套）；第 4 域存**翻转后**的稳定性 M′（= 6 − 负性情绪 M）；焦虑/抑郁/易变子维度存本义 M。
-- 第 4 域方向：输入为交互页导出，`P.a/P.b` 直接填各自 `scores.stability` 分数，`meta.flippedA/flippedB` 保持 false（附录方向说明自动标注）；非导出格式先确认方向（scoring-interpretation §1.2 回退路径）。
+- 第 4 域方向：输入为平台固定输出 JSON（含 `scores.stability`）时，`P.a/P.b` 直接填各自稳定性方向分，`meta.flippedA/flippedB` 保持 false（附录方向说明自动标注）；文本/扁平输入按 scoring-interpretation §1.2 先确认方向再填。
 - **Phase 0 复算回显**：`python scripts/compute_scores.py --couple A.json B.json [--norm cn_college]` → 回显 Δz 全表 + 选桥/共鸣集合（与 HTML 规则同构），再进入填充。
 
 ## 2. 十章结构（固定）
@@ -20,7 +20,7 @@
 | 01 | 使用说明 | 先各自读/再一起读/情绪峰值时不读 + 边界 callout | 模板固定，勿改 |
 | 02 | A 画像 | 五维百分位条（trackHTML 自动）+「关系里的默认反应」+「最容易被误读的点」双卡 | personas.a |
 | 03 | B 画像 | 同上 | personas.b |
-| 04 | 共鸣 | 自动选 |Δz|≤0.35 且同档，按 Δz 升序 ≤3 条；每条：双游标带 + why + 共同盲区 | resonance[] |
+| 04 | 共鸣 | 自动选 |Δz|≤0.35 且同档，按 Δz 升序 ≤3 条（可为 0，无满足项时渲染空态卡）；每条：双游标带 + why + 共同盲区 | resonance[] |
 | 05 | 差异桥 | 自动选 |Δz|≥0.7 按 Δz 降序 ≤6 条（**下限 0，不硬凑**；为空则渲染「同频声明」空态卡）；每桥固定字段：触发场景→A 这边/B 这边→常见误读→翻译成需求→微约定 | bridges[] |
 | 06 | 冲突循环 | 触发→升高→峰值→冷却→恢复 五阶段 + A/B 内心泳道 + 暂停/恢复/复盘三卡 | 模板固定，勿改 |
 | 07 | 场景菜单 | 固定 4 景：周末安排/消息回复/家务分配/压力期陪伴；每景 A倾向/B倾向/误读/翻译/协商选项 | scenes[] |
@@ -41,7 +41,7 @@ const COUPLE_CONTENT = {
     a: { defaultReaction:"≤60字（A 在关系里的默认反应）", mostMisread:"≤45字（A 最容易被误读的一点）" },
     b: { defaultReaction:"…", mostMisread:"…" }          // 键 a/b 或 A/B 均可
   },
-  resonance: [ { name:"焦虑", why:"≤45字（同端=懂）", blind:"≤45字（共同盲区）" } ],   // 名=复算集合，1–3 条
+  resonance: [ { name:"焦虑", why:"≤45字（同端=懂）", blind:"≤45字（共同盲区）" } ],   // 名=复算集合，0–3 条（按 name 匹配渲染，数组顺序不限）
   bridges:   [ { facet:"效率", trigger:"≤35字", aSide:"≤40字", bSide:"≤40字",
                  misread:"≤25字（双方各一句引语）", translate:"≤35字（都指向需求）", pact:"≤40字（可执行微约定）" } ],  // 名=复算集合
   scenes:    [ { key:"周末安排", a:"≤35字", b:"≤35字", misread:"≤25字", translate:"≤35字", options:["≤22字","≤22字","≤22字"] } ],  // 4 key 齐全
@@ -53,6 +53,7 @@ const COUPLE_CONTENT = {
 - 数据块内**禁注释**（lint 按 JSON 解析）；`bridges[].facet` / `resonance[].name` 必须与**选桥/共鸣复算集合一致**（lint 判集合相等，多一名少一名都 FAIL）
 - 每座桥六字段全部非空且 ≥6 字；场景四 key 齐全、options ≥2
 - `letters` 只写"我……"，禁"你应该"句式；署名固定"给 B / 给 A"由模板渲染
+- `meta.date` 由附录「方向与常模说明」渲染（lint 校验格式）；`meta.normLabel` 渲染进附录常模句
 - 模板内置各字段有范文回退，但**交付文件 COUPLE_CONTENT 必须整块填充**（为 null 时 lint FAIL）
 
 ## 4. 选桥/共鸣规则（代码固定，模型不选择）
@@ -71,15 +72,23 @@ const COUPLE_CONTENT = {
 
 ## 6. 生成流程（双人）
 
-1. Phase 0：两份导出/手工表齐全 + 代号 A/B + 常模一致（不一致先问）+ 各方向检测
+1. Phase 0：两份固定格式输入齐全（文本表或 JSON，各自转 JSON 后复用单人解析）+ 代号 A/B + 常模一致（不一致先问）+ 各方向检测（scoring-interpretation §1.2）
 2. `python scripts/compute_scores.py --couple A.json B.json --norm …` → 回显 Δz/桥/共鸣
 3. 复制模板 → 填 `P.a / P.b`（原始分 + 各域关系语境 line）→ 填 `COUPLE_CONTENT` 整块
 4. `python scripts/lint_report.py bfi2_{代号A}_{代号B}.html` → `PASS（新版双人）`
-5. 浏览器检查：叠加雷达两轮廓/顶点、桥带双游标位置与 Δ 目测一致、共鸣≤3、桥 3–6、附录 21 行、dirnote 方向标注正确、打印预览（A 实线 B 虚线在黑白下可辨）
+5. 浏览器检查（**仅必要时做**：模板/脚本/lint 变更后首次、lint 报渲染类 FAIL、或新环境首次交付；日常填充数据跳过）：叠加雷达两轮廓/顶点、桥带双游标位置与 Δ 目测一致、共鸣≤3、桥 ≤6（可为 0，不硬凑）、附录 21 行、dirnote 方向标注正确、打印预览（A 实线 B 虚线在黑白下可辨）
 6. 交付 + 咨询师备注（增项：临界桥——Δz 在 0.6–0.8 或贴 0.7 线的面子，注明"边界判断"）
 
-命名：`bfi2_{代号A}_{代号B}.html`；输出目录同单人。双人模板/基线文件名不参与旧版判定（lint 按 `const COUPLE_CONTENT` 标记分流）。
+命名：`bfi2_{代号A}_{代号B}.html`；输出目录同单人。**代号限 ASCII 字母/数字/连字符**（中文或含空格的代号不被 lint 文件名正则接受）。双人模板/基线文件名不参与旧版判定（lint 按 `const COUPLE_CONTENT` 标记分流）。
 
 ## 7. 与旧版双人（v2）的差异
 
 v2 的 Δ 四档相似表、snap 快照卡、meters-table、verdict 卡、"匹配度/满意度"章全部废止；v3 不再输出任何形式的相似度总分/匹配分。
+
+## 8. 常见陷阱（双人专属）
+
+- 往 `P` 里塞 z/pct（沿用单人习惯）→ lint「禁服务端注入 z/pct」FAIL；双人只填原始分
+- 手填桥/共鸣名单（不跑 `--couple` 回显、或不与模板选桥一致）→ lint 集合相等校验 FAIL
+- 非学生人群换常模时忘同步换模板内 `NORM` 表 → lint 逐值对齐 FAIL
+- 模板自带示例 P 分数与 `COUPLE_CONTENT=null` 范文未整块替换 → 交付前自查 aliasA/aliasB、日期与分数不是模板示例值
+- 一方数据扁平/极端 → 桥与共鸣结论在咨询师备注中降权（临界桥注明"边界判断"）

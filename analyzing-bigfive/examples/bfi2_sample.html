@@ -91,7 +91,6 @@ h1{font-family:'Noto Serif SC','Songti SC','SimSun',serif;
 .pt-z{font-size:11.5px;color:var(--muted);white-space:nowrap}
 .pt-band{position:relative;display:flex;gap:2px;height:16px;border:1px solid var(--seg-border);border-radius:7px;background:var(--seg-bg);padding:2px}
 .pt-seg{border-radius:4px;background:var(--seg)}
-.pt-seg.hot{background:var(--seg)}
 .pt-seg.on{background:color-mix(in srgb,var(--dc) 42%,#FBF8F1);box-shadow:inset 0 0 0 1.6px var(--dc)}
 .pt-marker{position:absolute;top:-6px;bottom:-6px;left:0;width:0;transition:left 1s cubic-bezier(.25,.7,.25,1) .25s}
 .in .pt-marker{left:var(--p)}
@@ -236,11 +235,11 @@ td.ind{color:var(--muted);font-size:12.5px}
   <p class="lead">你完成的是 BFI-2 量表：60 道题，测 5 个大维度、15 个子维度，每题 1–5 分。单看 1–5 分没有意义，这份报告里每个分数都会换算成你在人群中的位置。</p>
   <div class="pct-track reveal" style="--dc:#8A8378;margin:18px 0 10px">
     <div class="pt-head"><span class="pt-cap">示例：某项特质高于约 <b id="demo-pct"></b>% 的人</span><span class="pt-z">示意</span></div>
-    <div class="pt-band">
-      <div class="pt-seg" style="flex:10"></div><div class="pt-seg" style="flex:25"></div><div class="pt-seg" style="flex:30"></div><div class="pt-seg on" style="flex:25"></div><div class="pt-seg" style="flex:10"></div>
-      <div class="pt-marker" id="demo-marker" style="--p:68%"></div>
+    <div class="pt-band" id="demo-band">
+      <div class="pt-seg" style="flex:10"></div><div class="pt-seg" style="flex:25"></div><div class="pt-seg" style="flex:30"></div><div class="pt-seg" style="flex:25"></div><div class="pt-seg" style="flex:10"></div>
+      <div class="pt-marker" id="demo-marker"></div>
     </div>
-    <div class="pt-labels"><span style="flex:10">远低</span><span style="flex:25">偏低</span><span style="flex:30">中间</span><span style="flex:25">偏高</span><span style="flex:10">远高</span></div>
+    <div class="pt-labels" id="demo-labels"><span style="flex:10">远低</span><span style="flex:25">偏低</span><span style="flex:30">中间</span><span style="flex:25">偏高</span><span style="flex:10">远高</span></div>
     <p class="radar-note" style="text-align:left">把 100 个人按这项特质从低到高排队，游标就是你的位置；中间一格，装着大多数普通人。</p>
   </div>
   <ul class="cards">
@@ -249,6 +248,7 @@ td.ind{color:var(--muted);font-size:12.5px}
     <li class="card"><b>一次测试有误差。</b>心情和睡眠都会影响答案。把它当作一张清晰的快照，而不是终身标签。</li>
   </ul>
   <p class="small-print" id="norm-foot"></p>
+  <p class="small-print" id="quality-note" style="display:none"></p>
 </section>
 
 <!-- ═══════════ 02 五个维度 ═══════════ -->
@@ -319,109 +319,112 @@ td.ind{color:var(--muted);font-size:12.5px}
    模板不再计算——改任何数字都要同步跑 lint。
    固定字段（不可改）：domains[].key / name / color / 域顺序 / facets 名与分数。
    注意：本对象内不得写注释（lint 按 JSON 解析校验数值）。
+   ⚠ 本文件是 examples/bfi2_sample.html 基线样例（合成画像 hx，非模板原文）；
+     模板 templates/report-template.html 内置的是另一套示例数据（alias=zyh），勿混用。
    ════════════════════════════════════════════════════════════ */
 const REPORT = {
   meta: {
-    alias: "zyh",
-    date: "2026-09-05",
+    alias: "hx",
+    date: "2026-09-09",
     normId: "cn_college",
     normLabel: "中国大学生样本（N=1194，17–28 岁，Zhang et al. 2022）",
     normDetail: "中国大学生样本 CN-College（N=1194，17–28 岁，470 男 / 724 女；Zhang et al., 2022, Table 1）",
-    domain4Note: "第四域按「情绪稳定性」方向呈现（分数越高越平稳），其子维度保持「敏感性」本义方向。"
+    domain4Note: "第四域按「情绪稳定性」方向呈现（分数越高越平稳），其子维度保持「敏感性」本义方向。",
+    qualityNote: ""
   },
   cover: {
-    chips: ["安静的观察者", "心软的共情者", "绷着一根弦的梦想家"],
-    oneliner: ["你把世界感受得很深，把别人放得很重。", "你的温柔和你的紧张，常常来自同一份敏感。"]
+    chips: ["把事办成的行动派", "有话直说的实干者", "自己扛的敏感者"],
+    oneliner: ["你习惯先把事情推起来，再回头照顾自己的情绪。", "你的靠谱和你的紧绷，常常来自同一份不肯将就。"]
   },
-  demoPct: 68,
+  demoPct: 21,
   domains: [
     {key:"es", name:"情绪稳定性", color:"#9A7FB8",
-     score:2.75, z:-0.43, pct:33,
-     line:"这个分数换个方向读更准确：你的情绪敏感性偏高（高于约 67% 的人）——你对压力和别人的评价，天生接收得更清楚。",
+     score:2.50, z:-0.81, pct:21,
+     line:"这个分数换个方向读更准确：你的情绪敏感性偏高（高于约 79% 的人）——事情还没落地，你的感受先到位了。",
      note:"小注：情绪稳定性分数越高代表越平稳；下面三个子维度按「敏感性」方向呈现，分数越高越敏感。",
      facets:[
-       {name:"焦虑", score:4.00, z:0.92, pct:82, tick:66.2, line:"不确定的事会在你脑子里排队上演，哪怕是小事。"},
-       {name:"抑郁", score:3.50, z:0.83, pct:80, tick:57.2, line:"你容易陷进低落和自我怀疑，而且待得比别人久一点。"},
-       {name:"易变", score:2.25, z:-0.52, pct:30, tick:54.0, line:"你很少当场爆炸——你的情绪问题从来不是脾气，是内耗。"}],
-     behaviors:["发出去的消息没被回，你能想出八种最坏的可能。","白天看起来没事，躺下之后开始复盘白天说过的每句话。","你很少对别人发火，火都烧在自己身上。"]},
+       {name:"焦虑", score:3.60, z:0.39, pct:65, tick:66.2, line:"你会提前替还没发生的事操心，而且常常操得挺具体。"},
+       {name:"抑郁", score:3.20, z:0.44, pct:67, tick:57.2, line:"事情没做好时，你比谁都先复盘自己，低落会多待一会儿。"},
+       {name:"易变", score:2.00, z:-0.80, pct:21, tick:54.0, line:"你很少当场翻脸，情绪来得慢、走得也慢，更多是自己消化。"}],
+     behaviors:["一件重要的事没定下来，你会在心里把它过很多遍。","别人一句随口的评价，你能记到晚上还在想。","你很少发脾气，但会突然不想说话——那是电量见底了。"]},
     {key:"ex", name:"外向性", color:"#E07A4F",
-     score:2.42, z:-1.17, pct:12,
-     line:"独处是你的充电方式，社交是耗电的——这不是缺陷，只是能量来源不同。",
+     score:3.90, z:1.08, pct:86,
+     line:"你从人群和行动里充电：有人可聊、有事可做的时候，你明显更来劲。",
      facets:[
-       {name:"社交", score:2.25, z:-1.00, pct:16, tick:62.8, line:"你不主动找人，也不太享受热闹场合；不是不会社交，是性价比不高。"},
-       {name:"果断", score:2.50, z:-0.75, pct:23, tick:61.0, line:"讨论里你很少抢话，倾向先听再说；等你想好时，话题常常已经过去了。"},
-       {name:"活力", score:2.50, z:-1.19, pct:12, tick:67.8, line:"忙完一天，你需要的是安静回血，而不是靠聚会解乏。"}],
-     behaviors:["群聊里你多数时候在潜水，偶尔冒泡，说的却常在点子上。","比起认识新朋友，你更愿意和少数熟人在安静的地方待着。","连续几天有社交安排，你会明显被掏空，需要独处一晚才能缓过来。"]},
+       {name:"社交", score:4.10, z:1.08, pct:86, tick:62.8, line:"你主动张罗、不怕开场，人多的场合反而让你兴奋。"},
+       {name:"果断", score:3.75, z:0.96, pct:83, tick:61.0, line:"讨论里你愿意先开口，也敢拍板——拖着不定最让你难受。"},
+       {name:"活力", score:3.50, z:0.15, pct:56, tick:67.8, line:"你能连轴转一阵子，但忙完也需要一场好觉回血。"}],
+     behaviors:["聚会里你常常是那个提议「接下来去哪」的人。","事情卡住时，你会主动找人把话摊开说。","闲下来太久你会发慌，总想找点事填上。"]},
     {key:"ag", name:"宜人性", color:"#7C9B6D",
-     score:4.00, z:0.66, pct:75,
-     line:"你默认对世界善意：先考虑别人的感受，再考虑自己的。",
+     score:3.55, z:-0.30, pct:38,
+     line:"你愿意配合，但不会为了和气把自己搭进去——你的善意是有边界的。",
      facets:[
-       {name:"同情", score:4.00, z:0.41, pct:66, tick:75.0, line:"别人难受，你会真的跟着难受。"},
-       {name:"谦恭", score:4.00, z:0.37, pct:64, tick:76.0, line:"你习惯把「都行、听你的」挂在嘴边，不太坚持自己那套。"},
-       {name:"信任", score:4.00, z:0.79, pct:79, tick:70.2, line:"你倾向于先相信一个人，而不是先设防。"}],
-     behaviors:["拒绝对你来说是难事，答应下来之后又常常后悔。","朋友的事，你会当成自己的事上心。","闹矛盾时你往往先低头，哪怕并不确定自己错在哪。"]},
+       {name:"同情", score:3.75, z:0.00, pct:50, tick:75.0, line:"别人难受你能看见，也会搭把手，但不至于跟着陷进去。"},
+       {name:"谦恭", score:3.00, z:-1.48, pct:7, tick:76.0, line:"有话你习惯直说，绕弯子反而让你不自在。"},
+       {name:"信任", score:3.90, z:0.63, pct:74, tick:70.2, line:"你默认先信一个人，直到对方给出反例。"}],
+     behaviors:["别人绕圈子你会直接问：「所以你到底想怎么办？」","朋友开口求助，你通常先答应，再想怎么做到。","你觉得把话说明白，比让所有人舒服更重要。"]},
     {key:"co", name:"尽责性", color:"#5A7CA6",
-     score:3.00, z:-0.49, pct:31,
-     line:"你不是不靠谱，而是「想得清楚、动得偏慢」——你的自律是选择性的。",
+     score:4.40, z:1.88, pct:97,
+     line:"你是我见过的那种「说做就做、做完还检查」的人——对自己下手尤其狠。",
      facets:[
-       {name:"条理", score:3.75, z:0.64, pct:74, tick:65.2, line:"你的文件、收藏夹和计划表，通常比大多数人的整齐。"},
-       {name:"效率", score:2.00, z:-1.40, pct:8, tick:60.4, line:"没有明确截止时间的事，能在你的清单里无限期躺着。"},
-       {name:"负责", score:3.25, z:-0.52, pct:30, tick:71.8, line:"答应的事你记在心里、会兑现，只是常常拖到截止日期附近。"}],
-     behaviors:["列计划让你快乐，执行计划让你痛苦。","收拾整理你其实在行；最难的从来是启动一件大事。","你交出去的东西质量稳定，交付时间是个谜。"]},
+       {name:"条理", score:4.50, z:1.61, pct:95, tick:65.2, line:"你的文件和计划表整齐到别人会来问你借模板。"},
+       {name:"效率", score:4.00, z:1.34, pct:91, tick:60.4, line:"你受不了事情停在原地，能今天做完的绝不拖到明天。"},
+       {name:"负责", score:4.25, z:1.00, pct:84, tick:71.8, line:"答应的事你会记在心里，没兑现你会一直惦记。"}],
+     behaviors:["交给你的活不用催，你甚至会提前交。","看到别人拖延，你会忍不住想替他动手。","事情没做到你的标准，你会重来一遍而不是凑合。"]},
     {key:"op", name:"开放性", color:"#D9A441",
-     score:4.00, z:0.73, pct:77,
-     line:"你对世界保持好奇，愿意接受新想法，内心戏比外表热闹。",
+     score:3.50, z:-0.12, pct:45,
+     line:"你对新东西有兴趣，但更愿意在熟悉的领域里往深里走，而不是到处尝鲜。",
      facets:[
-       {name:"好奇", score:4.00, z:0.69, pct:75, tick:70.6, line:"你会因为一个奇怪的问题查资料查到半夜。"},
-       {name:"审美", score:4.25, z:0.68, pct:75, tick:73.4, line:"对文字、画面和声音的细微差别，你的感受比大多数人敏锐。"},
-       {name:"想象", score:3.75, z:0.34, pct:63, tick:70.0, line:"你常走神，脑子里的平行世界比现实热闹。"}],
-     behaviors:["收藏夹里全是「以后看」，而且你真的会看。","对「这有什么用」，你的第一反应是「有意思比有用重要」。","你能一眼挑出配乐的毛病，也会被一句话戳中很久。"]}
+       {name:"好奇", score:3.60, z:0.10, pct:54, tick:70.6, line:"遇到感兴趣的题目你会查下去，但不会漫无边际地发散。"},
+       {name:"审美", score:3.90, z:0.27, pct:61, tick:73.4, line:"你对画面和细节有感觉，布置桌面、挑封面都会认真。"},
+       {name:"想象", score:3.20, z:-0.41, pct:34, tick:70.0, line:"你更愿意想「怎么落地」，而不是「如果……会怎样」。"}],
+     behaviors:["你会为一个具体问题查资料到半夜，但不太做天马行空的联想。","买东西时你会比参数，也挑样子。","别人聊抽象概念时，你常问一句：「所以具体怎么做？」"]}
   ],
   strengths: [
-    {color:"o", title:"创意共情型选手",
-     body:"审美 4.25 让你对细节敏感，同情 4.00 让你在乎别人的感受。这种组合天然适合内容、设计、教育、用户研究这类「先理解人、再表达」的事。",
-     tags:["开放性 · 偏高","宜人性 · 偏高"]},
-    {color:"a", title:"天生的倾听者",
-     body:"你不抢话，也不急着评判，朋友愿意把心事放在你这里。安静的人常常是最好的树洞。",
-     tags:["外向性 · 偏低","信任 · 偏高","同情 · 偏高"]},
-    {color:"c", title:"有条理的审美",
-     body:"你不光有想法，还摆得整整齐齐。想法会散，习惯不会——这是你最接近「天赋」的日常。",
-     tags:["条理 · 偏高","审美 · 偏高"]},
-    {color:"es", title:"情绪不外泄",
-     body:"再难受，你也很少迁怒别人。这让跟你相处的人觉得安全、稳。",
-     tags:["易变 · 偏低"]}
+    {color:"e", title:"自带发动机的推动者",
+     body:"外向性 3.90、果断 3.75 让你在需要有人先站出来的时候，通常是那个开口的人。你不怕把话挑明，也愿意为结果负责——一群人卡住时，最缺的常常就是这一下。",
+     tags:["外向性 · 偏高","果断 · 偏高"]},
+    {color:"c", title:"把事办成的靠谱",
+     body:"条理 4.50、效率 4.00、负责 4.25 三项同时靠前：你不仅列得清楚，还真的会动手，交出去的东西稳定。适合需要长线交付、细节不能出错的事。",
+     tags:["尽责性 · 远高","效率 · 远高","条理 · 远高"]},
+    {color:"a", title:"先信任，再共事",
+     body:"信任 3.90 让你默认把人往好处想，合作时省掉很多互相试探的成本。你不讨好谁，但一旦认可，会真心替对方着想。",
+     tags:["信任 · 偏高"]},
+    {color:"es", title:"不轻易翻篇，也不当场爆发",
+     body:"易变 2.00 说明你很少当场翻脸，火都自己消化；焦虑 3.60、抑郁 3.20 则说明你会认真对待每件事——这不是脆弱，是你在乎。",
+     tags:["易变 · 偏低","焦虑 · 偏高"]}
   ],
   flaws: [
-    {title:"心软，且不敢说不",
-     body:"你容易接下不该接的活、维持不该维持的关系。「都行」说得多了，别人就真的以为你都行。",
-     tags:["宜人性 · 偏高","果断 · 偏低"]},
-    {title:"压力没有出口",
-     body:"你的压力既不爱往外倒，也不在热闹里释放，于是在身体里反复回放——通常表现为失眠和拖延。",
-     tags:["焦虑 · 偏高","外向性 · 偏低"]},
-    {title:"完美启动失败",
-     body:"你会花八成力气做计划和准备，剩两成用来说服自己开始。计划越漂亮，启动越难。",
-     tags:["条理 · 偏高","效率 · 远低"]},
-    {title:"想象力给焦虑供弹药",
-     body:"你能想到的最坏情况比别人多。想象力是好东西，但它不该只替焦虑打工。",
-     tags:["想象 · 中间","焦虑 · 偏高"]}
+    {title:"直来直去，容易顶到人",
+     body:"谦恭 3.00（远低）配上果断 3.75（偏高），你有话直说、不太绕弯。你觉得是就事论事，对方可能感到被否定。",
+     tags:["谦恭 · 远低","果断 · 偏高"]},
+    {title:"高标准先压到自己身上",
+     body:"尽责性 4.40（远高）加焦虑 3.60（偏高），事情没做到位时你比谁都先自责。别人看到的是靠谱，你感受到的是不能出错。",
+     tags:["尽责性 · 远高","焦虑 · 偏高"]},
+    {title:"情绪来得慢，去得也慢",
+     body:"抑郁 3.20（偏高）配易变 2.00（偏低），你不会当场翻脸，但低落会待得久一点。看起来没事，其实还在心里过。",
+     tags:["抑郁 · 偏高","易变 · 偏低"]},
+    {title:"推进太快，别人跟不上",
+     body:"效率 4.00（远高）让你看不惯事情停在原地。可对节奏慢一点的人来说，你的「赶紧」会被听成「催」。",
+     tags:["效率 · 远高","谦恭 · 远低"]}
   ],
   love: {
     h2:"在亲密关系里，你是怎样的",
     lead:"同样的性格放进亲密关系里，会长出完全不同的样子。这一章全部基于你的分数推演——如果某条不像你，以你的真实感受为准。",
     patterns:[
-      {b:"你的爱是做事，不是说甜话。", t:"你记得对方爱吃什么、随口提过想要什么，却很少说「我想要什么」。高同情配上低果断，你常常是付出更多的那一方。"},
-      {b:"你需要确认，但要得含蓄。", t:"对方回消息慢了你会不安，可你的表达方式是「没事，我也在忙」。焦虑 4.00 的需求是真的，只是被包装成了不在乎。"},
-      {b:"你累的时候要独处，对方可能读成冷淡。", t:"外向性 2.42 的你靠独处回血。充电方式不同，是相处中最容易产生误会的地方。"}],
+      {b:"你的爱是先把事安排好。", t:"你习惯主动张罗、把两个人的日子排得妥帖，却很少停下来问自己需要什么。高尽责配低谦恭，你的在乎常以「安排」的形式出现。"},
+      {b:"嘴硬，但记性好。", t:"对方随口提过的事你会记住并做到，起争执时却容易一句话把人顶回去。谦恭 3.00 让你不擅长服软，负责 4.25 又让你事后一直惦记。"},
+      {b:"不舒服先自己扛。", t:"焦虑 3.60、易变 2.00 的组合是：情绪起得快、翻篇慢，但表面看不出。你更可能说「没事」，然后一个人消化到深夜。"}],
     pitfalls:[
-      {b:"迁就到失联。", t:"你太容易改自己的日程和喜好去配合对方。久了对方以为你没有需求，直到你攒够了失望，突然抽离。"},
-      {b:"用胡思乱想代替直接问。", t:"「TA 是不是烦我了」能在你脑子里演成连续剧。而解药往往只是一句：「你今天是不是不太开心？」"},
-      {b:"把独处说成「没事」。", t:"你需要空间是真的，但不解释的沉默，对一个需要联结的伴侣来说像惩罚。离开前说一句，效果完全不同。"}],
+      {b:"用讲道理代替讲感受。", t:"你想把问题解决掉，于是先分析对错。对方要的可能只是一句「我懂你不舒服」，而不是一份方案。"},
+      {b:"标准定太高，关系也考核。", t:"尽责性 4.40 让你对「做好」有明确想象。当对方没达到，你的失望会写在脸上，对方却只感到被挑剔。"},
+      {b:"硬撑到突然断电。", t:"你习惯扛着不说，直到某天一件小事让你彻底不想讲话。别人看到的是突然，你经历的是累积。"}],
     phrases:[
-      {scene:"想说自己的偏好时", bad:"「随便，都行，听你的。」", badHint:"（真实偏好被咽了回去）", good:"「我更想吃 A，不过 B 我也可以，你定。」", goodHint:"（说一半也好过不说）"},
-      {scene:"明明很在意时", bad:"「没事，你忙吧。」", badHint:"（然后开始内心连续剧）", good:"「你刚才没回消息，我有点在意，是在忙吗？」", goodHint:"（一句话终结八百种猜想）"},
-      {scene:"需要独处回血时", bad:"独自消失式冷静", badHint:"（对方只看到冷）", good:"「我需要自己待 20 分钟，不是生气，一会儿来找你。」", goodHint:""}],
+      {scene:"想说自己的偏好时", bad:"「都行，你定。」", badHint:"（其实是懒得争）", good:"「我更想在家吃，不过你想出去我也行。」", goodHint:"（说一半也好过不说）"},
+      {scene:"对方做得不合你意时", bad:"「早说了该这样。」", badHint:"（赢了道理，输了气氛）", good:"「我有点着急，因为我怕来不及；我们换个顺序试试？」", goodHint:"（把要求说成需要）"},
+      {scene:"自己情绪上来时", bad:"「我没事。」", badHint:"（然后沉默一整晚）", good:"「我现在有点烦，不是你的问题，给我半小时缓缓。」", goodHint:"（把门留一条缝）"}],
     partnerTitle:"给伴侣的一小段话",
-    partner:"”和你在一起时，我大多数时候温和好说话，但那不等于我没有想法——多问一句，我会很感激。我偶尔需要一个人待着，那不是疏远你，是我在回血。我容易想多，你随口的一句话我可能会琢磨很久。所以：有事直说，我也会同样待你。”",
+    partner:"”我这个人，遇事习惯先动手，也习惯把话直说，有时候听起来像在挑你的毛病——那不是我的本意。我对事情要求高，对自己更狠，所以偶尔会显得紧绷。你不用劝我放松，只要在我沉默的时候别急着走开，问我一句「你现在是想说说，还是想先静一静」，就够了。我也会学着把「我需要什么」说出来。有事直说，我也会同样待你。”",
     partnerCap:"— 截图或长按，转发给 TA —"
   },
   growth: {
@@ -429,26 +432,26 @@ const REPORT = {
     lead:"性格几乎不会整体改变，也不需要。能改的是具体行为，而对你来说，下面几个小动作就够用了。每条都标注了对应的分数来源——它们是为你定制的，不是通用鸡汤。",
     cards:[
       {title:"1 · 给焦虑设「办公时间」",
-       body:"每天固定 15 分钟，专门处理担忧：把烦心事写下来，只在这段时间里想。其他时间冒出来的担忧，记一句「到点再想」。",
-       tags:["对应：焦虑 4.00","原理：对高敏感的人，「压抑不想」总会失败，「预约着想」反而有效"]},
-      {title:"2 · 用「五分钟启动法」对付启动困难",
-       body:"不要求自己做完，只要求开始做五分钟。你的条理感（3.75）会接手后续——你缺的从来不是计划，是第一脚油门。",
-       tags:["对应：效率 2.00"]},
-      {title:"3 · 维护三段深关系，而不是拓展人脉",
-       body:"内向者的社交最优解不是变外向，是把有限的电量花在最值得的人身上。每月主动约一次那两三个人，就够了。",
-       tags:["对应：社交 2.25"]},
-      {title:"4 · 练习说「半个需求」",
-       body:"不用一步到位变成强硬的人。先从小事开始说「我更想……」——说半个需求，好过让对方猜。",
-       tags:["对应：谦恭 4.00 × 果断 2.50"]}
+       body:"每天固定 15 分钟，专门处理担心的事：写下来，只在这段时间里想。其他时候冒出来的念头，记一句「到点再想」。",
+       tags:["对应：焦虑 · 偏高","原理：对容易提前操心的人，「预约着想」比硬压有效"]},
+      {title:"2 · 开口前加半句缓冲",
+       body:"把「你得先……」换成「我有点着急，因为……」。同样的要求，对方听到的是需要，而不是指责。",
+       tags:["对应：谦恭 · 远低 × 果断 · 偏高"]},
+      {title:"3 · 给低落设一个「到期时间」",
+       body:"允许自己难受，但提前定好：到明天早上就出门走走。情绪可以待一会儿，不必住下来。",
+       tags:["对应：抑郁 · 偏高 × 易变 · 偏低"]},
+      {title:"4 · 把「完成」的标准降一档",
+       body:"选一件小事，故意做到 80 分就交出去。你会发现，世界没有因此塌掉，而你省下了一整晚。",
+       tags:["对应：负责 · 偏高"]}
     ]
   },
   faq:[
     {q:"过段时间再测，分数会一样吗？",
      a:"五个大维度会相当接近（大五的复测稳定性很高），子维度可能有些波动。分数是「此刻的你」的快照，不是判决。"},
-    {q:"性格会变吗？",
-     a:"大方向稳定，但会缓慢变化——研究显示多数人的情绪稳定性和宜人性会随年龄增长。分数低不是终身刑期。"},
-    {q:"分数「低」是不是不好？",
-     a:"每个特质都是权衡。你的外向性低，同时意味着耗电少、听得进、想得深。一个特质好不好，只取决于你正面对什么处境。"}
+    {q:"我这么较真，是不是不好相处？",
+     a:"较真和靠谱是同一件事的两面。你需要的不是改掉它，而是给别人一点缓冲，也给自己一点余地。"},
+    {q:"情绪敏感是不是缺点？",
+     a:"敏感让你更早察觉问题，也更容易被消耗。它像一把双刃刀，关键在你会不会给它安排休息。"}
   ]
 };
 
@@ -460,8 +463,13 @@ document.getElementById('ndate').textContent = REPORT.meta.date;
 document.getElementById('ndate2').textContent = REPORT.meta.date;
 document.getElementById('norm-foot').textContent =
   `注：百分位按${REPORT.meta.normLabel}精确计算；如属于在职成人或青少年群体，可切换对应常模重算。`;
+if(REPORT.meta.qualityNote){const qn=document.getElementById('quality-note');qn.textContent=REPORT.meta.qualityNote;qn.style.display='';}
 document.getElementById('demo-pct').textContent = REPORT.demoPct;
 document.getElementById('demo-marker').style.setProperty('--p', REPORT.demoPct+'%');
+/* 01 章示例游标：高亮段与档名随 demoPct 切换（不再写死偏高） */
+const demoIdx = REPORT.demoPct<10?0:REPORT.demoPct<35?1:REPORT.demoPct<65?2:REPORT.demoPct<90?3:4;
+document.querySelectorAll('#demo-band .pt-seg').forEach((el,i)=>el.classList.toggle('on',i===demoIdx));
+document.querySelectorAll('#demo-labels span').forEach((el,i)=>{if(i===demoIdx){el.style.color='var(--dc)';el.style.fontWeight='700';}});
 
 /* 封面 */
 document.getElementById('chips').innerHTML = REPORT.cover.chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('');
@@ -471,7 +479,7 @@ document.getElementById('oneliner').innerHTML = REPORT.cover.oneliner.join('<br>
 const PCT_BANDS=[[10,'远低'],[25,'偏低'],[30,'中间'],[25,'偏高'],[10,'远高']];
 function trackHTML(d){
   const idx=d.pct<10?0:d.pct<35?1:d.pct<65?2:d.pct<90?3:4;
-  const segs=PCT_BANDS.map(([w,l],i)=>`<div class="pt-seg${i===2?' hot':''}${i===idx?' on':''}" style="flex:${w}"></div>`).join('');
+  const segs=PCT_BANDS.map(([w,l],i)=>`<div class="pt-seg${i===idx?' on':''}" style="flex:${w}"></div>`).join('');
   const labs=PCT_BANDS.map(([w,l],i)=>`<span style="flex:${w}${i===idx?';color:var(--dc);font-weight:700':''}">${l}</span>`).join('');
   return `<div class="pct-track reveal" style="--dc:${d.color}">
     <div class="pt-head"><span class="pt-cap">${d.name}高于约 <b>${d.pct}%</b> 的人</span><span class="pt-z">z ${fmtZ(d.z)}</span></div>

@@ -1,6 +1,6 @@
 # HTML 输出模板（v3 · 数据驱动）
 
-所有报告 = 来访者直接阅读的终端产品，默认保存到 **`C:/Users/elliot/Desktop/relations/BFI2/`**。语言规范见 writing-style.md。
+所有报告 = 来访者直接阅读的终端产品，默认保存到 **`~/Desktop`**（本机实际路径见 README「本机专属配置」）。语言规范见 writing-style.md。
 
 > **本版为 2026-09-07 重构后的模板，唯一视觉与结构事实源 = `templates/report-template.html`。**
 > 报告不再手写 HTML：复制模板 → 整块替换 `const REPORT = {...}` 数据块 → 跑 lint → 浏览器检查。
@@ -19,12 +19,12 @@
 ## 1. 生成流程
 
 ```
-1. 收集原始分（5 维度 + 15 子维度，来自交互页导出或手工表）
+1. 收集原始分（5 维度 + 15 子维度，来自平台固定输出：文本表或 JSON）
 2. python scripts/compute_scores.py --export <导出.json> --norm cn_college
    → 得到每个条目的 score / z / pct（+ tick）
 3. 复制 templates/report-template.html → 目标文件名
 4. 整块替换 const REPORT = {...}：
-   - meta：date / normId / normLabel / normDetail / domain4Note
+   - meta：alias / date / normId / normLabel / normDetail / domain4Note（+ 扁平剖面时必填 qualityNote）
    - cover：chips×3 + oneliner（1–2 行）
    - domains[5]：数值（来自 step 2）+ line / note(es 域) / facets[].line / behaviors×3
    - strengths / flaws：标题 + 正文 + tags
@@ -32,7 +32,7 @@
    - growth：h2 / lead / cards×3–5
    - faq：×3–5 问
 5. python scripts/lint_report.py <目标文件> → 必须 PASS
-6. 浏览器检查（§6.3）→ 交付
+6. （必要时）浏览器检查（§6.3）→ 交付
 ```
 
 **禁止**：改 `<style>` 块、改渲染 JS、改章节 id / 锚点 / 固定文案、在 REPORT 里写注释（lint 按 JSON 解析数据块，注释会导致解析失败）。
@@ -47,7 +47,8 @@ const REPORT = {
     normId: "cn_college",               // cn_college | cn_employee | cn_adolescent
     normLabel: "中国大学生样本（N=1194，17–28 岁，Zhang et al. 2022）",
     normDetail: "中国大学生样本 CN-College（N=1194，17–28 岁，470 男 / 724 女；Zhang et al., 2022, Table 1）",
-    domain4Note: "第四域按「情绪稳定性」方向呈现（分数越高越平稳），其子维度保持「敏感性」本义方向。"
+    domain4Note: "第四域按「情绪稳定性」方向呈现（分数越高越平稳），其子维度保持「敏感性」本义方向。",
+    qualityNote: ""                     // 仅扁平剖面（全维度 |z|≤0.3）时必填：降权提示，01 章渲染
   },
   cover: {
     chips: ["安静的观察者", "心软的共情者", "绷着一根弦的梦想家"],   // 恰好 3 个白描标签
@@ -73,7 +74,7 @@ const REPORT = {
   strengths: [                          // 超能力卡 3–5 张
     { color: "o",                       // 左边线色：e|a|c|es|o（按主题挑相关维度）
       title: "创意共情型选手",           // ≤10 字白描标题
-      body: "正文 60–110 字：点出具体子维度分数 + 组合含义 + 一个落点（适合做什么/像什么场景）",
+      body: "正文 60–110 字：点出具体子维度与档位 + 组合含义 + 一个落点（适合做什么/像什么场景）",
       tags: ["开放性 · 偏高", "宜人性 · 偏高"] }   // 「名称 · 档位」，档位必须与该条目实际 pct 一致
   ],
   flaws: [                              // 隐形代价卡 3–5 张（无 color 字段）
@@ -100,7 +101,7 @@ const REPORT = {
     cards: [                            // 成长卡 3–5 条
       { title: "1 · 给焦虑设「办公时间」",  // 编号「N · 」开头
         body: "做法（≤90 字，具体到频次/时长/场景）",
-        tags: ["对应：焦虑 4.00", "原理：…（可选）"] }   // 至少一个「对应：<子维度名> <分数>」
+        tags: ["对应：焦虑 · 偏高", "原理：…（可选，仅库内原理句）"] }   // 至少一个「对应：<子维度名> · <档位>」
     ]
   },
   faq: [                                // 自定义 FAQ 3–5 问（分数表/数据说明两项由模板固定提供）
@@ -109,7 +110,7 @@ const REPORT = {
 };
 ```
 
-字段命名、域 key/名称/颜色、子维度名与顺序、各列表的固定数量（3 chips / 3 behaviors / 3+3+3 love / ≥3 growth / ≥3 faq）由 lint 强制，不得增删改。
+字段命名、域 key/名称/颜色、子维度名与顺序、各列表的固定数量（3 chips / 3 behaviors / 3+3+3 love / strengths·flaws·growth·faq 各 3–5）由 lint 强制，不得增删改。唯一放宽：**扁平剖面**（全维度 |z|≤0.3 且 `meta.qualityNote` 已填）时 strengths / flaws / growth 降为 2–5，其余不放宽。
 
 ## 3. 七章结构与文案要求
 
@@ -118,9 +119,9 @@ const REPORT = {
 | # | 章节 | 数据字段 | 写作职责 |
 |---|------|---------|---------|
 | 封面 | hero：3 标签 + 一句话 + 雷达 | `cover` | 全报告的"一眼是你"：标签取自最突出/最矛盾的维度组合；一句话把最大的张力说透 |
-| 01 | 读法（三十秒读懂分数） | `demoPct` + 模板固定文 | 不写人，只教读图：游标条 + 三条原则卡（模板固定） |
+| 01 | 读法（三十秒读懂分数） | `demoPct` + `meta.qualityNote`（扁平剖面时）+ 模板固定文 | 不写人，只教读图：游标条（高亮段随 demoPct 切换）+ 三条原则卡（模板固定） |
 | 02 | 五维逐个说人话 | `domains` | 每域：line 定调（不重复分数）→ 3 facets 各一句白描 → 3 behaviors 日常画面 |
-| 03 | 优势与盲区 | `strengths`/`flaws` | 每条 = 跨维度/跨子维度组合；正文必须点到具体分数；tags 挂「名称 · 档位」 |
+| 03 | 优势与盲区 | `strengths`/`flaws` | 每条 = 跨维度/跨子维度组合；正文必须点到具体子维度与档位；tags 挂「名称 · 档位」 |
 | 04 | 亲密 | `love` | 泛化句式（不预设恋爱状态，"和在意的人/TA"可用）；patterns/pitfalls 每条以判断句 b 开头；phrases 三场景各 ✗→✓ 一对 |
 | 05 | 成长 | `growth` | 每条挂"对应：X 分数"；动作具体到频次 |
 | 06 | 答疑与数据 | `faq` + 模板固定 | 常见疑问；分数表与数据说明由模板自动生成 |
@@ -132,7 +133,7 @@ const REPORT = {
 
 ## 4. 渲染层机制速览（只读）
 
-- **雷达图**：z 分制，每环 = 1 SD，z=0 虚线五边形 = 人群平均；z 映射半径 `r=(clamp(z,-2,2)+2)/4×R`；轴序固定 开→外→宜→情稳→尽（高低交错）；顶点色 = 维度色
+- **雷达图**：z 分制，每环 = 1 SD，z=0 虚线五边形 = 人群平均；z 映射半径 `r=R×(0.12+0.88×(clamp(z,−2,2)+2)/4)`（最内环留 0.12R 最小半径，z ≤ −2 的极端值不落圆心，避免多顶点重叠与轮廓自交）；轴序固定 开→外→宜→情稳→尽（高低交错）；顶点色 = 维度色
 - **百分位游标条**：五段宽 = 10/25/30/25/10（远低/偏低/中间/偏高/远高真实占比）；游标位置 = pct；当前档浅染维度色
 - **子维度条**：填充 = score/5；轨道小刻度 `tick` = 常模均值位置（由 compute 脚本给出，勿手改）；右侧 pct 为人群百分位
 - **分数表**：从 domains 自动生成 20 行（5 维 + 15 子维度），无需维护
@@ -147,9 +148,9 @@ const REPORT = {
 
 ### 6.1 文件命名与保存
 - 单人（新版）：`bfi2_{代号}.html`；双人：`bfi2_{代号A}_{代号B}.html`（规范见 couple-template.md）
-- 代号用用户给的写法（zyh、A001，可带 `-`，不用空格和 `_`）；文件名不带日期
+- 代号用用户给的写法（zyh、A001，可带 `-`，不用空格和 `_`）；**限 ASCII 字母/数字/连字符**（中文或含空格的代号不被 lint 文件名正则接受，遇到先让用户换一个）；文件名不带日期
 - 目标文件已存在 → 停下来问：加 `-v2` 还是覆盖
-- 默认保存 `C:/Users/elliot/Desktop/relations/BFI2/`
+- 默认保存 `~/Desktop`（本机实际路径见 README「本机专属配置」）
 
 ### 6.2 声明（全部由模板固定提供，不手写给）
 - 01 章三原则卡 + 常模小注（`normLabel`）
@@ -159,6 +160,6 @@ const REPORT = {
 
 ### 6.3 交付前验证（强制，不通过则修复后重来）
 1. **计算复跑**：`python scripts/compute_scores.py …` 输出与 REPORT 数值一致（lint 会自动复算，报 FAIL 即数值被手改过）
-2. **lint**：`python scripts/lint_report.py <报告文件>` → `PASS: all checks passed（新版）`
-3. **浏览器检查**：打开报告确认——雷达五顶点与 z 标注位置吻合；游标停在正确档位段内；分数表 20 行齐全；打印预览（Ctrl+P，边距"默认"）无组件断裂、封面单页、FAQ 与分数表展开完整
-4. 基线回归：改动过模板或 lint 后，先跑四条基线 `templates/report-template.html`、`examples/bfi2_sample.html`（新版单人）、`templates/couple-report-template.html`、`examples/bfi2_sampleA_sampleB.html`（新版双人），全 PASS 再出新报告
+2. **lint**：`python scripts/lint_report.py <报告文件>` → `PASS: all checks passed（新版单人）`
+3. **浏览器检查（仅必要时）**：模板/脚本/lint 变更后首次生成、lint 报渲染类 FAIL、或换新环境首次交付时执行——打开报告确认：雷达五顶点与 z 标注位置吻合；游标停在正确档位段内；分数表 20 行齐全；打印预览（Ctrl+P，边距"默认"）无组件断裂、封面单页、FAQ 与分数表展开完整。日常填充数据默认跳过（渲染层由基线回归守护）
+4. 基线回归：改动过模板或 lint 后，跑 `python scripts/run_regression.py`（四条基线：`templates/report-template.html`、`examples/bfi2_sample.html`、`templates/couple-report-template.html`、`examples/bfi2_sampleA_sampleB.html`），全 PASS 再出新报告
