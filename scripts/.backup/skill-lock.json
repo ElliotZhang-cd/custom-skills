@@ -165,6 +165,15 @@
       "skillFolderHash": "c91369c449d34755d320a8b81d0734000d99d1ab",
       "installedAt": "2026-09-05T23:23:46.116Z",
       "updatedAt": "2026-09-05T23:23:46.116Z"
+    },
+    "huashu-design": {
+      "source": "alchaincyf/huashu-design",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/alchaincyf/huashu-design.git",
+      "skillPath": "SKILL.md",
+      "skillFolderHash": "c4b83675d1cdc1a6f43039518db9057749931758",
+      "installedAt": "2026-09-15T22:20:01.755Z",
+      "updatedAt": "2026-09-15T22:20:01.755Z"
     }
   },
   "dismissed": {
