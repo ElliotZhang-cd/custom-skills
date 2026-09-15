@@ -16,6 +16,7 @@
 | marketing-campaign | skills CLI（WSL 锁文件） | End-to-end marketing campaign planning and execution. Covers… | 2026-08-13 | TRAE+ZCode |
 | ppt-master | skills CLI（WSL 锁文件） | AI-driven presentation workflow for generating editable PPTX… | 2026-08-13 | TRAE+ZCode |
 | guizang-ppt-skill | skills CLI（WSL 锁文件） | 生成横向翻页单文件 HTML 网页 PPT（杂志风/瑞士风双视觉系统，含演讲者模式、AI 配图、多平台封面） | 2026-09-06 | TRAE+ZCode |
+| huashu-design | alchaincyf/huashu-design（skills CLI WSL 锁文件） | 花叔 Design：HTML 原生设计系统，高保真原型/幻灯片/动画/可视化，20 种设计哲学 + 5 维专家评审（任何新设计强制先出三个方向初稿再执行） | 2026-09-16 | TRAE+ZCode |
 | teach | github.com/mattpocock/skills | 在工作区内多会话教你新技能/概念 | 2026-08-23 | TRAE+ZCode |
 | to-questionnaire | github.com/mattpocock/skills | 把答不了的决策转成问卷给别人填 | 2026-08-23 | TRAE+ZCode |
 | ui-ux-pro-max | skills CLI（WSL 锁文件） | UI/UX design intelligence for web and mobile. Searchable loc… | 2026-08-13 | TRAE+ZCode |
@@ -41,4 +42,4 @@
 
 > 依赖：`grill-me` → `grilling`；`grill-with-docs` → `grilling` + `domain-modeling`。
 > 目录名变体：`Humanizer-zh-main` 对应锁文件中的 `humanizer-zh`，待归一。
-> 更新：2026-09-06，共 32 条（待溯源 17 条）。
+> 更新：2026-09-16，共 33 条（待溯源 17 条）。
