@@ -13,7 +13,6 @@ from pathlib import Path
 FORBIDDEN_WORDS = [
     "优势", "劣势", "优点", "缺点", "强项", "短板", "缺陷",
     "断层", "分数分层",
-    "尖塔型", "双峰型", "高原型", "塌陷型", "反常型",
     "Fi-Ni loop", "内循环",
     "神经质", "情绪稳定性",
     "你就是太", "以你的经历为准",
@@ -41,6 +40,8 @@ SINGLE_REQUIRED = [
     "类型是理解人的辅助工具，不是人本身",
     "回到自己身上核对",
     "类型是地图，不是领土",
+    "压力下的退行形态",
+    "附录",
 ]
 
 COUPLE_REQUIRED = [
@@ -81,9 +82,9 @@ def check(html: str) -> list:
         if sorted(set(sections)) != ["0", "1", "2", "3", "4", "5"]:
             problems.append(f"[结构] 双人章节应为 s0–s5，实得 {sorted(set(sections))}")
     else:
-        sections = re.findall(r'<section id="s([1-7])"', html)
-        if sorted(set(sections)) != ["1", "2", "3", "4", "5", "6", "7"]:
-            problems.append(f"[结构] 单人章节应为 s1–s7，实得 {sorted(set(sections))}")
+        sections = re.findall(r'<section id="s([1-8])"', html)
+        if sorted(set(sections)) != ["1", "2", "3", "4", "5", "6", "7", "8"]:
+            problems.append(f"[结构] 单人章节应为 s1–s8，实得 {sorted(set(sections))}")
 
     if "@media print" not in html:
         problems.append("[缺结构] 打印样式")
