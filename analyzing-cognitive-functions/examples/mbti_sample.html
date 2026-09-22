@@ -166,7 +166,6 @@ td .fn { font-size: 1em; }
       </g>
     </svg>
   </div>
-  <p class="chart-note" style="text-align:center;max-width:30em">形状只看相对高低:凸出来的是用得最顺的,凹进去的是最费力的;分差小的时候形状接近正八边形,这也是诚实的读数。每个字母是一种做事方式,下一章逐个认识它们。</p>
   <div class="scrollhint">↓ 往下读</div>
 </header>
 
@@ -174,18 +173,6 @@ td .fn { font-size: 1em; }
 <section id="s1">
   <div class="sec-num">01 · TYPE & STACK</div>
   <h2>类型与八维栈：谁站在哪个位置</h2>
-
-  <table class="lt">
-    <tr><th>功能</th><th>分数</th><th>栈位（原型名 + 白话）</th><th>一句话画像</th></tr>
-    <tr><td><span class="fn" style="color:var(--ni)">Ni</span> 内倾直觉</td><td>78</td><td>英雄——你最自然、最拿手、最认同自己的部分</td><td>用「将会怎样」看现在</td></tr>
-    <tr><td><span class="fn" style="color:var(--fe)">Fe</span> 外倾情感</td><td>72</td><td>好父母——你照顾、支撑别人的那双手</td><td>把人和事照顾到</td></tr>
-    <tr><td><span class="fn" style="color:var(--ti)">Ti</span> 内倾思考</td><td>64</td><td>永恒少年——放松时才玩得起来、孩子气、也容易在这里受伤的部分</td><td>在心里把模型对齐到自洽</td></tr>
-    <tr><td><span class="fn" style="color:var(--se)">Se</span> 外倾感觉</td><td>58</td><td>阿尼玛/阿尼姆斯——最费力、最想回避，也是最可能带你长大的门</td><td>当下与身体感，要用的时候再调</td></tr>
-    <tr><td><span class="fn" style="color:var(--ne)">Ne</span> 外倾直觉</td><td>47</td><td>对立人格——被人反对时冒出来的防御姿态</td><td>备选方案不常自己冒出来</td></tr>
-    <tr><td><span class="fn" style="color:var(--fi)">Fi</span> 内倾情感</td><td>41</td><td>批判父母——内心那个挑剔的声音</td><td>个人好恶不太拿来当依据</td></tr>
-    <tr><td><span class="fn" style="color:var(--te)">Te</span> 外倾思考</td><td>33</td><td>欺骗者——压力下自以为聪明、容易把你带沟里的把戏</td><td>拆任务、推进度要多花力气</td></tr>
-    <tr><td><span class="fn" style="color:var(--si)">Si</span> 内倾感觉</td><td>26</td><td>恶魔——压力最大时才出现、破坏性最强的出口</td><td>日程与身体的存档常常忘了存</td></tr>
-  </table>
 
   <h3>八维得分</h3>
   <div class="bar-box">
@@ -227,13 +214,21 @@ td .fn { font-size: 1em; }
     <p class="chart-note">柱高 = 实测分(0–100);一种功能一种颜色,后文所有图沿用同一套颜色。</p>
   </div>
 
-  <h3>最接近的类型：INFJ（仅供参考）</h3>
-  <table>
-    <tr><td>栈序</td>
-      <td><span class="fn" style="color:var(--ni)">Ni</span> → <span class="fn" style="color:var(--fe)">Fe</span> → <span class="fn" style="color:var(--ti)">Ti</span> → <span class="fn" style="color:var(--se)">Se</span>
-      <span style="color:var(--muted)">｜阴影 </span><span class="fn" style="color:var(--ne)">Ne</span> → <span class="fn" style="color:var(--fi)">Fi</span> → <span class="fn" style="color:var(--te)">Te</span> → <span class="fn" style="color:var(--si)">Si</span></td></tr>
-    <tr><td>对位</td><td><span class="hl">八格全部对位吻合，判定高度可信</span></td></tr>
+  <h3>八维栈明细</h3>
+  <table class="lt">
+    <tr><th>功能</th><th>分数</th><th>栈位</th><th>原型白话</th><th>对位</th></tr>
+    <tr><td><span class="fn" style="color:var(--ni)">Ni</span> 内倾直觉</td><td>78</td><td>1 · 英雄</td><td>你最自然、最拿手、最认同自己的部分</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--fe)">Fe</span> 外倾情感</td><td>72</td><td>2 · 好父母</td><td>你照顾、支撑别人的那双手</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--ti)">Ti</span> 内倾思考</td><td>64</td><td>3 · 永恒少年</td><td>放松时才玩得起来、孩子气、也容易在这里受伤的部分</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--se)">Se</span> 外倾感觉</td><td>58</td><td>4 · 阿尼玛/阿尼姆斯</td><td>最费力、最想回避，也是最可能带你长大的门</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--ne)">Ne</span> 外倾直觉</td><td>47</td><td>5 · 对立人格</td><td>被人反对时冒出来的防御姿态</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--fi)">Fi</span> 内倾情感</td><td>41</td><td>6 · 批判父母</td><td>内心那个挑剔的声音</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--te)">Te</span> 外倾思考</td><td>33</td><td>7 · 欺骗者</td><td>压力下自以为聪明、容易把你带沟里的把戏</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--si)">Si</span> 内倾感觉</td><td>26</td><td>8 · 恶魔</td><td>压力最大时才出现、破坏性最强的出口</td><td>✓</td></tr>
   </table>
+
+  <h3>最接近的类型：INFJ（仅供参考）</h3>
+  <p class="muted">栈序 <span class="fn" style="color:var(--ni)">Ni</span> → <span class="fn" style="color:var(--fe)">Fe</span> → <span class="fn" style="color:var(--ti)">Ti</span> → <span class="fn" style="color:var(--se)">Se</span>｜阴影 <span class="fn" style="color:var(--ne)">Ne</span> → <span class="fn" style="color:var(--fi)">Fi</span> → <span class="fn" style="color:var(--te)">Te</span> → <span class="fn" style="color:var(--si)">Si</span>；<span class="hl">八格全部对位吻合，判定高度可信</span>。</p>
   <p class="muted">四个字母只是参考地图——<strong>别把任何标签当身份证。</strong>真正有信息量的，是下面四条轴哪头更常用、哪头更费力的对照。</p>
 </section>
 
@@ -241,8 +236,8 @@ td .fn { font-size: 1em; }
 <section id="s2">
   <div class="sec-num">02 · SHAPE & DIFFERENTIATION</div>
   <h2>你的分布形状：分化得清不清楚</h2>
-  <p class="lead">八个分数画出来是一座平滑下降的阶梯：最前面的 <span class="fn" style="color:var(--ni)">Ni</span> 和 <span class="fn" style="color:var(--fe)">Fe</span> 一骑当先（彼此差 6 分，有先后但同属顶层），之后 <span class="fn" style="color:var(--ti)">Ti</span>、<span class="fn" style="color:var(--se)">Se</span> 依次递减，没有挤成一团的平原，也没有反常的隆起。这是主导功能分化清晰的形状——你的自我认同稳固，代价是可能偏窄。</p>
-  <p class="muted">分化程度：你的最高一项能独立站出来，不被其他功能搅动——分化得好。八项两两之差都在 3 分噪声带之外，每一级先后都可以读；要放轻的是名次本身的分量——<span class="fn" style="color:var(--ne)">Ne</span> 47、<span class="fn" style="color:var(--fi)">Fi</span> 41、<span class="fn" style="color:var(--te)">Te</span> 33 依次递减（每步 6–8 分），但它们同处中后段，精细名次不改变「都不常用」这件事。</p>
+  <p class="lead">形状一句话：八个分数是一座平滑下降的阶梯——最前面的 <span class="fn" style="color:var(--ni)">Ni</span> 和 <span class="fn" style="color:var(--fe)">Fe</span> 一骑当先，之后依次递减，没有挤成一团的平原，也没有反常的隆起。</p>
+  <p><strong>结论：主导功能分化清晰，自我认同稳固，代价是可能偏窄。</strong><span class="hl">能量高度集中在 <span class="fn" style="color:var(--ni)">Ni</span>/<span class="fn" style="color:var(--fe)">Fe</span> 这条出力线上</span>——最高一项能独立站出来、不被其他功能搅动；八项两两之差都在 3 分噪声带之外，每一级先后都可以读，但要放轻名次本身的分量（<span class="fn" style="color:var(--ne)">Ne</span> 47、<span class="fn" style="color:var(--fi)">Fi</span> 41、<span class="fn" style="color:var(--te)">Te</span> 33 同处中后段，精细名次不改变「都不常用」）。对你意味着：把出力线用足（见 03 章），给不常用的功能配省力做法（见 04、06 章），比全面发展更实际。</p>
 </section>
 
 <!-- ============ 03 ENERGY ============ -->
@@ -398,20 +393,21 @@ td .fn { font-size: 1em; }
   <h3>主辅协作：是支撑，不是打架</h3>
   <p>你的主导 <span class="fn" style="color:var(--ni)">Ni</span> 78 和辅助 <span class="fn" style="color:var(--fe)">Fe</span> 72 是互相托着的一对：<span class="fn" style="color:var(--ni)">Ni</span> 说「会往哪走」，<span class="fn" style="color:var(--fe)">Fe</span> 把「人怎么办」接住。这一对不在打架——洞见有人味，照顾有方向。真正要留意的是 <span class="fn" style="color:var(--ti)">Ti</span> 64 偶尔插队：想把话说圆的时候，别让它压过 <span class="fn" style="color:var(--fe)">Fe</span> 的第一时间反应。</p>
 
+</section>
+
+<!-- ============ 04 FUEL & BLIND SPOTS ============ -->
+<section id="s4">
+  <div class="sec-num">04 · FUEL & BLIND SPOTS</div>
+  <h2>什么场合让你回血，什么让你多花力气</h2>
   <h3>什么场合让你回血</h3>
   <table class="lt">
     <tr><th>场合</th><th>回血的点</th></tr>
     <tr><td>能把一件事想到底、想透的时段（研究、写作、推演方向）</td><td><span class="fn" style="color:var(--ni)">Ni</span> 在主场，想透的那一刻最回血</td></tr>
     <tr><td>帮一群人把感受说开、把氛围照顾到（调解、带新人、陪重要的人）</td><td><span class="fn" style="color:var(--fe)">Fe</span> 在出手，做完不觉得被掏空</td></tr>
     <tr><td>能把想法拆干净的深度对话（聊到「为什么」那一层）</td><td><span class="fn" style="color:var(--ti)">Ti</span> 在场，聊完反而精神</td></tr>
-    <tr><td>偶尔「只发生在此刻」的时刻（一顿好饭、一场球、一次短途）</td><td>让 <span class="fn" style="color:var(--se)">Se</span> 替你回到当下，反而充电</td></tr>
+    <tr><td>偶尔「只发生在此刻」的时刻（一顿好饭、一场球、一次短途）</td><td>让 <span class="fn" style="color:var(--se)">Se</span> 帮你回到当下，反而充电</td></tr>
   </table>
-</section>
-
-<!-- ============ 04 STRESS & REGRESSION ============ -->
-<section id="s4">
-  <div class="sec-num">04 · STRESS & REGRESSION</div>
-  <h2>你的盲区：并非不足，是成本</h2>
+  <h3>你的盲区：并非不足，是成本</h3>
   <p class="lead">以下每一项都不是「你不行」，而是「你做这件事，要比别人多花力气」。诚实的读法是给它们配一套省力的做法，而不是逼自己变成别人。</p>
   <table>
     <tr><td>第 4 位 <span class="fn" style="color:var(--se)">Se</span> 58</td>
@@ -487,18 +483,6 @@ td .fn { font-size: 1em; }
     <li>不能替代亲身验证：所有推断都要放回你自己的经历里核对（清单见 06 章尾）。</li>
     <li>类型是理解人的辅助工具，不是人本身；人的目标是成为完整的自己，不是成为一个类型。</li>
   </ol>
-  <h3>附录 · 得分明细</h3>
-  <table style="font-size:.85em">
-    <tr><th>功能</th><th>分数</th><th>栈位</th><th>原型白话</th><th>对位</th></tr>
-    <tr><td><span class="fn" style="color:var(--ni)">Ni</span> 内倾直觉</td><td>78</td><td>1 · 英雄</td><td>你最自然、最拿手、最认同自己的部分</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--fe)">Fe</span> 外倾情感</td><td>72</td><td>2 · 好父母</td><td>你照顾、支撑别人的那双手</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--ti)">Ti</span> 内倾思考</td><td>64</td><td>3 · 永恒少年</td><td>放松时才玩得起来、孩子气、也容易在这里受伤的部分</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--se)">Se</span> 外倾感觉</td><td>58</td><td>4 · 阿尼玛/阿尼姆斯</td><td>最费力、最想回避，也是最可能带你长大的门</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--ne)">Ne</span> 外倾直觉</td><td>47</td><td>5 · 对立人格</td><td>被人反对时冒出来的防御姿态</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--fi)">Fi</span> 内倾情感</td><td>41</td><td>6 · 批判父母</td><td>内心那个挑剔的声音</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--te)">Te</span> 外倾思考</td><td>33</td><td>7 · 欺骗者</td><td>压力下自以为聪明、容易把你带沟里的把戏</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--si)">Si</span> 内倾感觉</td><td>26</td><td>8 · 恶魔</td><td>压力最大时才出现、破坏性最强的出口</td><td>✓</td></tr>
-  </table>
 </section>
 
 <footer class="footer">

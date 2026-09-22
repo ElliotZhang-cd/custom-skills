@@ -30,7 +30,7 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
   每次必读 `references/writing-style.md`。按下文「分析方法论」六步执行，产出：类型判定（或并列）、八格对位表、形状与分化、能量分布、压力退行、人际投射、个体化路径。
 
 - **Phase 2 — 生成报告**
-  单人结构：hero + 01–07 章 + 附录得分明细 + footer（骨架见 `references/html-templates.md`）。唯一视觉事实源 = `examples/mbti_sample.html`。固定文本块**照录，不得改写**。卡框类与禁用件出现即 FAIL。双人用 JS 数据驱动版，**不判合分**。命名：`mbti_<用户代号>.html` / `mbti_<A>_<B>.html`。
+  单人结构：hero + 01–07 章 + footer（骨架见 `references/html-templates.md`）。唯一视觉事实源 = `examples/mbti_sample.html`。固定文本块**照录，不得改写**。卡框类与禁用件出现即 FAIL。双人用 JS 数据驱动版，**不判合分**。命名：`mbti_<用户代号>.html` / `mbti_<A>_<B>.html`。
 
 - **Phase 3 — 验证**
   `python scripts/lint_report.py <报告.html>` 循环直到全 PASS；JSON 校验（可解析、8 键齐全、顺序正确、与报告分数一致）；浏览器渲染检查（SVG 图件、天平倾角=分高端在下、打印样式）；语气抽查（对照 writing-style 语气总纲）。全部通过才允许交付。
@@ -119,7 +119,7 @@ description: Analyzes 8-function cognitive scores (Fi, Ni, Fe, Ti, Te, Ne, Se, S
 
 ### 结论口径
 
-**能得出**（报告七章各承载其一）：类型与八维栈 / 形状与功能分化 / 能量分布（回血与耗竭）/ 压力下的退行形态 / 人际投射与冲突机制 / 个体化路径（最低那格 = 成长空间最大，它是通往自性的门）。
+**能得出**（报告 01–07 章承载）：类型与八维栈 / 形状与功能分化 / 能量分布（回血与耗竭）/ 压力下的退行形态 / 人际投射与冲突机制 / 个体化路径（最低那格 = 成长空间最大，它是通往自性的门）。
 
 **不能得出**（07 章边界声明承载）：不是能力测评（高分 ≠ 能力强）；不是诊断（分不开结构与状态）；不预测行为（类型是倾向不是剧本）；不能替代亲身验证。
 

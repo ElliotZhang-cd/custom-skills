@@ -84,8 +84,6 @@ def check(html: str) -> list:
         sections = re.findall(r'<section id="s([1-7])"', html)
         if sorted(set(sections)) != ["1", "2", "3", "4", "5", "6", "7"]:
             problems.append(f"[结构] 单人章节应为 s1–s7，实得 {sorted(set(sections))}")
-        if "附录" not in html:
-            problems.append("[缺结构] 附录得分明细")
 
     if "@media print" not in html:
         problems.append("[缺结构] 打印样式")
