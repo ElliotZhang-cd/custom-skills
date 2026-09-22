@@ -11,7 +11,6 @@ analyzing-cognitive-functions/
 ├── references/
 ├── scripts/
 ├── examples/
-├── docs/
 └── evals/
 ```
 
@@ -23,7 +22,6 @@ analyzing-cognitive-functions/
 - `references/html-templates.md` — 单人报告结构/视觉件规格（hero + 01–07 章）与双人 JS 数据驱动版（§5）
 - `scripts/lint_report.py` — 交付前 lint（单人口径 35 项 / 双人口径专项）
 - `examples/mbti_sample.html`、`mbti_sampleA_sampleB.html` — 视觉事实源基线样例
-- `docs/2026-09-07-couple-report-design.md` — 双人报告设计记录与复现要点
 - `evals/evals.json` — 期望行为用例
 
 ## Usage

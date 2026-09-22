@@ -5,18 +5,18 @@
 退出码: 0 = 全部通过; 1 = 存在 FAIL; 2 = 文件/参数错误
 
 当前口径（单人 / 双人）：
-- 单人报告 = hero 新基线（参考正文式）：
+- 单人报告 = hero 基线（参考正文式）：
   hero（kicker + 定位句 + lede 固定句 + 雷达）→ 01 总览（关键词总表 + 柱状图 + 候选类型表）
   → 02 四条轴（对照总表 + 天平图×4 + 强端·代价表 + 双弱福利·代价表 + 场景块）
   → 03 优势表 → 04 盲区表 → 05 亲密关系（rel 定义列表 + 兼容表 + 三句句式）
   → 06 建议表 → 07 边界声明 + 附录得分明细 + footer。
-  检查：结构件计数 / 固定句 / 比喻收缩禁词（记账系·暗房系·租客系·机械系统系·昵称层）/
-  卡框与旧件回流 = FAIL / @page A4 + 噪点 + 680px + @media print。
-  裸功能代码在单人正文解禁（彩色代码 = 身份）；证据标签退出正文。
-- 双人报告 = JS 数据驱动版（couple-report.md + docs/2026-09-07-couple-report-design.md）：
+  检查：结构件计数 / 固定句 / 比喻收缩禁词（记账系·暗房系·租客系·机械系统系·昵称）/
+  卡框与禁用件出现 = FAIL / @page A4 + 噪点 + 680px + @media print。
+  裸功能代码在单人正文允许（彩色代码 = 身份）；正文不得出现证据标签。
+- 双人报告 = JS 数据驱动版（couple-report.md）：
   封面双人雷达 + 00 速写卡 / 01 四象限矩阵 / 02 四条轴光谱条 / 03 亲密关系 / 04 怎么搭 / 05 边界 + 附录对照表。
   走双人口径——JS 结构（renderBeam×4 + renderHeroRadar/renderQuadrant + A/B 8 键数据对象）、
-  05 边界声明 + 临床句、旧双人件回流 = FAIL、证据标签退出正文；单人结构件自动跳过。
+  05 边界声明 + 临床句、旧双人件出现 = FAIL、正文不得出现证据标签；单人结构件自动跳过。
 """
 import re
 import sys
@@ -27,7 +27,7 @@ FUNCTION_CODES = ["Fi", "Ni", "Fe", "Ti", "Te", "Ne", "Se", "Si"]
 # 正文禁用词（单人 + 双人都查）
 FORBIDDEN_BODY = ["劣势功能", "主导功能", "Fi-Ni loop", "Fi-Ni Loop", "阴影功能",
                   "结构性情感失语", "病态", "缺陷", "异常", "毛病",
-                  # 已弃用的比喻命名（价值罗盘解禁；罗盘/自我罗盘允许）
+                  # 禁用的比喻命名（价值罗盘允许；罗盘/自我罗盘允许）
                   "情绪天线", "逻辑拆解器", "效率引擎",
                   "长线望远镜", "可能性喷泉", "安全基地", "当下雷达",
                   # 比喻收缩禁用系（writing-style §4.1）
@@ -35,7 +35,7 @@ FORBIDDEN_BODY = ["劣势功能", "主导功能", "Fi-Ni loop", "Fi-Ni Loop", "�
                   "显影", "底片", "暗房", "叠印",
                   "租客", "房东", "物业费", "拖欠",
                   "引擎", "变速箱", "漏电", "锚点", "托管", "反刍",
-                  # 昵称层（废弃；「跨阵营翻译官」为优势表定稿标题，豁免）
+                  # 昵称（禁用；「跨阵营翻译官」为优势表定稿标题，豁免）
                   "显影机", "万花筒", "守档人", "推土机", "建模师",
                   "可能性雷达", "氛围翻译", "推进器", "在场感", "经验存档",
                   # 工程/IT/系统类（writing-style.md §4.5）
@@ -52,12 +52,12 @@ FORBIDDEN_BODY = ["劣势功能", "主导功能", "Fi-Ni loop", "Fi-Ni Loop", "�
                   "咨询师", "会谈", "咨询中",
                   # 统计措辞
                   "显著", "证实", "证明", "概率"]
-# 任何位置都禁止（含附录；谦卑段落已取消）
+# 任何位置都禁止（含附录）
 FORBIDDEN_GLOBAL = ["你就是太", "你一定会", "你肯定会", "神经质", "情绪稳定性", "必然",
                     "以你的经历为准"]
-# 全模式禁用的已取消视觉件（红线：勿生成）
+# 全模式禁用的视觉件（红线：勿生成）
 FORBIDDEN_CSS = ["prog-bar", "first-letter"]
-# 单人模式已废弃件（回流 = FAIL；html-templates.md §2.7）
+# 单人禁用件（出现 = FAIL；html-templates.md §2.7）
 FORBIDDEN_LEGACY_SINGLE = [
     "summary-card", "epigraph", "chapter-head", "chapter-sub", 'class="pull"',
     "fnchart", "fn-fill", "axis-block", "axis-fill", "combo-card",
@@ -65,7 +65,7 @@ FORBIDDEN_LEGACY_SINGLE = [
     "chart-box", 'class="card"', 'class="grid2"', "ov-grid", "procon",
     'id="toc"', 'class="toc"', "meter-bar", "meter-fill",
 ]
-# 双人模式已废弃件（回流 = FAIL；html-templates.md §5——旧 01–08 结构 / 八维度评分 / 颜色=人）
+# 双人禁用件（出现 = FAIL；html-templates.md §5——旧 01–08 结构 / 八维度评分 / 颜色=人）
 FORBIDDEN_LEGACY_COUPLE = [
     "fit-fill", "fit-group", "person-card", "chip-row", "epilogue", "meter-bar", "meter-fill",
     "highlight-box", "warn-box", "p1-tag", "p2-tag", "--p1-color", "--p2-color",
@@ -142,7 +142,7 @@ def main() -> int:
     bad_global = [w for w in FORBIDDEN_GLOBAL if w in html]
     check("无禁用词（正文）", not bad_words, "出现: " + ", ".join(bad_words))
     check("无禁用词（全局）", not bad_global, "出现: " + ", ".join(bad_global))
-    check("已取消视觉件未回流", not any(c in html for c in FORBIDDEN_CSS),
+    check("禁用视觉件未出现", not any(c in html for c in FORBIDDEN_CSS),
           "出现: " + ", ".join([c for c in FORBIDDEN_CSS if c in html]))
 
     # 2. 双人报告专项（JS 数据驱动）
@@ -176,19 +176,19 @@ def main() -> int:
             check(f"双人固定句: {name}", needle in html, f"未找到「{needle}」")
         # 附录得分对照表
         check("双人：附录完整得分对照表", "完整得分对照表" in html and "谁更高" in html)
-        # 旧双人件 / 旧单人次章件回流 = FAIL
+        # 旧双人件 / 旧单人次章件出现 = FAIL
         legacy = [k for k in FORBIDDEN_LEGACY_COUPLE if k in html]
-        check("双人：旧件未回流（八维度评分条/双栏卡/颜色=人/旧单人次章件）", not legacy,
+        check("双人：禁用件未出现（八维度评分条/双栏卡/颜色=人/旧单人次章件）", not legacy,
               "出现: " + ", ".join(legacy[:8]))
-        # 正文证据标签已退出（双人同单人 09-07）
-        check("双人：正文无证据标签（ev-tag 已退出）", not re.search(r"ev-(research|theory|hypothesis)", html),
+        # 正文不得出现证据标签
+        check("双人：正文无证据标签", not re.search(r"ev-(research|theory|hypothesis)", html),
               "仍出现 ev-tag")
         # 不判合分红线：禁断言式判决措辞；「你们合不合」仅允许出现在被否定的免责句里，
         # 其存在由 05 边界「判决书」+「不是算出来的」正向固定句保证
         assertive = re.findall(r"匹配度|契合度评分|会不会分手|该不该继续|要不要继续|你们不合适|不适合在一起", html)
         check("双人：不判合分（无断言式判决措辞）", not assertive, "出现: " + ", ".join(assertive[:6]))
 
-    # 3. 单人结构件（hero 新基线）
+    # 3. 单人结构件（hero 基线）
     if not is_couple:
         check("hero：kicker 存在", 'class="kicker"' in html)
         check("hero：定位句 h1 存在", "<h1" in html)
@@ -217,11 +217,11 @@ def main() -> int:
         for name, needle in SINGLE_REQUIRED:
             check(f"固定句: {name}", needle in html, f"未找到「{needle}」")
         check("footer meta 行（报告日期）", 'class="meta-line"' in html and "报告日期" in html)
-        # 已废弃件回流 = FAIL
+        # 禁用件出现 = FAIL
         legacy = [k for k in FORBIDDEN_LEGACY_SINGLE if k in html]
-        check("单人已废弃件未回流（卡框/速览卡/pull/旧图件等）", not legacy,
+        check("单人禁用件未出现（卡框/速览卡/pull/旧图件等）", not legacy,
               "出现: " + ", ".join(legacy[:8]))
-        check("单人：正文无证据标签（ev-tag 已退出）",
+        check("单人：正文无证据标签",
               not re.search(r"ev-(research|theory|hypothesis)", html), "仍出现 ev-tag")
 
     # 5. 打印样式
