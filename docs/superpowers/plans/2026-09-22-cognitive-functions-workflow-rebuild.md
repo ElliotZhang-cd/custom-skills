@@ -876,7 +876,7 @@ B Ti-Fe Ti 是 Fe 的 1.21 倍
   <div class="sec-num">02 · SHAPE & DIFFERENTIATION</div>
   <h2>你的分布形状：分化得清不清楚</h2>
   <p class="lead">八个分数画出来是一座平滑下降的阶梯：最前面的 <span class="fn" style="color:var(--ni)">Ni</span> 和 <span class="fn" style="color:var(--fe)">Fe</span> 一骑当先（彼此差 6 分，有先后但同属顶层），之后 <span class="fn" style="color:var(--ti)">Ti</span>、<span class="fn" style="color:var(--se)">Se</span> 依次递减，没有挤成一团的平原，也没有反常的隆起。这是主导功能分化清晰的形状——你的自我认同稳固，代价是可能偏窄。</p>
-  <p class="muted">分化程度：你的最高一项能独立站出来，不被其他功能搅动——分化得好。哪些项几乎不分先后：中间段 <span class="fn" style="color:var(--ne)">Ne</span> 47 与 <span class="fn" style="color:var(--fi)">Fi</span> 41 只差 6 分、<span class="fn" style="color:var(--fi)">Fi</span> 与 <span class="fn" style="color:var(--te)">Te</span> 差 8 分，读的时候不必给它们排先后。</p>
+  <p class="muted">分化程度：你的最高一项能独立站出来，不被其他功能搅动——分化得好。八项两两之差都在 3 分噪声带之外，每一级先后都可以读；要放轻的是名次本身的分量——<span class="fn" style="color:var(--ne)">Ne</span> 47、<span class="fn" style="color:var(--fi)">Fi</span> 41、<span class="fn" style="color:var(--te)">Te</span> 33 依次递减（每步 6–8 分），但它们同处中后段，精细名次不改变「都不常用」这件事。</p>
 </section>
 ````
 
