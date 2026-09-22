@@ -18,7 +18,7 @@
 body {
   font-family: var(--font-heading); font-size: 16px; line-height: 2.0;
   color: var(--fg); background-color: var(--bg);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
   max-width: 680px; margin: 0 auto; padding: 0 20px 80px;
 }
 body p { text-align: justify; }
@@ -41,10 +41,6 @@ strong { font-weight: 700; }
 .hero .radar-box svg { width: 100%; height: auto; display: block; }
 .scrollhint { font-family: var(--font-body); font-size: .75em; color: var(--muted);
   letter-spacing: .2em; margin-top: 18px; }
-
-/* 图注 */
-.chart-note { font-family: var(--font-body); font-size: .8em; color: var(--muted);
-  margin: 10px auto 0; line-height: 1.7; text-align: left; max-width: 560px; }
 
 /* ============ sections ============ */
 section { border-top: 1px solid var(--border); margin-top: 56px; padding-top: 40px; }
@@ -82,7 +78,13 @@ td .fn { font-size: 1em; }
 .hl { background: linear-gradient(180deg, transparent 60%, rgba(31,95,102,.20) 60%);
   padding: 0 .08em; border-radius: 2px; }
 
-/* 02 天平图 */
+/* 附录清单 */
+.plist { list-style: none; margin: 14px 0; }
+.plist li { font-size: .92em; line-height: 1.9; padding: 9px 2px;
+  border-bottom: 1px solid var(--border); }
+.plist li:first-child { border-top: 1px solid var(--border); }
+
+/* 03 天平图 */
 .beam { margin: 24px 0 4px; }
 .beam svg { width: 100%; max-width: 640px; height: auto; display: block; margin: 0 auto; }
 .beam figcaption { font-family: var(--font-body); font-size: .8em; color: var(--muted);
@@ -94,7 +96,7 @@ td .fn { font-size: 1em; }
   letter-spacing: .16em; color: var(--muted); margin-bottom: 4px; }
 .scene p { font-family: var(--font-heading); font-size: .98em; margin: 0; }
 
-/* 05 rel 定义列表 */
+/* 06 rel 定义列表 */
 .relg { display: grid; grid-template-columns: 8.5em 1fr; font-size: .94em; margin: 18px 0; }
 .relg div { padding: 12px 12px; border-bottom: 1px solid var(--border); }
 .relg .k { font-family: var(--font-body); font-weight: 700; font-size: .88em;
@@ -103,7 +105,7 @@ td .fn { font-size: 1em; }
 @media (max-width: 640px) { .relg { grid-template-columns: 1fr; }
   .relg .k { border-bottom: none; padding-bottom: 0; } }
 
-/* 07 边界 */
+/* 08 边界 */
 .bound-list { list-style: none; display: flex; flex-direction: column; gap: 8px;
   font-family: var(--font-body); font-size: .86em; color: var(--muted);
   line-height: 1.9; margin: 14px 0 0; }
@@ -123,7 +125,7 @@ td .fn { font-size: 1em; }
   .scrollhint { display: none; }
   section { margin-top: 40px; padding-top: 28px; }
   .beam, .scene, table, .relg { break-inside: avoid; }
-  tr { break-inside: avoid; }
+  tr, .plist li { break-inside: avoid; }
   * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
 </style>
@@ -176,56 +178,56 @@ td .fn { font-size: 1em; }
 
   <h3>八维得分</h3>
   <div class="bar-box">
-    <svg viewBox="0 0 680 240" role="img" aria-label="八维得分柱状图,0 到 100 分标尺,按分数降序">
+    <svg viewBox="0 0 680 380" role="img" aria-label="八维得分柱状图,0 到 100 分标尺,按分数降序">
       <g stroke="#DCD6C8" stroke-width="1">
-        <line x1="30" y1="168" x2="672" y2="168"/><line x1="30" y1="136" x2="672" y2="136"/>
-        <line x1="30" y1="104" x2="672" y2="104"/><line x1="30" y1="72" x2="672" y2="72"/>
-        <line x1="30" y1="40" x2="672" y2="40"/>
+        <line x1="30" y1="40" x2="672" y2="40"/><line x1="30" y1="96" x2="672" y2="96"/>
+        <line x1="30" y1="152" x2="672" y2="152"/><line x1="30" y1="208" x2="672" y2="208"/>
+        <line x1="30" y1="264" x2="672" y2="264"/><line x1="30" y1="320" x2="672" y2="320"/>
       </g>
-      <line x1="30" y1="200" x2="672" y2="200" stroke="#B9B29F" stroke-width="1"/>
+      <line x1="30" y1="320" x2="672" y2="320" stroke="#B9B29F" stroke-width="1"/>
       <g font-family="Noto Sans SC,Microsoft YaHei,PingFang SC,sans-serif" font-size="10.5" fill="#6E6A60" text-anchor="end">
-        <text x="22" y="43.5">100</text><text x="22" y="75.5">80</text><text x="22" y="107.5">60</text>
-        <text x="22" y="139.5">40</text><text x="22" y="171.5">20</text>
+        <text x="22" y="43.5">100</text><text x="22" y="99.5">80</text><text x="22" y="155.5">60</text>
+        <text x="22" y="211.5">40</text><text x="22" y="267.5">20</text>
       </g>
-      <!-- 8 柱:降序 Ni Fe Ti Se Ne Fi Te Si,柱高 = 分数 ×1.6 -->
+      <!-- 8 柱:降序 Ni Fe Ti Se Ne Fi Te Si,柱宽 38,柱高 = 分数 ×2.8 -->
       <g>
-        <rect x="30" y="75.2" width="55.75" height="124.8" rx="3" fill="#8e44ad"/>
-        <rect x="113.75" y="84.8" width="55.75" height="115.2" rx="3" fill="#2980b9"/>
-        <rect x="197.5" y="97.6" width="55.75" height="102.4" rx="3" fill="#16a085"/>
-        <rect x="281.25" y="107.2" width="55.75" height="92.8" rx="3" fill="#27ae60"/>
-        <rect x="365" y="124.8" width="55.75" height="75.2" rx="3" fill="#e67e22"/>
-        <rect x="448.75" y="134.4" width="55.75" height="65.6" rx="3" fill="#c0392b"/>
-        <rect x="532.5" y="147.2" width="55.75" height="52.8" rx="3" fill="#d35400"/>
-        <rect x="616.25" y="158.4" width="55.75" height="41.6" rx="3" fill="#7f8c8d"/>
+        <rect x="51" y="101.6" width="38" height="218.4" rx="3" fill="#8e44ad"/>
+        <rect x="131" y="118.4" width="38" height="201.6" rx="3" fill="#2980b9"/>
+        <rect x="212" y="140.8" width="38" height="179.2" rx="3" fill="#16a085"/>
+        <rect x="292" y="157.6" width="38" height="162.4" rx="3" fill="#27ae60"/>
+        <rect x="372" y="188.4" width="38" height="131.6" rx="3" fill="#e67e22"/>
+        <rect x="452" y="205.2" width="38" height="114.8" rx="3" fill="#c0392b"/>
+        <rect x="533" y="227.6" width="38" height="92.4" rx="3" fill="#d35400"/>
+        <rect x="613" y="247.2" width="38" height="72.8" rx="3" fill="#7f8c8d"/>
       </g>
       <g font-family="Noto Sans SC,Microsoft YaHei,PingFang SC,sans-serif" font-size="11.5" fill="#262419" text-anchor="middle">
-        <text x="57.9" y="66.2">78</text><text x="141.6" y="75.8">72</text>
-        <text x="225.4" y="88.6">64</text><text x="309.1" y="98.2">58</text>
-        <text x="392.9" y="115.8">47</text><text x="476.6" y="125.4">41</text>
-        <text x="560.4" y="138.2">33</text><text x="644.1" y="149.4">26</text>
+        <text x="70" y="92.6">78</text><text x="150" y="109.4">72</text>
+        <text x="231" y="131.8">64</text><text x="311" y="148.6">58</text>
+        <text x="391" y="179.4">47</text><text x="471" y="196.2">41</text>
+        <text x="552" y="218.6">33</text><text x="632" y="238.2">26</text>
       </g>
       <g font-family="Noto Serif SC,Source Han Serif SC,Songti SC,serif" font-size="13" font-weight="600" text-anchor="middle">
-        <text x="57.9" y="226" fill="#8e44ad">Ni</text><text x="141.6" y="226" fill="#2980b9">Fe</text>
-        <text x="225.4" y="226" fill="#16a085">Ti</text><text x="309.1" y="226" fill="#27ae60">Se</text>
-        <text x="392.9" y="226" fill="#e67e22">Ne</text><text x="476.6" y="226" fill="#c0392b">Fi</text>
-        <text x="560.4" y="226" fill="#d35400">Te</text><text x="644.1" y="226" fill="#7f8c8d">Si</text>
+        <text x="70" y="348" fill="#8e44ad">Ni</text><text x="150" y="348" fill="#2980b9">Fe</text>
+        <text x="231" y="348" fill="#16a085">Ti</text><text x="311" y="348" fill="#27ae60">Se</text>
+        <text x="391" y="348" fill="#e67e22">Ne</text><text x="471" y="348" fill="#c0392b">Fi</text>
+        <text x="552" y="348" fill="#d35400">Te</text><text x="632" y="348" fill="#7f8c8d">Si</text>
       </g>
     </svg>
-    <p class="chart-note">柱高 = 实测分(0–100);一种功能一种颜色,后文所有图沿用同一套颜色。</p>
   </div>
 
   <h3>八维栈明细</h3>
   <table class="lt">
-    <tr><th>功能</th><th>分数</th><th>栈位</th><th>原型白话</th><th>对位</th></tr>
-    <tr><td><span class="fn" style="color:var(--ni)">Ni</span> 内倾直觉</td><td>78</td><td>1 · 英雄</td><td>你最自然、最拿手、最认同自己的部分</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--fe)">Fe</span> 外倾情感</td><td>72</td><td>2 · 好父母</td><td>你照顾、支撑别人的那双手</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--ti)">Ti</span> 内倾思考</td><td>64</td><td>3 · 永恒少年</td><td>放松时才玩得起来、孩子气、也容易在这里受伤的部分</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--se)">Se</span> 外倾感觉</td><td>58</td><td>4 · 阿尼玛/阿尼姆斯</td><td>最费力、最想回避，也是最可能带你长大的门</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--ne)">Ne</span> 外倾直觉</td><td>47</td><td>5 · 对立人格</td><td>被人反对时冒出来的防御姿态</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--fi)">Fi</span> 内倾情感</td><td>41</td><td>6 · 批判父母</td><td>内心那个挑剔的声音</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--te)">Te</span> 外倾思考</td><td>33</td><td>7 · 欺骗者</td><td>压力下自以为聪明、容易把你带沟里的把戏</td><td>✓</td></tr>
-    <tr><td><span class="fn" style="color:var(--si)">Si</span> 内倾感觉</td><td>26</td><td>8 · 恶魔</td><td>压力最大时才出现、破坏性最强的出口</td><td>✓</td></tr>
+    <tr><th>功能</th><th>分数</th><th>栈位</th><th>对位</th></tr>
+    <tr><td><span class="fn" style="color:var(--ni)">Ni</span> 内倾直觉</td><td>78</td><td>1 · 英雄</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--fe)">Fe</span> 外倾情感</td><td>72</td><td>2 · 好父母</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--ti)">Ti</span> 内倾思考</td><td>64</td><td>3 · 永恒少年</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--se)">Se</span> 外倾感觉</td><td>58</td><td>4 · 阿尼玛/阿尼姆斯</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--ne)">Ne</span> 外倾直觉</td><td>47</td><td>5 · 对立人格</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--fi)">Fi</span> 内倾情感</td><td>41</td><td>6 · 批判父母</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--te)">Te</span> 外倾思考</td><td>33</td><td>7 · 欺骗者</td><td>✓</td></tr>
+    <tr><td><span class="fn" style="color:var(--si)">Si</span> 内倾感觉</td><td>26</td><td>8 · 恶魔</td><td>✓</td></tr>
   </table>
+  <p class="muted">栈位名字的白话解释，见附录 A。</p>
 
   <h3>最接近的类型：INFJ（仅供参考）</h3>
   <p class="muted">栈序 <span class="fn" style="color:var(--ni)">Ni</span> → <span class="fn" style="color:var(--fe)">Fe</span> → <span class="fn" style="color:var(--ti)">Ti</span> → <span class="fn" style="color:var(--se)">Se</span>｜阴影 <span class="fn" style="color:var(--ne)">Ne</span> → <span class="fn" style="color:var(--fi)">Fi</span> → <span class="fn" style="color:var(--te)">Te</span> → <span class="fn" style="color:var(--si)">Si</span>；<span class="hl">八格全部对位吻合，判定高度可信</span>。</p>
@@ -235,9 +237,9 @@ td .fn { font-size: 1em; }
 <!-- ============ 02 SHAPE & DIFFERENTIATION ============ -->
 <section id="s2">
   <div class="sec-num">02 · SHAPE & DIFFERENTIATION</div>
-  <h2>你的分布形状：分化得清不清楚</h2>
-  <p class="lead">形状一句话：八个分数是一座平滑下降的阶梯——最前面的 <span class="fn" style="color:var(--ni)">Ni</span> 和 <span class="fn" style="color:var(--fe)">Fe</span> 一骑当先，之后依次递减，没有挤成一团的平原，也没有反常的隆起。</p>
-  <p><strong>结论：主导功能分化清晰，自我认同稳固，代价是可能偏窄。</strong><span class="hl">能量高度集中在 <span class="fn" style="color:var(--ni)">Ni</span>/<span class="fn" style="color:var(--fe)">Fe</span> 这条出力线上</span>——最高一项能独立站出来、不被其他功能搅动；八项两两之差都在 3 分噪声带之外，每一级先后都可以读，但要放轻名次本身的分量（<span class="fn" style="color:var(--ne)">Ne</span> 47、<span class="fn" style="color:var(--fi)">Fi</span> 41、<span class="fn" style="color:var(--te)">Te</span> 33 同处中后段，精细名次不改变「都不常用」）。对你意味着：把出力线用足（见 03 章），给不常用的功能配省力做法（见 04、06 章），比全面发展更实际。</p>
+  <h2>你的分布形状：</h2>
+  <p class="lead">1. 形态：<strong>尖塔型</strong>（一个极高，其余平滑递减）</p>
+  <p>2. 结论：主导功能分化清晰，自我认同稳固。可能认知工具箱比较单一，适应面可能不够宽。</p>
 </section>
 
 <!-- ============ 03 ENERGY ============ -->
@@ -395,36 +397,80 @@ td .fn { font-size: 1em; }
 
 </section>
 
-<!-- ============ 04 FUEL & BLIND SPOTS ============ -->
+<!-- ============ 04 ENERGY MANAGEMENT ============ -->
 <section id="s4">
-  <div class="sec-num">04 · FUEL & BLIND SPOTS</div>
-  <h2>什么场合让你回血，什么让你多花力气</h2>
-  <h3>什么场合让你回血</h3>
+  <div class="sec-num">04 · ENERGY MANAGEMENT</div>
+  <h2>心理能量的分布与管理方式</h2>
+  <p class="lead">哪类活动让你回血，哪类活动让你耗竭</p>
+
+  <h3>回血</h3>
   <table class="lt">
-    <tr><th>场合</th><th>回血的点</th></tr>
+    <tr><th>场景</th><th>回血的点</th></tr>
     <tr><td>能把一件事想到底、想透的时段（研究、写作、推演方向）</td><td><span class="fn" style="color:var(--ni)">Ni</span> 在主场，想透的那一刻最回血</td></tr>
     <tr><td>帮一群人把感受说开、把氛围照顾到（调解、带新人、陪重要的人）</td><td><span class="fn" style="color:var(--fe)">Fe</span> 在出手，做完不觉得被掏空</td></tr>
     <tr><td>能把想法拆干净的深度对话（聊到「为什么」那一层）</td><td><span class="fn" style="color:var(--ti)">Ti</span> 在场，聊完反而精神</td></tr>
     <tr><td>偶尔「只发生在此刻」的时刻（一顿好饭、一场球、一次短途）</td><td>让 <span class="fn" style="color:var(--se)">Se</span> 帮你回到当下，反而充电</td></tr>
   </table>
+
+  <h3>耗竭</h3>
+  <table class="lt">
+    <tr><th>场景</th><th>耗竭的点</th></tr>
+    <tr><td>琐碎流程与日程维护（报销、填表、打卡、交表）</td><td>这类事难不住你，但每一件都要额外启动一次意志力——做完既没有「想透了」的回报，也没有「照顾到人」的回报，是纯支出</td></tr>
+    <tr><td>现场应变与即时表现（临时救场、被点名发言、边想边说）</td><td>你习惯先把事情在脑子里过一遍再出手；不给过一遍的时间就要硬上，上一次耗一次</td></tr>
+    <tr><td>立场攻防式争论（为赢而辩、站队互呛）</td><td><span class="fn" style="color:var(--fe)">Fe</span> 想保住「我们」，<span class="fn" style="color:var(--ti)">Ti</span> 想把理对齐——两边在体内拉扯，争完既没照顾到人，也没把话说圆，只剩疲惫</td></tr>
+    <tr><td>即兴发散出方案（当场头脑风暴、限时想十个点子）</td><td>你的点子要等「对的方向」自己成形；被当场催熟，只出得了半成品，还透支</td></tr>
+  </table>
+
+  <h3>管理方式</h3>
+  <p>三件事就够用。<strong>回血的进日程</strong>：每周把「想透一件事」「把氛围照顾到」这类场景像会议一样排进日历，别等有空再说。<strong>耗竭的限时、工具化或外包</strong>：琐碎流程交给清单和提醒，能外包的外包；立场攻防式争论，给自己设一个离场时限。<strong>连续耗竭之后，按顺序补电</strong>：先身体，后头脑——先用一顿饭、一场睡眠、一次热水澡把身体接回来，再留一段没人打扰的时间把事情想透；顺序反了，容易白补。</p>
+</section>
+
+<!-- ============ 05 POSITION DYNAMICS ============ -->
+<section id="s5">
+  <div class="sec-num">05 · POSITION DYNAMICS</div>
+  <h2>基于荣格动力学的八维位置分析</h2>
+
+  <h3>正常趋势：1&gt;2&gt;3&gt;4≳5≈6&gt;7&gt;8</h3>
+  <p>荣格动力学对八个位置有个正常趋势的预期：<strong>1&gt;2&gt;3&gt;4≳5≈6&gt;7&gt;8</strong>。翻译成白话：越靠前的位置越常出面；到第 4 位开始明显费力；第 5、6 两位几乎不分先后；7、8 两位最少露面。把你的八项按实测排开，正好从第 1 位一路降到第 8 位——没有哪一位被挤下去，也没有哪一位冒上来。整体上你的位置分工吻合正常趋势，下面只看两处贴着边缘的地方。</p>
+
+  <h3>偏离重点：两处贴边的地方</h3>
+  <h4>偏离 B · 第 4 位分数不低：<span class="fn" style="color:var(--se)">Se</span> 58</h4>
+  <p>正常趋势里，第 4 位应该明显掉下去。你的 <span class="fn" style="color:var(--se)">Se</span> 58 却站得住，这属于「第 4 位分数不低」的偏离 B。它有两种读法，别急着定论：</p>
+  <p><strong>可能一 · 第 4 位在膨胀</strong>：主导 <span class="fn" style="color:var(--ni)">Ni</span> 78 太重的时候，<span class="fn" style="color:var(--se)">Se</span> 会被压到反弹、像被「附身」——突然狂热投入健身、感官刺激、物质消费，用「感受」逃「预见」的重压。<strong>可能二 · 误判</strong>：把崇拜的功能填高了——「活在当下」是你向往的样子，答题时下意识多填了几分。</p>
+  <p class="muted">自查：回想最近半年，有没有突然狂热投入某项感官体验的阶段？你空闲时自发做的事，更像「预感」还是「感受」？</p>
+
+  <h4>接近偏离 A · 第 3 位追近第 2 位：<span class="fn" style="color:var(--ti)">Ti</span> 64 与 <span class="fn" style="color:var(--fe)">Fe</span> 72 只差 8 分</h4>
+  <p>偏离 A 指第 3 位超过第 2 位——把「玩得转」当主要出口，更愿待在顺手的地方，而不是扛辅助该扛的事。你还没到那一步：<span class="fn" style="color:var(--ti)">Ti</span> 64 比 <span class="fn" style="color:var(--fe)">Fe</span> 72 只低 8 分，是「追近」不是「超过」，解读要放轻。</p>
+  <p>就地两种读法：<strong>可能一 · 辅助被跳过</strong>：需要你出面照顾、收场的时候，用 <span class="fn" style="color:var(--ti)">Ti</span> 的「想清楚」替掉 <span class="fn" style="color:var(--fe)">Fe</span> 的「先接住人」，该扛的事被顺延成更省力的推演——这是责任回避的信号。<strong>可能二 · 第 3 位正常长大</strong>：<span class="fn" style="color:var(--ti)">Ti</span> 只是被用得充分，你不回避责任，只是想得深。</p>
+  <p class="muted">自查：最近几次需要你出面照顾或收场的场合，你是先接住人，还是先退回去想清楚？答应别人的事，有没有用「我再想想」拖过去的？</p>
+
+  <h3>压力下的退行形态</h3>
+  <p>极端压力下，出口往往开在最靠后和最费力的两格上。你的退行形态有两处：</p>
+  <p><strong>第 8 位出口 · <span class="fn" style="color:var(--si)">Si</span> 26</strong>——退行信号：忘记吃饭睡觉、重复犯同一个错、对身体和过往经验彻底失联、与现实脱钩。看到这些信号，要按「已经进入退行」处理，不是「最近状态不好」。护栏两条：把吃饭睡觉交给日历提醒，不靠自律；重大决定强制回看上次同类决定的记录，让经验替失联的自己把关。</p>
+  <p><strong>第 4 位膨胀 · <span class="fn" style="color:var(--se)">Se</span> 58</strong>——另一种退行形态：压力一大，第 4 位反而膨胀，突然狂热扑进感官刺激，像换了个人。这不是「变开朗了」，是直觉的重压从感觉这一头冲出去。同样按退行对待：先把身体安顿好，再回到独处。</p>
+
+  <h3>第 6 位：批判者的音量</h3>
+  <p>第 6 位是内心那个挑剔的声音。你的 <span class="fn" style="color:var(--fi)">Fi</span> 41 不高，这个声音不算大——你苛责自己时多半借用 <span class="fn" style="color:var(--ti)">Ti</span> 的逻辑外壳（「这不合理」），而不是价值审判（「我不配」）。狠话伤不到内核，这是省心的一面；要留意的是它借了逻辑的壳，听起来像「理性复盘」，容易被你当成该听的意见。</p>
+
   <h3>你的盲区：并非不足，是成本</h3>
   <p class="lead">以下每一项都不是「你不行」，而是「你做这件事，要比别人多花力气」。诚实的读法是给它们配一套省力的做法，而不是逼自己变成别人。</p>
-  <table>
-    <tr><td>第 4 位 <span class="fn" style="color:var(--se)">Se</span> 58</td>
-        <td>不算低——结合 <span class="fn" style="color:var(--ni)">Ni</span> 高达 78，更像 <span class="fn" style="color:var(--ni)">Ni</span> 太重、<span class="fn" style="color:var(--se)">Se</span> 在反弹：可能间歇性用感官刺激（暴食、刷手机、极限体验）逃离直觉的重压。另一种可能是把「活在当下」这个理想自我填高了。回想最近半年：有没有突然狂热投入某项感官体验的阶段？你空闲时自发做的事，更像「预感」还是「感受」？</td></tr>
-    <tr><td>第 6 位 <span class="fn" style="color:var(--fi)">Fi</span> 41</td>
-        <td>内心的挑剔声音不算大——你苛责自己时多半借用 <span class="fn" style="color:var(--ti)">Ti</span> 的逻辑外壳（「这不合理」），而不是价值审判（「我不配」）。</td></tr>
-    <tr><td>第 8 位 <span class="fn" style="color:var(--si)">Si</span> 26</td>
-        <td>压力下的预警位：极端压力时你会彻底抛弃身体感与过往经验——忘记吃饭睡觉、重复犯同一个错、与现实脱钩。出现这些信号 = 已经进入退行。护栏：把吃饭睡觉交给日历提醒，重大决定强制回看上次同类决定的记录。</td></tr>
+  <table class="lt">
+    <tr><th>位置</th><th>省力做法</th></tr>
+    <tr><td>第 4 位 <span class="fn" style="color:var(--se)">Se</span> 58</td><td>每周一次「只发生在此刻」的事：不带耳机散一次步、认真做一顿饭、打一场球。目标不是变成体验派，是别让身体感彻底缺席。</td></tr>
+    <tr><td>第 6 位 <span class="fn" style="color:var(--fi)">Fi</span> 41</td><td>挑剔声出现时先分清它在说哪一种话：「这不合理」是逻辑问题，可以改方案；「我不配」是价值审判，不接。把审判翻译回逻辑问题，就不用跟它缠斗。</td></tr>
+    <tr><td>第 8 位 <span class="fn" style="color:var(--si)">Si</span> 26</td><td>靠提醒，不靠自律：吃饭睡觉、体检、账单、纪念日全部进日历并设提前提醒；重大决定强制回看上次同类记录。</td></tr>
   </table>
 </section>
 
-<!-- ============ 05 PEOPLE & PROJECTION ============ -->
-<section id="s5">
-  <div class="sec-num">05 · PEOPLE & PROJECTION</div>
-  <h2>人际与投射：你的关心怎么送达</h2>
+<!-- ============ 06 PEOPLE & PROJECTION ============ -->
+<section id="s6">
+  <div class="sec-num">06 · PEOPLE & PROJECTION</div>
+  <h2>人际与投射：人际冲突的机制</h2>
   <p class="lead">你的功能组合决定了一件残酷又温柔的事：<strong>你付出的和你想要的，经常不是同一种东西。</strong>看懂自己的语法，才听得懂别人的。</p>
-  <p class="muted">先说一个机制：最容易点燃你情绪的，往往不是别人做错了什么，而是他们身上带着你被排除在自我认同之外的那部分——你的软肋和阴影，最容易被你看见在别人身上。下面这些模式，与其说是「你和对方的差别」，不如说是「你和自己没和解的部分」在借对方出场。</p>
+
+  <h3>投射机制：你未拥有的部分，先在别人身上被看见</h3>
+  <p>最容易点燃你情绪的，往往不是别人做错了什么，而是<strong>对方带着你未被拥有的部分</strong>——被你排除在自我认同之外的那一块，最容易先在别人身上被看见。功能决定你把什么投出去，态度决定它以什么形态出现：内倾功能投出来是无人称判决——「这才是…」；外倾功能投出来是条件句——「有你在，我才能…」。听语法就能分辨方向。下面这些摩擦，与其说是「你和对方的差别」，不如说是「你和自己没和解的部分」在借对方出场。八维各自投什么、句型长什么样、怎么失效，逐条列在<strong>附录 B</strong>。</p>
+
   <div class="relg">
     <div class="k">你给出的</div><div>你的关心是落到实处的：<span class="fn" style="color:var(--fe)">Fe</span> 让你注意到谁被落在外面、谁需要一句回应，然后主动补上。你给出去的是「我看见你了」。</div>
     <div class="k">你索取的</div><div>被理解，而不是被热闹陪着。你要的是「我说的你接住了」——低质量的陪伴对你等于消耗。</div>
@@ -447,9 +493,9 @@ td .fn { font-size: 1em; }
   </div>
 </section>
 
-<!-- ============ 06 INDIVIDUATION ============ -->
-<section id="s6">
-  <div class="sec-num">06 · INDIVIDUATION</div>
+<!-- ============ 07 INDIVIDUATION ============ -->
+<section id="s7">
+  <div class="sec-num">07 · INDIVIDUATION</div>
   <h2>个体化路径：守住常用，点亮不常用</h2>
   <p class="lead"><strong>对成年人来说，守住你最常用的功能，回报远高于死磕最不常用的那一格。</strong>给最费力的功能配一套省力的做法，比逼自己变成别人有用得多。</p>
   <table class="lt">
@@ -459,6 +505,7 @@ td .fn { font-size: 1em; }
     <tr><td><strong style="color:var(--se)">点亮不常用 · 每周一次「只发生在此刻」</strong></td><td>给 <span class="fn" style="color:var(--se)">Se</span> 用的办法：不带耳机散一次步、认真做一顿饭、打一场球——任何只发生在此刻的事。目标不是变成体验派，是别让身体感彻底缺席。</td></tr>
     <tr><td><strong style="color:var(--si)">点亮不常用 · 靠提醒，不靠自律</strong></td><td>给 <span class="fn" style="color:var(--si)">Si</span> 用的办法：体检、账单、纪念日全部进日历并设提前提醒，让手机替你记。你的最低那格 <span class="fn" style="color:var(--si)">Si</span> 是成长空间最大的门——门要慢慢开，别一次推到底。</td></tr>
   </table>
+  <p class="muted">还有一门功课要练，措辞放轻——它只是接近、不是构成（见 05 章）：<span class="fn" style="color:var(--ti)">Ti</span> 64 离 <span class="fn" style="color:var(--fe)">Fe</span> 72 只差 8 分，需要你出面照顾、收场的场合，可能偶尔用「想清楚」替掉「先接住人」。练法很朴素：<strong>把辅助该扛的事扛起来</strong>——先接住人，再回去想。</p>
   <div class="scene">
     <b>写在最后</b>
     <p>你不需要变成另一个人。你只需要<strong>找到让自己顺利启动、持续发力的方式</strong>——方向，你已经比很多人看得更清了。</p>
@@ -467,22 +514,68 @@ td .fn { font-size: 1em; }
   <h3>回到自己身上核对</h3>
   <p class="muted">这份报告里有几处推断，只有你能验证。带着下面的问题回看自己的经历，答案比报告更重要。</p>
   <table class="lt">
-    <tr><td>第 2 步的主导判定</td><td>你空闲时自发干什么？做什么事的时候，时间过得最快、做完能量反而回升？（用来验证 <span class="fn" style="color:var(--ni)">Ni</span> 是主导，还是「想成为的样子」）</td></tr>
-    <tr><td>第 4 位不算低</td><td>最近半年有没有突然狂热投入感官体验的阶段？（膨胀与误判的分界线）</td></tr>
+    <tr><td>主导判定，还是「想成为的样子」</td><td>你空闲时自发干什么？做什么事的时候，时间过得最快、做完能量反而回升？（用来验证 <span class="fn" style="color:var(--ni)">Ni</span> 是主导，还是被向往出来的）</td></tr>
+    <tr><td>第 4 位 <span class="fn" style="color:var(--se)">Se</span> 不低（两解）</td><td>最近半年有没有突然狂热投入感官体验的阶段？你空闲时自发做的事，更像「预感」还是「感受」？（膨胀与误判的分界线）</td></tr>
+    <tr><td><span class="fn" style="color:var(--fe)">Fe</span> 与 <span class="fn" style="color:var(--ti)">Ti</span> 只差 8 分（两解）</td><td>需要你出面照顾或收场的场合，你是先接住人，还是先退回去想清楚？答应别人的事，有没有用「我再想想」顺延过？（责任回避与第 3 位长大的分界线）</td></tr>
   </table>
 </section>
 
-<!-- ============ 07 BOUNDARIES ============ -->
-<section id="s7">
-  <div class="sec-num">07 · BOUNDARIES</div>
+<!-- ============ 08 BOUNDARIES ============ -->
+<section id="s8">
+  <div class="sec-num">08 · BOUNDARIES</div>
   <h2>边界声明：报告是镜子，不是判决书</h2>
   <ol class="disc">
     <li>这份报告不是能力测评：分数高不等于能力强，它与智商、情商和任何绩效无关。</li>
     <li>不是诊断工具：它分不开人格结构与状态起伏，低分可能是压抑、未开发，也可能是健康的谦逊。</li>
     <li>不能预测行为：类型是倾向，不是剧本；你的选择永远大于这份地图。</li>
-    <li>不能替代亲身验证：所有推断都要放回你自己的经历里核对（清单见 06 章尾）。</li>
+    <li>不能替代亲身验证：所有推断都要放回你自己的经历里核对（清单见 07 章尾）。</li>
     <li>类型是理解人的辅助工具，不是人本身；人的目标是成为完整的自己，不是成为一个类型。</li>
   </ol>
+</section>
+
+<!-- ============ APPENDIX ============ -->
+<section id="appendix">
+  <div class="sec-num">APPENDIX · 附录</div>
+
+  <h2>附录 A · 八个位置的名字（白话）</h2>
+  <p class="muted">01 章栈表的白话列集中放在这里：八个位置的名字，各配一句人话。</p>
+  <ul class="plist">
+    <li>1 英雄=你最自然、最拿手、最认同自己的部分</li>
+    <li>2 好父母=你照顾、支撑别人的那双手</li>
+    <li>3 永恒少年=放松时才玩得起来、孩子气、也容易在这里受伤的部分</li>
+    <li>4 阿尼玛/阿尼姆斯=最费力、最想回避，也是最可能带你长大的门</li>
+    <li>5 对立人格=被人反对时冒出来的防御姿态</li>
+    <li>6 批判父母=内心那个挑剔的声音</li>
+    <li>7 欺骗者=压力下自以为聪明、容易把你带沟里的把戏</li>
+    <li>8 恶魔=压力最大时才出现、破坏性最强的出口</li>
+  </ul>
+
+  <h2>附录 B · 八维投射</h2>
+  <p class="lead">先统一分数的读法：<strong>分数高=意识里发展得好，低分=藏进无意识/被投射</strong>（两处限定：inflation 例外——自我膨胀撑起来的高分是借来的，不算真的发展得好；低分≠没能力，只是不常出面）。</p>
+  <p>分数低的部分藏在无意识里，最容易以投射的形态出现；功能决定投什么，态度决定投什么形态——内倾→无人称判决「这才是…」，外倾→条件句「有你在，我才能…」；听语法就能分辨方向。</p>
+  <ul class="plist">
+    <li><span class="fn" style="color:var(--ni)">Ni</span> 意义与方向｜判决「这是这一切的去向」｜宿命与终极意义｜幻灭——现实没长成愿景的样子，爱的是必然性不是这个人</li>
+    <li><span class="fn" style="color:var(--ne)">Ne</span> 可能与开放｜条件「和你在一起，一切都有可能」｜无限可能｜永不完成——伴侣永远是草稿，可能性耗尽时电荷自己转移</li>
+    <li><span class="fn" style="color:var(--si)">Si</span> 连续与踏实｜判决「这才是真的过日子」｜可靠的实在、归属的家｜不许改变——新东西都是背叛，也常以怀旧形态出现</li>
+    <li><span class="fn" style="color:var(--se)">Se</span> 当下与活着的实感｜条件「和你在一起我才真正活着」｜存在感、活生生的现实｜电荷随当下消失——要求对方持续供应活着的感觉，平淡等于背叛</li>
+    <li><span class="fn" style="color:var(--ti)">Ti</span> 被理解与可信｜判决「你是唯一真正理解我的人」｜懂我的地位｜无人能达标——标准在内部，长期失望与长期投射并存</li>
+    <li><span class="fn" style="color:var(--te)">Te</span> 效能与秩序｜条件「有你在，事情就能成」｜把事情变成真的的能力｜伴侣变成工具——交付失败时整段关系被登记为「低效」</li>
+    <li><span class="fn" style="color:var(--fi)">Fi</span> 价值与真实性｜判决「这才是对的」｜绝对价值、真实感｜差异即威胁——分歧像对身份的侵犯</li>
+    <li><span class="fn" style="color:var(--fe)">Fe</span> 归属与被接纳｜条件「有你在，我才属于这里」｜被容纳与被承认｜温度一撤就是流放——分不清「被爱」与「被容纳」</li>
+  </ul>
+
+  <h3>四领域小表</h3>
+  <table class="lt">
+    <tr><th>领域</th><th>关键词</th></tr>
+    <tr><td>思考=真</td><td>可信/懂/能办成</td></tr>
+    <tr><td>情感=值</td><td>对/属于</td></tr>
+    <tr><td>感觉=实</td><td>真的存在/真的在场</td></tr>
+    <tr><td>直觉=义</td><td>意味着什么/可能成为什么</td></tr>
+  </table>
+  <p class="muted">同一对的两个功能是同一领域的收敛版与发散版，最容易互相冒充。</p>
+
+  <h3>层级说明</h3>
+  <p class="muted">本清单是灵魂意象层——投的是未活出的一个部分；自性投射是另一层级，投的是整全本身；Ni 与 Fi 最容易从「部分」升级成「整全」，其他六个要升级得借道这两个。</p>
 </section>
 
 <footer class="footer">
