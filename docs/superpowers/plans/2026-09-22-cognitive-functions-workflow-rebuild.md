@@ -442,58 +442,104 @@ cd /c/Users/elliot/custom-skills && git add analyzing-cognitive-functions/refere
 ### Task 4: 修改 references/input-parsing.md
 
 **Files:**
-- Modify: `analyzing-cognitive-functions/references/input-parsing.md`（精确编辑 3 处）
+- Modify: `analyzing-cognitive-functions/references/input-parsing.md`（精确编辑 7 处）
 
-- [ ] **Step 1: 删除测试页路径与外部任务旁白（文件头部引用行）**
-
-原文（约 L3，整段）：
-
-```markdown
-**测试数据来源**：本地测试页 `~/Desktop/relations/data/8function_interactive.html`（70 题交互计分，百分制 0-100）；题库与计分公式见同目录 `soulstation_8function_70.json`。若任务需要读取测试页或题库文件本身（如核对计分公式、修改测试页），先校验文件存在；不存在时停下询问用户，不臆造其内容。
-```
-
-替换为：
-
-```markdown
-输入只接受两种形式（优先级：结果 JSON > 复制分数文本），均为百分制 0–100。
-```
-
-- [ ] **Step 2: 删除 v2 提示的重复免责括注（约 L76）**
+- [ ] **Step 1: 删除测试页引用与外部任务旁白（L3 整段）**
 
 原文：
 
 ```markdown
-旧新分数变化超过 8 分的功能项（启发式提示，用于留意重测波动，不是统计判断）
+本地测试页 `8function_interactive.html`（70 题交互计分，百分制 0-100，题库与计分公式见 `soulstation_8function_70.json`）能产出两种数据格式。本 skill 的输入**仅接受这两种格式** + 用户另行提供的代号，不接受其他来源的裸分数。若任务需要读取测试页或题库文件本身（如核对计分公式、修改测试页），先校验文件存在；不存在时停下询问用户，不臆造其内容。
+```
+
+替换为（保留输入口径语义，删测试页/题库引用与段尾外部任务旁白整句）：
+
+```markdown
+输入仅接受「结果 JSON」与「复制分数文本」两种格式 + 用户另行提供的代号，不接受其他来源的裸分数。
+```
+
+- [ ] **Step 2: 三处「测试页」字样中性化（L15/L35/L72）**
+
+原文：
+
+```markdown
+### 1.1 结果 JSON（`8function_results.json`，测试页「导出结果 JSON」按钮产出）
 ```
 
 替换为：
 
 ```markdown
-旧新分数变化超过 8 分的功能项
+### 1.1 结果 JSON（`8function_results.json`，「导出结果 JSON」按钮产出）
 ```
+
+原文：
+
+```markdown
+### 1.2 复制分数文本（测试页「复制分数」按钮产出）
+```
+
+替换为：
+
+```markdown
+### 1.2 复制分数文本（「复制分数」按钮产出）
+```
+
+原文：
+
+```markdown
+- 代号由用户在输入时另行提供（测试页产出的数据不含代号）
+```
+
+替换为：
+
+```markdown
+- 代号由用户在输入时另行提供（分数数据不含代号）
+```
+
+- [ ] **Step 3: 删除 v2 提示的重复免责括注（L76）**
+
+原文：
+
+```markdown
+（启发式提示，用于留意重测波动，不是统计判断）
+```
+
+替换为：删除该括注，句子其余部分（含「报告**与本次**分数变化超过 8 分的功能项」前缀）原样保留。
 
 （该括注唯一保留处在 SKILL.md Phase 4。）
 
-- [ ] **Step 3: 得分 JSON 的 source 字段中性化（约 L102）**
+- [ ] **Step 4: 得分 JSON 的 source 字段中性化（L87 示例块 + L102 规则行）**
 
 原文：
 
 ```markdown
-`source`：固定 `8function_interactive.html`
+  "source": "8function_interactive.html",
 ```
 
 替换为：
 
 ```markdown
-`source`：固定「荣格八维测试」
+  "source": "荣格八维测试",
 ```
 
-- [ ] **Step 4: 验证**
+原文：
+
+```markdown
+- `source`：固定 `8function_interactive.html`
+```
+
+替换为：
+
+```markdown
+- `source`：固定「荣格八维测试」
+```
+
+- [ ] **Step 5: 验证**
 
 Run: `grep -n -E "8function_interactive|soulstation|测试页|启发式提示" "C:\Users\elliot\custom-skills\analyzing-cognitive-functions\references\input-parsing.md"`
 Expected: 0 处
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 cd /c/Users/elliot/custom-skills && git add analyzing-cognitive-functions/references/input-parsing.md && git commit -m "chore(cognitive-functions): input-parsing 删外部路径与重复括注，source 字段中性化"
