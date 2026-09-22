@@ -1126,3 +1126,4 @@ cd /c/Users/elliot/custom-skills && git add -A analyzing-cognitive-functions && 
 - **执行补充（审查时发现）**：
   12. writing-style §4 补双弱 caption 固定句：双弱轴（两端实测分均列全维后三位）用「这条轴两头都偏弱——它不是你的主场。」，不走三档。
   13. Task 7 单人样例天平几何规则：横梁两端垂直偏移 h = min(24, round(2.2 × |分差|)) px（分高端下沉、低端上浮）；四轴分差 Ni-Se 20 / Ne-Si 21 / Fi-Te 8 / Fe-Ti 8；轴三（Fi-Te）双弱，照旧样例双弱梁画法。
+  14. SKILL.md 结论口径补「回到自己身上核对」汇总句；样例 02 章分差表述对齐 3 分噪声带（6/8 分为可靠差异）；README 删 scoring-algorithm 清单行与「测试页」字样、校准文件清单描述。
