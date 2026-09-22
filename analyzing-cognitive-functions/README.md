@@ -20,7 +20,7 @@ analyzing-cognitive-functions/
 - `references/couple-report.md` — 双人（恋人）报告规则（JS 数据驱动版）
 - `references/writing-style.md` — 语言规范（读者画像 / 比喻收缩 / 四条轴 / 固定文本块）
 - `references/html-templates.md` — 单人报告结构/视觉件规格（hero + 01–07 章）与双人 JS 数据驱动版（§5）
-- `scripts/lint_report.py` — 交付前 lint（单人口径 35 项 / 双人口径专项）
+- `scripts/lint_report.py` — 交付前 lint（检查项以脚本为准，单人/双人口径自动判定）
 - `examples/mbti_sample.html`、`mbti_sampleA_sampleB.html` — 视觉事实源基线样例
 - `evals/evals.json` — 期望行为用例
 
@@ -30,7 +30,7 @@ analyzing-cognitive-functions/
 2. 来访者用本地测试页作答，把结果页的「复制分数」文本或「导出结果 JSON」+ 用户代号发给模型。
 3. 模型按 `SKILL.md` 的 Workflow 输出：`mbti_<代号>.html` + `mbti_<代号>.json`（默认保存到用户桌面 `~/Desktop/MBTI/`，用户另行指定时从其指定）+ 对话内【咨询师备注】。
 
-**测试数据来源**：本地测试页 `~/Desktop/relations/data/8function_interactive.html`（70 题交互计分，百分制 0-100）；题库与计分公式见同目录 `soulstation_8function_70.json`。
+**测试数据**：百分制 0–100 的 8 项功能分 + 用户代号。
 
 ## Verification
 
