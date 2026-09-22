@@ -18,7 +18,7 @@ FORBIDDEN_WORDS = [
     "你就是太", "以你的经历为准",
 ]
 
-# 旧组件黑名单（回归防御：只在旧版出现过的件名；合并去重后的唯一名单）
+# 旧组件黑名单（回归防御：只在旧版出现过的件名）
 FORBIDDEN_LEGACY = [
     "summary-card", "epigraph", "chapter-head", "chapter-sub",
     "fnchart", "axis-fill", "combo-card", "type-cards",

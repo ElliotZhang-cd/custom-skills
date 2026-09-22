@@ -18,7 +18,7 @@ analyzing-cognitive-functions/
 - `references/input-parsing.md` — 两种输入格式解析、归一化、代号规则、得分 JSON schema
 - `references/couple-report.md` — 双人（恋人）报告规则（JS 数据驱动版）
 - `references/writing-style.md` — 语言规范（语气总纲 / 硬性规则 / 禁用词表 / 固定文本块）
-- `references/html-templates.md` — 单人报告结构/视觉件规格（hero + 01–07 章）与双人 JS 数据驱动版（§4）
+- `references/html-templates.md` — 单人报告结构/视觉件规格（hero + 01–08 章 + 附录）与双人 JS 数据驱动版（§4）
 - `scripts/lint_report.py` — 交付前 lint（检查项以脚本为准，单人/双人口径自动判定）
 - `examples/mbti_sample.html`、`mbti_sampleA_sampleB.html` — 视觉事实源基线样例
 - `evals/evals.json` — 期望行为用例
