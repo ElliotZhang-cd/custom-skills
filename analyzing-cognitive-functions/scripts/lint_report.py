@@ -82,9 +82,9 @@ def check(html: str) -> list:
         if sorted(set(sections)) != ["0", "1", "2", "3", "4", "5"]:
             problems.append(f"[结构] 双人章节应为 s0–s5，实得 {sorted(set(sections))}")
     else:
-        sections = re.findall(r'<section id="s([1-8])"', html)
-        if sorted(set(sections)) != ["1", "2", "3", "4", "5", "6", "7", "8"]:
-            problems.append(f"[结构] 单人章节应为 s1–s8，实得 {sorted(set(sections))}")
+        sections = re.findall(r'<section id="s([1-7])"', html)
+        if sorted(set(sections)) != ["1", "2", "3", "4", "5", "6", "7"]:
+            problems.append(f"[结构] 单人章节应为 s1–s7，实得 {sorted(set(sections))}")
 
     if "@media print" not in html:
         problems.append("[缺结构] 打印样式")
