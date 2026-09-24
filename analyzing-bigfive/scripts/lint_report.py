@@ -22,6 +22,55 @@ import compute_scores  # noqa: E402  复用 phi/band_of/常模键映射
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 NORMS_PATH = os.path.join(HERE, "..", "references", "bfi2_norms_cn.json")
+TEMPLATE_PATH = os.path.join(HERE, "..", "templates", "report-template.html")
+
+
+# ─────────────── 模板一致性（数据块之外不得改动 / 示例文案不得复用）───────────────
+# 背景：报告的 CSS 与渲染层是模板的复制品，模型只应替换数据块。此前无任何校验，
+# 出现两起真实事故——① 基线样例的雷达 JS 停留在旧公式（无 RADAR_R0），lint 查不出；
+# ② 生成的报告逐字沿用模板示例文案（love.h2 / growth.lead / 成长卡 / FAQ），
+#    而旧的「未替换模板示例」守卫只在 alias+date+封面文案三项同时命中时才触发，太窄。
+
+def _render_regions(html):
+    """报告里必须与模板逐字节一致的两段：`<style>` 块、渲染层（JS 固定部分）。"""
+    a, b = html.find("<style>"), html.find("</style>")
+    rv = html.rfind("/*", 0, html.find("以下为渲染层"))
+    return (html[a:b] if a >= 0 and b > a else ""), (html[rv:] if rv >= 0 else "")
+
+
+def sample_freetext(rep):
+    """数据块里"读者当分析来读"的自由文案（≥12 字），用于检测逐字复用模板示例。
+    豁免：partnerTitle（interpretation-library §3.4 规定用语）、partnerCap（功能提示语）、
+    tags（格式派生）、meta（常模/方向说明按规范本应一致）。"""
+    out = list(rep.get("cover", {}).get("chips", [])) + list(rep.get("cover", {}).get("oneliner", []))
+    for d in rep.get("domains", []):
+        out.append(d.get("line", ""))
+        out += d.get("behaviors", [])
+        out += [f.get("line", "") for f in d.get("facets", [])]
+    for g in ("strengths", "flaws"):
+        for c in rep.get(g, []):
+            out += [c.get("title", ""), c.get("body", "")]
+    lo = rep.get("love", {})
+    out += [lo.get("h2", ""), lo.get("lead", ""), lo.get("partner", "")]
+    for k in ("patterns", "pitfalls"):
+        out += [x.get("b", "") + x.get("t", "") for x in lo.get(k, [])]
+    for p in lo.get("phrases", []):
+        out += [p.get("scene", ""), p.get("bad", ""), p.get("good", "")]
+    gr = rep.get("growth", {})
+    out += [gr.get("h2", ""), gr.get("lead", "")]
+    for c in gr.get("cards", []):
+        out += [c.get("title", ""), c.get("body", "")]
+    for f in rep.get("faq", []):
+        out += [f.get("q", ""), f.get("a", "")]
+    return [x for x in out if isinstance(x, str) and len(x) >= 12]
+
+# 静默失效阈值（单一真相源 = references/thresholds.json，经 compute_scores 载入）。
+# 本文件不得再硬编码这些数值——写错不报错，只会让校验与结论一起走偏。
+TH = compute_scores.TH
+BAND_ALT = "|".join(TH["bands"]["labels"])          # 档位词正则用（顺序即档序）
+FLAT_Z_MAX = TH["single"]["flat_profile_abs_z_max"]
+DZ_BRIDGE_MIN = TH["couple"]["bridge_dz_min"]
+DZ_RESONANCE_MAX = TH["couple"]["resonance_dz_max"]
 
 # ────────────────────────── 禁词 ──────────────────────────
 
@@ -129,7 +178,7 @@ def _check_corr_tag(tag, pct_by_name):
     body = str(tag)[len("对应："):]
     errs = []
     for term in [x.strip() for x in body.split("×")]:
-        m = re.match(r"^([\u4e00-\u9fff]+)\s*·\s*(远低|偏低|中间|偏高|远高)$", term)
+        m = re.match(r"^([\u4e00-\u9fff]+)\s*·\s*(" + BAND_ALT + r")$", term)
         if not m:
             errs.append(f"格式应为「对应：<子维度> · <档位>」（可多段 × 连接），实际「{term}」")
             continue
@@ -192,10 +241,10 @@ def lint_new_single(filepath, html):
         fails.append("FAIL: 封面标签应为 3 个")
     if not cover.get("oneliner"):
         fails.append("FAIL: 封面缺少一句话")
-    # 扁平剖面判定（先于数量检查：全维度 |z|≤0.3 → strengths/flaws/growth 放宽为 2–5）
+    # 扁平剖面判定（先于数量检查：全维度 |z|≤FLAT_Z_MAX → strengths/flaws/growth 放宽为 2–5）
     flat = (isinstance(doms, list) and len(doms) == 5
             and all(isinstance(d.get("z"), (int, float)) for d in doms)
-            and all(abs(d["z"]) <= 0.3 for d in doms))
+            and all(abs(d["z"]) <= FLAT_Z_MAX for d in doms))
     mn = 2 if flat else 3
     for group in ("strengths", "flaws"):
         cards = rep.get(group, [])
@@ -233,15 +282,24 @@ def lint_new_single(filepath, html):
     es_dom = next((d for d in (doms or []) if d.get("key") == "es"), None)
     if es_dom is not None and not str(es_dom.get("note", "")).strip():
         fails.append("FAIL: es 域缺 note（方向小注）")
-    # 模板示例数据未替换守卫（模板/基线自身豁免）
-    if os.path.basename(filepath) not in ("report-template.html", "bfi2_sample.html"):
-        tpl_oneliner = ["你把世界感受得很深，把别人放得很重。", "你的温柔和你的紧张，常常来自同一份敏感。"]
-        if meta.get("alias") == "zyh" and meta.get("date") == "2026-09-05" \
-                and cover.get("oneliner") == tpl_oneliner:
-            fails.append("FAIL: 疑似未替换模板示例数据（alias=zyh / date=2026-09-05 / 封面文案为模板原文）")
-    # 扁平剖面：全维度 |z| ≤ 0.3 → 必须给降权提示（01 章渲染）
+    # 模板一致性：数据块之外的 CSS / 渲染层必须与模板逐字节一致；示例文案不得逐字复用
+    # （模板自身豁免——它既是源头也是示例；examples 基线已按本规则清理，不豁免）
+    if os.path.basename(filepath) != "report-template.html" and os.path.isfile(TEMPLATE_PATH):
+        with open(TEMPLATE_PATH, encoding="utf-8") as f:
+            tpl_html = f.read()
+        for label, i in (("<style> 块", 0), ("渲染层 JS", 1)):
+            if _render_regions(html)[i] != _render_regions(tpl_html)[i]:
+                fails.append(f"FAIL: 报告的{label}与 templates/report-template.html 不一致——数据块之外不得改动")
+        try:
+            tpl_rep = js_to_json(_js_const_block(tpl_html, "const REPORT = "))
+            dup = sorted(set(sample_freetext(rep)) & set(sample_freetext(tpl_rep)))
+            if dup:
+                fails.append(f"FAIL: 逐字复用模板示例文案 {len(dup)} 条（数据块须整块替换），例如「{dup[0][:40]}…」")
+        except (json.JSONDecodeError, ValueError):
+            pass
+    # 扁平剖面：全维度 |z| ≤ FLAT_Z_MAX → 必须给降权提示（01 章渲染）
     if flat and not str(meta.get("qualityNote", "")).strip():
-        fails.append("FAIL: 扁平剖面（全维度 |z|≤0.3）必须在 meta.qualityNote 写降权提示")
+        fails.append(f"FAIL: 扁平剖面（全维度 |z|≤{FLAT_Z_MAX}）必须在 meta.qualityNote 写降权提示")
 
     # 常模复算
     try:
@@ -298,7 +356,7 @@ def lint_new_single(filepath, html):
         for group in ("strengths", "flaws"):
             for c in rep.get(group, []):
                 for tag in c.get("tags", []):
-                    m = re.match(r"^(.+?) · (远低|偏低|中间|偏高|远高)$", str(tag))
+                    m = re.match(r"^(.+?) · (" + BAND_ALT + r")$", str(tag))
                     if not m:
                         continue
                     nm, band_word = m.group(1), m.group(2)
@@ -453,9 +511,11 @@ def lint_new_couple(filepath, html):
                 pa, pb = round(phi(za) * 100), round(phi(zb) * 100)
                 pairs.append({"name": name, "dz": abs(za - zb), "bandA": band_of(pa), "bandB": band_of(pb)})
             ranked = sorted(pairs, key=lambda x: -x["dz"])
-            exp_bridges = [x for x in ranked if x["dz"] >= 0.7][:6]  # 下限 0：与模板一致，不硬凑
-            exp_reso = sorted([x for x in pairs if x["dz"] <= 0.35 and x["bandA"] == x["bandB"]],
-                              key=lambda x: x["dz"])[:3]
+            # 阈值与模板一致，来自 thresholds.json；下限 0，不硬凑
+            exp_bridges = [x for x in ranked if x["dz"] >= DZ_BRIDGE_MIN][:TH["couple"]["bridge_max_count"]]
+            exp_reso = sorted([x for x in pairs
+                               if x["dz"] <= DZ_RESONANCE_MAX and x["bandA"] == x["bandB"]],
+                              key=lambda x: x["dz"])[:TH["couple"]["resonance_max_count"]]
             if C:
                 got_b = [b.get("facet") for b in C.get("bridges", [])]
                 if set(got_b) != {x["name"] for x in exp_bridges}:

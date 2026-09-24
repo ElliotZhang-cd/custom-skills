@@ -12,10 +12,12 @@
 
 ### description
 
+Baseline: `Does X and Y. Use when Z.`
+
 - `description = capability boundary + trigger condition`.
-- What: what tasks this skill covers.
-- When: what scenarios or symptoms should trigger it.
-- Do not summarize the workflow.
+- X, Y: what the skill covers, and what it excludes (out-of-scope uses).
+- Z: what scenarios or symptoms should trigger it.
+- Check: first sentence = capability boundary, last = trigger; no step-by-step narration.
 - Third person.
 - Max 1024 characters.
 

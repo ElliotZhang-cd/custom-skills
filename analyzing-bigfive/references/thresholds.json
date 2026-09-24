@@ -1,0 +1,35 @@
+{
+  "metadata": {
+    "purpose": "「静默失效」阈值的唯一真相源",
+    "why": "这些阈值决定模型写不写某段文案。写错不报错——只会让结论默默走偏（例如把 |z|≤0.3 记成 0.5，扁平剖面就被当成有张力写）。故必须单一源：文档与脚本一律引用本文件，不得各存一份数值。",
+    "scope_note": "只收「影响模型判断」的阈值。纯代码常量（Φ 近似系数、tick = M/5×100、常模 M/SD）不在此，它们留在代码与 bfi2_norms_cn.json 里——写错会响亮报错，不会静默。",
+    "consumers": [
+      "scripts/compute_scores.py（bands / couple）",
+      "scripts/lint_report.py（扁平判定 / 档位复算 / 选桥与共鸣集合复算）",
+      "references/*.md（只写含义与理由；需要数值时引用本文件，不复制）"
+    ],
+    "rounding": "单人 z 先四舍五入到 2 位再比较（与报告展示口径一致）；双人 Δz 用全精度比较，仅输出时四舍五入。",
+    "kind": "全部为呈现用经验阈值，非临床阈值、非诊断切分。",
+    "verified_at": "2026-09-23"
+  },
+  "bands": {
+    "cuts": [10, 35, 65, 90],
+    "labels": ["远低", "偏低", "中间", "偏高", "远高"],
+    "note": "cuts 为各档上界（不含）。段宽 = 相邻 cut 之差 → 10/25/30/25/10，与 design-spec 五段带一致。",
+    "boundary_note": "pct 落在 cut 线上或紧邻（10/35/65/90）属阈值边界敏感项，只在咨询师备注标注，不改变档位判定。"
+  },
+  "single": {
+    "flat_profile_abs_z_max": 0.3,
+    "facet_notable_abs_z_min": 0.5,
+    "extreme_responding_abs_z_gt": 1.0,
+    "facet_contradiction_spread_min": 2.0
+  },
+  "couple": {
+    "resonance_dz_max": 0.35,
+    "bridge_dz_min": 0.7,
+    "boundary_bridge_dz": [0.6, 0.8],
+    "bridge_max_count": 6,
+    "resonance_max_count": 3,
+    "note": "0.35 与 0.7 之间为中性带：不上桥也不写共鸣。桥/共鸣下限均为 0（不硬凑）。"
+  }
+}

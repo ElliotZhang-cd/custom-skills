@@ -19,7 +19,7 @@ The necessary order and decision branches.
 2. Decide whether a skill is warranted.
 3. Write frontmatter:
    - `name`: gerund structure, lowercase letters/numbers/hyphens, <= 64 characters, no XML, no reserved words.
-   - `description`: capability boundary + trigger condition. State what the skill covers and when to use it. Do not summarize the workflow.
+   - `description`: baseline `Does X and Y. Use when Z.` — X/Y = capability boundary (what it covers and excludes), Z = trigger condition. Do not summarize the workflow.
 4. Write the body with the minimal core:
    - Goal
    - Workflow
@@ -34,7 +34,7 @@ The necessary order and decision branches.
 Conditions that must be true before completion.
 
 - `name` is valid.
-- `description` is capability boundary + trigger condition, not a workflow summary.
+- `description` follows `Does X and Y. Use when Z.`: capability boundary, then trigger condition — not a workflow summary.
 - Body contains Goal, Workflow, Success criteria, and Stop rules.
 - Optional sections are added only when needed.
 - All linked files exist.

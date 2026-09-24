@@ -37,7 +37,7 @@ skill 内置常模（references/bfi2_norms_cn.json，Zhang et al. 2022 Table 1�
 - 第4域按「情绪稳定性」方向：M′ = 6 − M(负性情绪)，z 用稳定性方向 score 对 M′ 算；
   score 用 6 − raw 得稳定性方向分（两法等价）
 - 焦虑/抑郁/易变（anxiety/depression/emotional_volatility）恒为本义方向（高=更敏感），不翻转
-- pct = round(Φ(z) × 100)，band 五档：远低<10 / 偏低<35 / 中间<65 / 偏高<90 / 远高≥90
+- pct = round(Φ(z) × 100)，band 五档与扁平/矛盾/双人阈值见 references/thresholds.json（单一真相源）
 - tick_pct = M/5×100（子维度轨道上人群平均位置的百分比刻度）
 """
 
@@ -46,6 +46,11 @@ import json
 import math
 import sys
 from pathlib import Path
+
+# 静默失效阈值的唯一真相源（档位切分、扁平/矛盾/极端判定、双人 Δz）——
+# 本脚本与 lint_report.py 都从这里读，不得各自硬编码一份。
+THRESHOLDS_PATH = Path(__file__).resolve().parent.parent / "references" / "thresholds.json"
+TH = json.loads(THRESHOLDS_PATH.read_text(encoding="utf-8"))
 
 # 域常模键（与 bfi2_norms_cn.json.domains 一致）
 DOMAIN_LABELS = {"extraversion": "外向性", "agreeableness": "宜人性",
@@ -75,11 +80,12 @@ def phi(z: float) -> float:
 
 
 def band_of(pct: int) -> str:
-    if pct < 10: return "远低"
-    if pct < 35: return "偏低"
-    if pct < 65: return "中间"
-    if pct < 90: return "偏高"
-    return "远高"
+    """五档判定。切分点与档名来自 thresholds.json（单一真相源）。"""
+    cuts, labels = TH["bands"]["cuts"], TH["bands"]["labels"]
+    for cut, label in zip(cuts, labels):
+        if pct < cut:
+            return label
+    return labels[-1]
 
 
 def stats_for(score_stab_dir: float, M: float, SD: float):
@@ -208,10 +214,13 @@ def couple_select(res_a: dict, res_b: dict, norm: dict) -> dict:
                       "za": round(za_full, 2), "zb": round(zb_full, 2),
                       "bandA": band_a, "bandB": band_b,
                       "dz": round(dz_full, 2), "dz_full": dz_full})
+    cp = TH["couple"]
     ranked = sorted(pairs, key=lambda x: -x["dz_full"])
-    bridges = [x for x in ranked if x["dz_full"] >= 0.7][:6]  # 下限 0：不硬凑，空集合由模板渲染「同频声明」空态
-    resonance = sorted([x for x in pairs if x["dz_full"] <= 0.35 and x["bandA"] == x["bandB"]],
-                       key=lambda x: x["dz_full"])[:3]
+    # 下限 0：不硬凑，空集合由模板渲染「同频声明」空态
+    bridges = [x for x in ranked if x["dz_full"] >= cp["bridge_dz_min"]][:cp["bridge_max_count"]]
+    resonance = sorted([x for x in pairs
+                        if x["dz_full"] <= cp["resonance_dz_max"] and x["bandA"] == x["bandB"]],
+                       key=lambda x: x["dz_full"])[:cp["resonance_max_count"]]
     return {"pairs": pairs,
             "bridges": [{"name": x["name"], "dz": x["dz"]} for x in bridges],
             "resonance": [{"name": x["name"], "dz": x["dz"]} for x in resonance]}

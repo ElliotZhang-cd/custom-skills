@@ -2,7 +2,7 @@
 
 模板：`templates/couple-report-template.html`（唯一视觉与结构事实源；基线样例 `examples/bfi2_sampleA_sampleB.html`，lint PASS）。
 定位：**给两个年轻人一起读的相处工具书**——读懂差异 → 减少摩擦。**不评好坏、不给匹配分、不判合分、不替代咨询。**
-颜色与图形编码：见 `design-spec.md`；文案语言基线：`writing-style.md` + 本文 §5 双人专属语气。
+颜色与图形编码：见 `design-spec.md`（**§1–§5 为单人规范，双人增量在 §6**）；文案语言基线：`writing-style.md` + 本文 §5 双人专属语气。
 
 ## 1. 数据契约（与单人不同，勿混用）
 

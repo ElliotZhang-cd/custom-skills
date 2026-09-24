@@ -6,7 +6,7 @@
 > 报告不再手写 HTML：复制模板 → 整块替换 `const REPORT = {...}` 数据块 → 跑 lint → 浏览器检查。
 > CSS/JS/图表渲染逻辑一律不改（改模板 = 改本规范 + 重跑基线 lint）。
 > **双人报告（恋人工具书）另用 `templates/couple-report-template.html`，规范见 `couple-template.md`**——数据契约不同（浏览器端计算），不要用单人模板。
-> **颜色语义与图形编码（单/双共用唯一规范）：`design-spec.md`**；百分位带为「五段同色 + 活跃档维度色高亮(42%+内描边) + 3px 无点游标 + 档名加粗着色」满配样式。
+> **颜色语义与图形编码的唯一规范：`design-spec.md`**（以 `templates/report-template.html` 为真相源逆向提取）；百分位带为「五段同色 + 活跃档维度色高亮(42%+内描边) + 3px 无点游标 + 档名加粗着色」满配样式。改视觉 = 先改模板 → 再同步 design-spec → 重跑基线。
 
 ## Contents
 - §1 生成流程（复制模板 → 填数据块）
@@ -142,7 +142,7 @@ const REPORT = {
 
 ## 5. 双人报告
 
-双人（恋人）报告走独立模板与规范：`templates/couple-report-template.html` + `references/couple-template.md`（十章结构、COUPLE_CONTENT 数据块、浏览器端计算契约、双人专属语气与禁词）。本文件的 §1 生成流程、§2 REPORT schema、§3 七章结构**仅适用于单人**。
+双人（恋人）报告走独立模板与规范：`templates/couple-report-template.html` + `references/couple-template.md`。本文件的 §1 生成流程、§2 REPORT schema、§3 七章结构**仅适用于单人**；双人的结构、契约与语气一律以 `couple-template.md` 为准，本文不复述。
 
 ## 6. 输出规范
 
@@ -156,7 +156,6 @@ const REPORT = {
 - 01 章三原则卡 + 常模小注（`normLabel`）
 - 求助 callout「什么时候该认真求助」+ 免责（"不构成任何心理诊断"）
 - 06 章数据说明（`normDetail` + 量表出处）
-- 报告不含来访者真名，只用代号（代号也不渲染进页面）
 
 ### 6.3 交付前验证（强制，不通过则修复后重来）
 1. **计算复跑**：`python scripts/compute_scores.py …` 输出与 REPORT 数值一致（lint 会自动复算，报 FAIL 即数值被手改过）
