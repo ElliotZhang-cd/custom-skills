@@ -22,6 +22,7 @@
 | ui-ux-pro-max | skills CLI（WSL 锁文件） | UI/UX design intelligence for web and mobile. Searchable loc… | 2026-08-13 | TRAE+ZCode |
 | wait-what | github.com/mattpocock/skills | 消息没落地时停止并用统一语言重述 | 2026-08-23 | TRAE+ZCode |
 | writing-for-agents | github.com/mattpocock/skills | 给 agent 写文档（skills/AGENTS.md/CLAUDE.md） | 2026-08-23 | TRAE+ZCode |
+| archify | github.com/tt-a1i/archify（v2.16.0 release zip，稳定频道） | Agent 出 JSON IR → 校验 → 编译成单文件可交互架构/流程/时序/数据流/生命周期图，带机器可读修复回执 | 2026-09-30 | TRAE+ZCode |
 | agent-browser | 待溯源 | Browser automation CLI for AI agents. Use when the user need… | 2026-08-13 | TRAE+ZCode |
 | ai-textbook-distilling | 待溯源 | Distills multiple textbooks and lecture videos into one priv… | 2026-08-24 | TRAE+ZCode |
 | banner-design | 待溯源 | Design banners for social media, ads, website heroes, creati… | 2026-08-13 | TRAE+ZCode |
@@ -42,4 +43,4 @@
 
 > 依赖：`grill-me` → `grilling`；`grill-with-docs` → `grilling` + `domain-modeling`。
 > 目录名变体：`Humanizer-zh-main` 对应锁文件中的 `humanizer-zh`，待归一。
-> 更新：2026-09-16，共 33 条（待溯源 17 条）。
+> 更新：2026-09-30，共 34 条（待溯源 17 条）。
