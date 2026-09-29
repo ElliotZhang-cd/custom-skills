@@ -15,6 +15,7 @@ analyzing-cognitive-functions/
 ```
 
 - `SKILL.md` — 入口：Goal / Workflow（Phase 0–4）/ 分析方法论 / Success criteria / Stop rules
+- `references/theory-spec.md` — 理论基石 spec（荣格原典 + MBTI 系 + Beebe 八原型 + 荣格学派分析师综述；双层并置与判定依据）
 - `references/input-parsing.md` — 两种输入格式解析、归一化、代号规则、得分 JSON schema
 - `references/couple-report.md` — 双人（恋人）报告规则（JS 数据驱动版）
 - `references/writing-style.md` — 语言规范（语气总纲 / 硬性规则 / 禁用词表 / 固定文本块）

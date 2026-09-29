@@ -26,6 +26,13 @@ FORBIDDEN_LEGACY = [
     "p1-tag", "--p1-color", "meta-header", "ev-tag",
 ]
 
+# 机械投影：writing-style §4 / §5 —— 正文不出现数字倍数（「是 Y 的 1.57 倍」）。
+# 分差绝对值（「差 8 分」）是书面规则、不做机械校验：正文里合法的「N 分」太多
+# （分数标签、百分制说明、图表 aria-label），正则必然误伤。
+FORBIDDEN_PATTERNS = [
+    (r"\d+(?:\.\d+)?\s*倍", "数字倍数"),
+]
+
 SINGLE_REQUIRED = [
     "Jungian Cognitive Functions · 人格坐标报告",
     "荣格八维理论——提供对意识运作机理的深层内在解释力",
@@ -67,6 +74,10 @@ def check(html: str) -> list:
     for w in FORBIDDEN_LEGACY:
         if w in html:
             problems.append(f"[旧件] {w}")
+    for pat, name in FORBIDDEN_PATTERNS:
+        m = re.search(pat, html)
+        if m:
+            problems.append(f"[禁用式] {name}：{m.group(0)}（改用描述性语言）")
 
     required = COUPLE_REQUIRED if couple else SINGLE_REQUIRED
     for s in required:
