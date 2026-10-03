@@ -26,7 +26,6 @@
 | agent-browser | 待溯源 | Browser automation CLI for AI agents. Use when the user need… | 2026-08-13 | TRAE+ZCode |
 | ai-textbook-distilling | 待溯源 | Distills multiple textbooks and lecture videos into one priv… | 2026-08-24 | TRAE+ZCode |
 | banner-design | 待溯源 | Design banners for social media, ads, website heroes, creati… | 2026-08-13 | TRAE+ZCode |
-| brainstorming | 待溯源 | You MUST use this before any creative work - creating featur… | 2026-08-13 | TRAE+ZCode |
 | brand | 待溯源 | Brand voice, visual identity, messaging frameworks, asset ma… | 2026-08-13 | TRAE+ZCode |
 | chart-visualization | 待溯源 | This skill should be used when the user wants to visualize d… | 2026-08-13 | TRAE+ZCode |
 | consulting-analysis | 待溯源 | Use this skill when the user requests to generate, create, o… | 2026-08-13 | TRAE+ZCode |
@@ -37,10 +36,8 @@
 | gh-cli | 待溯源 | GitHub CLI (gh) comprehensive reference for repositories, is… | 2026-08-13 | TRAE+ZCode |
 | git-commit | 待溯源 | Execute git commit with conventional commit message analysis… | 2026-08-13 | TRAE+ZCode |
 | slides | 待溯源 | Create strategic HTML presentations with Chart.js, design to… | 2026-08-13 | TRAE+ZCode |
-| test-driven-development | 待溯源 | Use when implementing any feature or bugfix, before writing … | 2026-08-13 | TRAE+ZCode |
 | ui-styling | 待溯源 | Create beautiful, accessible user interfaces with shadcn/ui … | 2026-08-13 | TRAE+ZCode |
-| writing-plans | 待溯源 | Use when you have a spec or requirements for a multi-step ta… | 2026-08-13 | TRAE+ZCode |
 
 > 依赖：`grill-me` → `grilling`；`grill-with-docs` → `grilling` + `domain-modeling`。
 > 目录名变体：`Humanizer-zh-main` 对应锁文件中的 `humanizer-zh`，待归一。
-> 更新：2026-09-30，共 34 条（待溯源 17 条）。
+> 更新：2026-10-03，共 31 条（待溯源 14 条）；brainstorming / test-driven-development / writing-plans 三件已溯源为 obra/superpowers v5.0.6/5.0.7（2026-03），本机清理删除。
