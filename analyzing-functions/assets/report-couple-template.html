@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>八维关系报告 · {{TAG_A}}×{{TAG_B}}</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   视觉规格（与单人卷同一观测手册方向）
+   - 设计代币与逐图几何公式唯一出处：references/couple-visual-spec.md + 单人卷 §1；
+     图 2 / 图 3 / 图 6 / 图 8 的 markup 由 scripts/couple_figures.mjs 按规范产出（workflow-couple.md D4 硬约束）。
+   - 标记契约不变：全部占位符 token 与类名（.sec-no/.concl/.points/.fn/.cfg/.cfg-stack/.stack-pair/
+     .qmap/.axis-dots/.hit-badges/.hb/.chain-fig/.third-node/.recall/.translate/.conj/.bcard/
+     .fig-note/.fig-inmark/.badge/.muted）继续有效；生成方只填 token、不增删层。
+   - 双人身份语言（全卷一致）：甲方 = 实线/实心 `--pa`；乙方 = 虚线/空心 `--pb`；
+     凡两人成对出现处按此编码（形状差同时满足"区分不单靠颜色"）。
+   - 零指标红线：全文禁跨人聚合数字与功能绝对分数；页眉雷达是唯一两人分数同图处
+     （只呈形状、固定 0–100 刻度、>100 截断、图内不印分数）。
+   ════════════════════════════════════════════════════════════ */
+:root {
+  --bg:#f6f2ea; --fg:#29241d; --muted:#6f6759; --border:#ddd3c1;
+  --card:#fffdf8; --accent:#9A3B26; --hairline:#e0d6c2; --soft:#f2ecdf;
+  --pa:#2F5D50; --pb:#8A4A2A;
+  --fi:#c0392b; --ni:#8e44ad; --fe:#2980b9; --ti:#16a085;
+  --te:#d35400; --ne:#e67e22; --se:#27ae60; --si:#7f8c8d;
+  --fi-text:#c0392b; --ni-text:#8e44ad; --fe-text:#2473a6; --ti-text:#117c67;
+  --te-text:#bd4b00; --ne-text:#a55a18; --se-text:#1c7d45; --si-text:#656f70;
+  --font-heading:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",SimSun,serif;
+  --font-body:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;
+  --maxw:720px;
+  --shadow:0 1px 2px rgba(41,36,29,.05),0 10px 28px -20px rgba(41,36,29,.22);
+}
+* { box-sizing:border-box; }
+html { background:var(--bg); }
+body {
+  margin:0 auto; max-width:var(--maxw); padding:34px 24px 80px;
+  font-family:var(--font-heading); font-size:16px; line-height:1.8;
+  color:var(--fg); font-variant-numeric:tabular-nums;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0.14 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+::selection { background:rgba(154,59,38,.18); }
+strong { font-weight:700; }
+.fn { font-weight:700; font-style:normal; }
+.hl { color:var(--accent); font-weight:700; }
+.muted { color:var(--muted); font-size:.88em; }
+
+/* ── 三段式之两段（双人为两段式：结论 → 要点；无理论注） ── */
+.concl { font-family:var(--font-heading); font-size:1.1em; font-weight:600;
+  line-height:1.85; margin:16px 0 12px; }
+.points { list-style:none; margin:10px 0 18px; padding:0; }
+.points li { position:relative; padding-left:16px; font-family:var(--font-body);
+  font-size:.89em; color:#453f35; line-height:1.75; margin-bottom:7px; }
+.points li::before { content:"—"; position:absolute; left:0; color:var(--accent); opacity:.7; }
+
+/* ── 页眉（题块居左、雷达居右；双细线收边） ── */
+.masthead { display:flex; justify-content:space-between; align-items:flex-end;
+  gap:24px; padding:6px 2px 20px; border-bottom:3px double var(--border); }
+.masthead h1 { font-family:var(--font-heading); font-weight:700; font-size:2.1em;
+  line-height:1.3; margin:0; letter-spacing:.06em; }
+.masthead .sub { font-family:var(--font-body); font-size:.8em; color:var(--muted); margin-top:8px; }
+.masthead .sub.dim { font-size:.72em; color:#8d8271; }
+.radar-legend { font-family:var(--font-body); font-size:.75em; color:var(--muted);
+  margin-top:10px; display:flex; align-items:center; gap:6px; }
+.radar-legend i { display:inline-block; width:22px; border-top:2.5px solid var(--pa); }
+.radar-legend i.lg-b { border-top-style:dashed; border-top-color:var(--pb); }
+.radar-box { width:236px; flex-shrink:0; }
+.radar-box svg { width:100%; height:auto; display:block; }
+.chart-note { font-family:var(--font-body); font-size:.75em; color:var(--muted);
+  margin:6px 0 0; }
+
+/* ── 章节 ── */
+section { margin-top:52px; }
+h2 { display:flex; align-items:baseline; gap:14px; margin:44px 0 16px;
+  border-bottom:1px solid var(--border); padding-bottom:12px;
+  font-family:var(--font-heading); font-weight:700; font-size:1.42em; line-height:1.5; }
+h2 .sec-no { font-family:var(--font-heading); font-size:1.55em; line-height:1;
+  color:var(--accent); font-weight:700; }
+h3 { font-family:var(--font-heading); font-weight:700; font-size:1.05em; margin:26px 0 12px; }
+
+.fig-note { font-family:var(--font-body); font-size:.77em; color:var(--muted);
+  line-height:1.9; margin:8px 0 0; border-top:1px solid var(--border); padding-top:9px; }
+/* 图内灰字提示（03/04/05 的 B 级构造物图专用；不进图注） */
+.fig-inmark { display:block; font-family:var(--font-body); font-size:.72em; color:#8d8271;
+  text-align:right; letter-spacing:.04em; margin:5px 0 0; }
+
+/* ── 00 配置卡（五字段；卡内不印分数） ── */
+.cfg { background:var(--card); border:1px solid var(--border); border-radius:12px;
+  box-shadow:var(--shadow); padding:16px 18px; margin:14px 0; break-inside:avoid; }
+.cfg-pair { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0; }
+.cfg-head { display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-bottom:4px; }
+.who { font-family:var(--font-body); font-size:.75em; color:var(--muted); letter-spacing:.1em; }
+.cfg-typeline { font-family:var(--font-heading); font-size:1.65em; font-weight:700;
+  line-height:1.3; margin-bottom:8px; }
+.type-suffix { font-family:var(--font-body); font-size:.48em; color:var(--muted);
+  font-weight:400; letter-spacing:0; margin-left:6px; }
+.badge { display:inline-block; padding:3px 12px; border-radius:20px;
+  font-family:var(--font-body); font-size:.72em; font-weight:700; letter-spacing:.04em; }
+.badge.high { background:#E2ECDF; color:#1F5D46; }
+.badge.mid { background:#F4E8CA; color:#7A5210; }
+.badge.low { background:#F0D9CB; color:#8A3A12; }
+.cfg p { font-family:var(--font-body); font-size:.82em; color:#453f35; line-height:1.75;
+  margin:0 0 8px; }
+.cfg p.spine { color:var(--muted); font-size:.77em; }
+.cfg p.other { color:#8A4A2A; padding-top:8px; border-top:1px solid var(--border);
+  margin:0; font-size:.77em; }
+
+/* ── 00 图 2 容器（两条横向 8 槽条上下堆叠；markup 由 couple_figures.mjs 产出） ── */
+.stack-pair { display:grid; grid-template-columns:1fr; gap:8px; margin:14px 0 0;
+  break-inside:avoid; }
+.stack-pair .cfg-stack { margin:0; }
+.cfg-stack svg { width:100%; height:auto; display:block; }
+.cfg-notes { background:var(--soft); border:1px solid var(--border); border-radius:10px;
+  padding:12px 18px; margin:14px 0 0; }
+.cfg-notes p { font-family:var(--font-body); font-size:.8em; color:#5c5548;
+  line-height:1.75; margin:0 0 8px; }
+.cfg-notes p:last-child { margin:0; }
+
+/* ── 总览位 关系地图（图 3）：9×9 网格；行＝甲方、列＝乙方；行列头＝原型名+位号角标
+   （底色=面归属：1–4 位绿洗、5–8 位灰洗）；矩阵按第 4/5 位分四象限（区域洗色 + 十字虚线
+   + 四个内嵌象限名）；命中格底 = 功能原色 13% 淡底（markup 由 mapCells() 产出）。
+   几何与色值唯一出处：visual-spec §6.3 ── */
+.qmap-fig { margin:12px 0 0; break-inside:avoid; }
+.qmap-grid { display:grid; grid-template-columns:52px repeat(8,1fr);
+  grid-template-rows:44px repeat(8,1fr); width:min(100%,480px); aspect-ratio:1/1;
+  margin:0 auto; }
+.qmap-grid .q-corner { grid-column:1; grid-row:1; display:flex; flex-direction:column;
+  align-items:flex-end; justify-content:flex-end; padding:0 6px 3px 0;
+  font-family:var(--font-body); font-size:9.5px; color:var(--muted); line-height:1.5; }
+.qmap-grid .q-corner b { color:var(--pa); font-weight:700; }
+.qmap-grid .q-corner i { font-style:normal; color:var(--pb); font-weight:700; }
+.qmap-grid .q-colhead, .qmap-grid .q-rowhead { display:flex; flex-direction:column;
+  align-items:center; justify-content:center; font-family:var(--font-body);
+  font-size:10.5px; line-height:1.25; color:var(--muted);
+  background:rgba(47,93,80,.06); border-radius:4px; margin:1px 1px 2px 0; }
+.qmap-grid .q-colhead { padding-bottom:2px; }
+.qmap-grid .q-colhead.shadow-h, .qmap-grid .q-rowhead.shadow-h {
+  background:rgba(141,130,113,.10); color:#8d8271; }
+.qmap-grid .q-colhead .pn, .qmap-grid .q-rowhead .pn { font-size:8.5px; opacity:.75; }
+.qmap { grid-area:2 / 2 / 10 / 10; display:grid; position:relative;
+  grid-template-columns:repeat(8,1fr); grid-template-rows:repeat(8,1fr);
+  border:1px solid var(--border);
+  background:
+    linear-gradient(to right, transparent calc(50% - .75px), #b9b29f calc(50% - .75px) calc(50% + .75px), transparent calc(50% + .75px)),
+    linear-gradient(to bottom, transparent calc(50% - .75px), #b9b29f calc(50% - .75px) calc(50% + .75px), transparent calc(50% + .75px)),
+    conic-gradient(from 0deg at 50% 50%,
+      rgba(154,59,38,.07) 0 25%,
+      rgba(141,130,113,.12) 0 50%,
+      rgba(47,82,122,.07) 0 75%,
+      rgba(47,93,80,.09) 0); }
+.qlabel { position:absolute; font-family:var(--font-body); font-size:9px;
+  color:var(--muted); letter-spacing:.04em; line-height:1.4; pointer-events:none;
+  background:rgba(255,253,248,.85); border-radius:3px; padding:1px 5px; }
+.q-cell { display:flex; align-items:center; justify-content:center;
+  border-right:1px solid #EDE8DB; border-bottom:1px solid #EDE8DB; font-size:12.5px; }
+.q-cell.empty { color:#d8cfbd; }
+.q-cell b { font-family:var(--font-heading); font-weight:700; line-height:1; }
+
+/* ── 8 行读数（呈现组件） ── */
+table.q-readout { width:100%; border-collapse:collapse; margin:12px 0 0;
+  font-family:var(--font-body); font-size:.8em; }
+.q-readout th, .q-readout td { text-align:left; padding:7px 9px;
+  border-bottom:1px solid var(--border); vertical-align:top; line-height:1.65; }
+.q-readout th { white-space:nowrap; color:var(--muted); font-weight:600;
+  font-size:.9em; letter-spacing:.04em; }
+.q-readout th:first-child { white-space:nowrap; }
+.q-readout td.q-fn { font-family:var(--font-heading); font-weight:700; font-size:15px;
+  white-space:nowrap; }
+.q-readout td.q-pos { color:var(--muted); white-space:nowrap; }
+
+/* ── 01/02 图容器（图 4 / 图 5 内联 SVG；几何见 visual-spec §6.4/§6.5） ── */
+.axis-dots { margin:16px 0 0; break-inside:avoid; }
+.axis-dots svg { width:100%; height:auto; display:block; max-width:560px; margin:0 auto; }
+
+/* ── 03 命中徽章（图 6；几何见 visual-spec §6.6） ── */
+.hit-badges { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0 0;
+  break-inside:avoid; }
+.hb { border:1px solid var(--border); border-radius:10px; padding:12px 14px;
+  background:var(--card); break-inside:avoid; position:relative; }
+.hb-dir { font-family:var(--font-body); font-size:.68em; color:var(--muted);
+  letter-spacing:.12em; margin-bottom:3px; }
+.hb h3 { font-family:var(--font-heading); font-size:.88em; margin:0 0 8px; }
+.hb .hb-emb svg { width:100%; height:auto; display:block; }
+.hb p { font-family:var(--font-body); font-size:.77em; color:#5c5548; line-height:1.7;
+  margin:6px 0 0; }
+
+/* ── 04 冲突因果链（底链模板静态；互锁带条件插入②③之间） ── */
+.chain-fig { margin:14px 0 0; break-inside:avoid; }
+.cn-node { display:flex; gap:12px; position:relative; padding:6px 0 16px; }
+.cn-node:not(:last-child)::before { content:""; position:absolute; left:15px; top:40px;
+  bottom:-2px; width:2px; background:var(--border); }
+.cn-node:not(:last-child)::after { content:""; position:absolute; left:11.5px; bottom:-2px;
+  border:5px solid transparent; border-top-color:var(--border); }
+.cn-no { flex-shrink:0; width:32px; height:32px; border-radius:50%; background:#3d362c;
+  color:#fffdf8; font-family:var(--font-heading); font-weight:700; display:flex;
+  align-items:center; justify-content:center; font-size:.88em; position:relative; z-index:1; }
+.cn-node.exit .cn-no { background:var(--accent); }
+.cn-body b { font-size:.88em; }
+.cn-body p { font-family:var(--font-body); font-size:.8em; color:#5c5548; line-height:1.75;
+  margin:4px 0 0; text-align:justify; }
+.cn-node.exit { background:#FBF3EC; border:1px solid #E4C7B4; border-radius:10px;
+  padding:12px 14px; }
+.cn-node.exit .cn-body b { color:var(--accent); }
+.interlock-band { margin:2px 0 14px; }
+.interlock-band svg { width:100%; height:auto; display:block; max-width:520px;
+  margin:0 auto; }
+
+/* ── 05 功课清单双卡 / 翻译清单 / 共同任务 ── */
+.recall { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0; }
+.recall-card { background:var(--card); border:1px solid var(--border); border-radius:12px;
+  box-shadow:var(--shadow); padding:14px 18px; }
+.recall-card h3 { margin:0 0 4px; font-size:.92em; }
+.recall-card h3.pa { color:var(--pa); } .recall-card h3.pb { color:var(--pb); }
+.rl { list-style:none; padding:0; margin:8px 0 0; }
+.rl li { position:relative; padding-left:1.05em; font-family:var(--font-body);
+  font-size:.8em; line-height:1.75; margin:8px 0; color:#453f35; }
+.rl li::before { content:"·"; position:absolute; left:.12em; color:var(--accent); font-weight:700; }
+.translate { background:var(--soft); border:1px solid var(--border); border-radius:10px;
+  padding:14px 18px; margin:14px 0; }
+.translate h3 { margin:0 0 4px; font-size:.92em; }
+.tl { list-style:none; padding:0; margin:8px 0 0; }
+.tl li { position:relative; padding-left:1.05em; font-family:var(--font-body);
+  font-size:.8em; line-height:1.75; margin:8px 0; color:#453f35; }
+.tl li::before { content:"·"; position:absolute; left:.12em; color:var(--accent); font-weight:700; }
+.translate .tl-src { font-family:var(--font-body); font-size:.74em; color:var(--muted); }
+.conj { background:var(--soft); border:1px solid var(--border); border-radius:10px;
+  padding:14px 18px; margin:14px 0 0; }
+.conj h3 { margin:0 0 4px; font-size:.92em; }
+.conj p { font-family:var(--font-body); font-size:.82em; color:#453f35; line-height:1.8;
+  margin:0; }
+
+/* ── 06 边界声明 ── */
+.bcard { background:var(--card); border:1px solid var(--border); border-radius:12px;
+  box-shadow:var(--shadow); padding:18px 22px; margin:14px 0 0; }
+.bcard p { font-family:var(--font-body); font-size:.82em; color:#5c5548; line-height:1.8;
+  margin:0 0 10px; }
+.bcard p:last-child { margin:0; }
+
+footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
+  text-align:center; font-family:var(--font-body); color:#8d8271; font-size:.75em; line-height:2; }
+
+/* ── 响应式 ── */
+@media (max-width:640px){
+  .masthead { flex-direction:column; align-items:flex-start; }
+  .cfg-pair, .hit-badges, .recall { grid-template-columns:1fr; }
+}
+
+/* ── PDF 优先（A4） ── */
+@page { size:A4; margin:14mm 13mm; }
+@media print {
+  html { background:#fff; }
+  body { max-width:none; padding:0; background-image:none; }
+  .masthead { padding:8px 0 4px; }
+  section { margin-top:34px; }
+  h2 { margin-top:28px; }
+  .cfg, .cfg-stack, .stack-pair, .hb, .hit-badges, .cn-node, .chain-fig,
+    .interlock-band, .recall-card, .cfg-notes, .bcard, .radar-box, .qmap-fig,
+    .qmap-grid, .qmap, .q-readout, .axis-dots, .third-node, .translate, .conj,
+    .concl, .points { break-inside:avoid; }
+  tr { break-inside:avoid; }
+  h2, h3 { break-after:avoid; }
+  * { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+  占位符清单与填充规则（双人模式；覆盖本模板全部占位符；静态直出）
+  规则唯一出处：references/workflow-couple.md「D4 组装 7 节报告」+ references/couple-theory-spec.md
+  （§3.4 数值纪律 / §5.1 七节骨架 / §5.2 语言规范 / §5.3 边界声明）。
+  视觉语言与逐图几何唯一出处：references/couple-visual-spec.md；
+  图 2 / 图 3 / 图 6 / 图 8 的 markup 由 scripts/couple_figures.mjs 产出（D4 硬约束），
+  其余图由生成方按规范公式静态直出。A/B 成对 token ＝ 甲 / 乙各一份；条件性 token 不适用时置空串。
+  ── 页眉 ──
+  {{TAG_A}} / {{TAG_B}}            双方称谓标签：有称谓用称谓，无则「甲方/乙方」（按输入顺序、全篇一致；<title> 同步）
+  {{RADAR_A_POLYGON}}              图 1 甲方 polygon points（轴序 Se Si Ne Ni Te Ti Fe Fi；r = 1.32×min(分数,100)，
+                                   >100 截断；公式见 visual-spec §6.1；甲＝实线 #2F5D50 + rgba(47,93,80,.12) 填充，模板锁死）
+  {{RADAR_B_POLYGON}}              图 1 乙方 polygon points（同一刻度；乙＝虚线 #8A4A2A dasharray 6 4；乙先画、甲上层）
+  {{RADAR_DOTS}}                   图 1 顶点圆点 16 枚（先乙 8 空心 r=3、后甲 8 实心 r=3.4；fill/stroke 取功能原色）
+  ── 00 配置卡 ×2（§4.1 + §5.1 第 0 节；卡内五字段、不印分数）──
+  {{TYPE_A}} / {{TYPE_B}}          首选类型大字（theory-spec §4 推导）
+  {{TYPE_EXTRA_A}} / {{TYPE_EXTRA_B}}  类型后缀括注：「其余可能：XXXX（与首选差 N.N 分）」（§5.3 句式，逐字）；
+                                   低置信方在行尾追加「· 含低置信推定」（§3.3）
+  {{CONF_CLASS_A}} / {{CONF_CLASS_B}}  badge 类名：high / mid / low
+  {{CONF_TEXT_A}} / {{CONF_TEXT_B}}    「判定置信度：高/中/低」（copy-rules 固定文案）
+  {{BRIEF_A}} / {{BRIEF_B}}        一句话简述本人（白话、不含分数）
+  {{STACK_BAND_A}} / {{STACK_BAND_B}}  图 2 两条横向 8 槽条（stackBand() 产出；四行槽结构、(阴影) 标注、
+                                   无任何分数——见 visual-spec §6.2）
+  {{SPINE_ARM_A}} / {{SPINE_ARM_B}}    spine/arm 指认（p.spine 段，一句一因果）
+  {{CH00_CONCL}}                   00 节结论层：报告特定判断句（每份报告不同、允许改写）
+  ── 01 相遇的地基（透镜②，§4.2）──
+  {{CH01_CONCL}} / {{CH01_POINTS}}  两段式（结论 1–2 句位置锚点证据 / 要点 ≤3 条每条一因果）
+  {{ATTITUDE_AXES}}                图 4 态度×节律格位图（figure.axis-dots 内联 SVG；2×2 格 + 人点落位规则
+                                   见 visual-spec §6.4；层级=双层）
+  ── 02 共同语言与频道差（透镜③，§4.3）──
+  {{CH02_CONCL}} / {{CH02_POINTS}}  两段式
+  {{CHANNEL_AXES}}                 图 5 感知轴×判断轴双面板（figure.axis-dots 内联 SVG；每面板独立判
+                                   同轴同侧/同轴反侧/异轴三态，几何见 visual-spec §6.5；两面板同属一张图）
+  ── 03 吸引的无意识根源（透镜④，§4.4）──
+  {{CH03_CONCL}} / {{CH03_POINTS}}  两段式（双方阴影面处措辞至多「双向共影」级）
+  {{HIT_BADGES}}                   图 6 命中徽章（hitBadges() 产出；类别 mirror / soul-a / soul-b /
+                                   flow-a / flow-b / p3 / fallback；方向唯一＝内容所在方→对方；
+                                   P4 只出互为镜像一枚；全未命中出兜底徽章；无 P 编号——见 visual-spec §6.6）
+  ── 04 冲突的固定剧本（透镜⑤，§4.5）──
+  {{CH04_CONCL}} / {{CH04_POINTS}}  两段式
+  {{CHAIN_STEP_1}}                 因果链节点①内文：触发情境（一类反复出现的情境类型）
+  {{CHAIN_STEP_2}}                 节点②内文：退行结论（先结论后证据；有信号点名 loop/grip + 位置证据；
+                                   无信号直陈；时效声明写进本步）
+  {{CHAIN_STEP_3}}                 节点③内文：升级（双方原始内容互相触发）
+  {{CHAIN_STEP_4}}                 节点④内文：出口（辅助功能低代价恢复 + 把退行内容当信息读）
+  {{INTERLOCK}}                    互锁带（条件：仅双方可能同时 grip 时输出 interlock-band SVG，
+                                   插于节点②③之间；未命中置空串——见 visual-spec §6.7）
+  ── 05 这段关系的功课（透镜⑥，§4.6）──
+  {{CH05_CONCL}} / {{CH05_POINTS}}  两段式
+  {{THIRD_NODE}}                   图 8 纵向汇流图（thirdNode() 产出 figure.third-node；立场盒/汇流箭头/
+                                   第三条路盒几何见 visual-spec §6.8）
+  {{TASK_A}} / {{TASK_B}}          功课清单双卡 .rl 列表内容（li 可重复；§4.6 大白话；不使用「认领/收回」措辞）
+  {{TRANSLATE_LIST}}               翻译清单 .tl 列表内容（li 可重复；全零交叉时按兜底条款履行并注明来源，
+                                   可附 .tl-src 行）
+  {{COMMON_TASK}}                  共同任务卡 .conj 内文（coniunctio 白话；§4.6 + §5.2）
+  ── 总览位（00 与 01 之间；图 3；§5.1 生成规则）──
+  {{MAP_CELLS}}                    图 3 矩阵 64 格（mapCells() 产出；行＝甲方毕比位、列＝乙方毕比位；
+                                   8 个命中格 = 功能原色 13% 淡底 + 只标功能码（象限区域洗色与
+                                   内嵌象限名为模板静态层）；无分数、无汇总行——见 visual-spec §6.3）
+  {{MAP_ROWS}}                     图 3 其下 8 行读数 table.q-readout tbody（功能｜甲位置·原型｜乙位置·原型｜
+                                   一句动力学；无分数、无汇总行、无排序位列）
+  {{CONF_LOW_TAG}}                 图注低置信加挂（「· 含低置信推定（按首选类型）」；任一方低置信时各图注填入，
+                                   否则空串；页眉雷达无图注、永不加挂）
+  ── 06 边界声明（§5.3 固定文案；仅低置信条件行走 token）──
+  {{COND_LOW_CONF}}                低置信行（逐字：§5.3 括注行；无低置信留空）
+  ── 章节两段式（硬约束，00–05 节；06 固定文案）──
+  每节只有 .concl 与 .points 两种文字块 + 呈现型组件；组件内部小结论不占额度；
+  行文槽位 {{CH0x_CONCL}} / {{CH0x_POINTS}}（x=0…5）。分级不进版面。
+ ════════════════════════════════════════════════════════════ -->
+
+<header class="masthead">
+  <div class="mast-left">
+    <h1>八维关系报告</h1>
+    <div class="sub">荣格八维 · 双人关系分析</div>
+    <div class="radar-legend"><i></i>实线＝甲方&nbsp;&nbsp;<i class="lg-b"></i>虚线＝乙方</div>
+  </div>
+  <div class="radar-box">
+    <!-- 图 1 双人叠加雷达（几何见 visual-spec §6.1）：仅外环（刻度上限 100）+ 均值虚线环 50.75 + 8 径线；
+         先乙（虚线 #8A4A2A）后甲（实线 #2F5D50）；不印分数、不印刻度数字；无固定格式图注 -->
+    <svg viewBox="0 0 380 380" role="img" aria-label="双人叠加雷达：甲方实线、乙方虚线，两线共用固定 0 至 100 径向刻度，均值虚线环 50.75；八轴自正上方顺时针为 Se Si Ne Ni Te Ti Fe Fi；图内不印分数">
+      <circle cx="190" cy="190" r="132" fill="none" stroke="#DCD6C8" stroke-width="1"/>
+      <circle cx="190" cy="190" r="66.99" fill="none" stroke="#8d8271" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <g stroke="#DCD6C8" stroke-width="1">
+        <line x1="190" y1="190" x2="190" y2="58"/><line x1="190" y1="190" x2="283.3" y2="96.7"/>
+        <line x1="190" y1="190" x2="322" y2="190"/><line x1="190" y1="190" x2="283.3" y2="283.3"/>
+        <line x1="190" y1="190" x2="190" y2="322"/><line x1="190" y1="190" x2="96.7" y2="283.3"/>
+        <line x1="190" y1="190" x2="58" y2="190"/><line x1="190" y1="190" x2="96.7" y2="96.7"/>
+      </g>
+      <polygon points="{{RADAR_B_POLYGON}}" fill="rgba(138,74,42,.08)" stroke="#8A4A2A" stroke-width="2" stroke-dasharray="6 4"/>
+      <polygon points="{{RADAR_A_POLYGON}}" fill="rgba(47,93,80,.12)" stroke="#2F5D50" stroke-width="2"/>
+      {{RADAR_DOTS}}
+      <g font-family="Noto Serif SC,Source Han Serif SC,Songti SC,serif" font-size="14" font-weight="600">
+        <text x="190" y="40" text-anchor="middle" fill="#1c7d45">Se</text>
+        <text x="303.1" y="80.9" text-anchor="start" fill="#656f70">Si</text>
+        <text x="350" y="195" text-anchor="start" fill="#a55a18">Ne</text>
+        <text x="303.1" y="309.1" text-anchor="start" fill="#8e44ad">Ni</text>
+        <text x="190" y="346" text-anchor="middle" fill="#bd4b00">Te</text>
+        <text x="76.9" y="309.1" text-anchor="end" fill="#117c67">Ti</text>
+        <text x="30" y="195" text-anchor="end" fill="#2473a6">Fe</text>
+        <text x="76.9" y="80.9" text-anchor="end" fill="#c0392b">Fi</text>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<!-- ════════ 00 配置卡（卡内五字段、不印分数；图 2 位于两卡下方） ════════ -->
+<section>
+  <h2><span class="sec-no">00</span>配置卡</h2>
+
+  <div class="cfg-pair">
+    <div class="cfg">
+      <div class="cfg-head"><span class="who">{{TAG_A}}</span><span class="badge {{CONF_CLASS_A}}">{{CONF_TEXT_A}}</span></div>
+      <div class="cfg-typeline">{{TYPE_A}}<span class="type-suffix">{{TYPE_EXTRA_A}}</span></div>
+      <p class="brief">{{BRIEF_A}}</p>
+      {{SPINE_ARM_A}}
+    </div>
+    <div class="cfg">
+      <div class="cfg-head"><span class="who">{{TAG_B}}</span><span class="badge {{CONF_CLASS_B}}">{{CONF_TEXT_B}}</span></div>
+      <div class="cfg-typeline">{{TYPE_B}}<span class="type-suffix">{{TYPE_EXTRA_B}}</span></div>
+      <p class="brief">{{BRIEF_B}}</p>
+      {{SPINE_ARM_B}}
+    </div>
+  </div>
+
+  <!-- 图 2 两人八位置横向对照：两条 8 槽条上下堆叠（甲上乙下）、同号位竖直对齐；
+       每槽四行＝位号 + 功能码 + 原型名短式 +（阴影槽）(阴影)；不含任何分数 -->
+  <figure class="stack-pair">
+    <div class="cfg-stack">{{STACK_BAND_A}}</div>
+    <div class="cfg-stack">{{STACK_BAND_B}}</div>
+  </figure>
+  <p class="fig-note">图 2 · 配置卡横向对照 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：上下两排按位号竖直对齐——同一竖列是同一号位；先看两边第 1 位的不同，再看哪几列同码；每槽自上而下为位置号、功能-态度码与原型名，不含任何分数。</p>
+
+  <p class="concl">{{CH00_CONCL}}</p>
+  <div class="cfg-notes">
+    <p>术语注：主导功能＝意识世界的主要组织者，最省力最可靠；劣势功能＝最不熟练、却最容易在压力下以原始方式接管的那一面。</p>
+    <p>以下所有比较都在"各自内部"的意义上进行："高"指在本人剖面内居前，不意味着比对方"强"。</p>
+  </div>
+</section>
+
+<!-- ════════ 总览位：关系地图（图 3） ════════ -->
+<section>
+  <h2>关系地图</h2>
+  <!-- 图 3 关系地图：行＝甲方毕比位、列＝乙方毕比位，行列头 = 原型名 + 位号角标
+       （底色=面归属：1–4 位绿洗、5–8 位灰洗）；矩阵按第 4/5 位分四象限（区域洗色 +
+       十字虚线 + 四个内嵌象限名，静态）；8 个功能各落 (甲位,乙位) 一格，
+       格底 = 功能原色 13% 淡底（{{MAP_CELLS}} 由 mapCells() 产出）；
+       格内只标功能码，不印位置/排序数字、无分数 -->
+  <div class="qmap-fig">
+    <div class="qmap-grid" role="img" aria-label="关系地图：行是甲方守的位、列是乙方守的位，行列按「英雄、父母、少年、阿尼玛、对立、长老、小丑、恶魔」排（原型名下的小字即位号）；矩阵分四象限——左上双方意识面、右上甲意识面·乙阴影面、左下乙意识面·甲阴影面、右下双方阴影面；八个功能各落一格，格底为该功能自己的淡色，不表示任何高低">
+      <span class="q-corner" aria-hidden="true"><b>甲方 ↓</b><i>乙方 →</i></span>
+      <span class="q-colhead" aria-hidden="true" style="grid-column:2">英雄<span class="pn">1</span></span>
+      <span class="q-colhead" aria-hidden="true" style="grid-column:3">父母<span class="pn">2</span></span>
+      <span class="q-colhead" aria-hidden="true" style="grid-column:4">少年<span class="pn">3</span></span>
+      <span class="q-colhead" aria-hidden="true" style="grid-column:5">阿尼玛<span class="pn">4</span></span>
+      <span class="q-colhead shadow-h" aria-hidden="true" style="grid-column:6">对立<span class="pn">5</span></span>
+      <span class="q-colhead shadow-h" aria-hidden="true" style="grid-column:7">长老<span class="pn">6</span></span>
+      <span class="q-colhead shadow-h" aria-hidden="true" style="grid-column:8">小丑<span class="pn">7</span></span>
+      <span class="q-colhead shadow-h" aria-hidden="true" style="grid-column:9">恶魔<span class="pn">8</span></span>
+      <span class="q-rowhead" aria-hidden="true" style="grid-row:2">英雄<span class="pn">1</span></span>
+      <span class="q-rowhead" aria-hidden="true" style="grid-row:3">父母<span class="pn">2</span></span>
+      <span class="q-rowhead" aria-hidden="true" style="grid-row:4">少年<span class="pn">3</span></span>
+      <span class="q-rowhead" aria-hidden="true" style="grid-row:5">阿尼玛<span class="pn">4</span></span>
+      <span class="q-rowhead shadow-h" aria-hidden="true" style="grid-row:6">对立<span class="pn">5</span></span>
+      <span class="q-rowhead shadow-h" aria-hidden="true" style="grid-row:7">长老<span class="pn">6</span></span>
+      <span class="q-rowhead shadow-h" aria-hidden="true" style="grid-row:8">小丑<span class="pn">7</span></span>
+      <span class="q-rowhead shadow-h" aria-hidden="true" style="grid-row:9">恶魔<span class="pn">8</span></span>
+      <div class="qmap">
+        <span class="qlabel" aria-hidden="true" style="top:5px; left:8px">双方意识面</span>
+        <span class="qlabel" aria-hidden="true" style="top:5px; left:calc(50% + 9px)">甲意识面 · 乙阴影面</span>
+        <span class="qlabel" aria-hidden="true" style="top:calc(50% + 7px); left:8px">乙意识面 · 甲阴影面</span>
+        <span class="qlabel" aria-hidden="true" style="top:calc(50% + 7px); left:calc(50% + 9px)">双方阴影面</span>
+        {{MAP_CELLS}}
+      </div>
+    </div>
+  </div>
+  <table class="q-readout">
+    <thead>
+      <tr><th>功能</th><th>甲位置·原型</th><th>乙位置·原型</th><th>一句动力学（可能倾向）</th></tr>
+    </thead>
+    <tbody>
+      {{MAP_ROWS}}
+    </tbody>
+  </table>
+  <p class="fig-note">图 3 · 关系地图（8×8 位置对应矩阵） ｜ 图形层级：功能层 ｜ 读法：行是甲方守的位、列是乙方守的位，行列按「英雄 → 父母 → 少年 → 阿尼玛 → 对立 → 长老 → 小丑 → 恶魔」排（原型名下的小字即位号）；十字虚线把矩阵切成四象限——左上双方意识面、右上甲意识面·乙阴影面、左下乙意识面·甲阴影面、右下双方阴影面；格底色＝该功能自己的颜色，不表示任何高低。</p>
+</section>
+
+<!-- ════════ 01 相遇的地基 ════════ -->
+<section>
+  <h2><span class="sec-no">01</span>相遇的地基</h2>
+  <p class="concl">{{CH01_CONCL}}</p>
+  <ul class="points">
+    {{CH01_POINTS}}
+  </ul>
+  {{ATTITUDE_AXES}}
+  <p class="fig-note">图 4 · 态度×节律格位图 ｜ 图形层级：双层{{CONF_LOW_TAG}} ｜ 读法：横排看劲朝外还是朝内，竖排看生活偏计划还是偏弹性；两个圆点落进同一个格，说明朝向与节律都同侧。</p>
+</section>
+
+<!-- ════════ 02 共同语言与频道差 ════════ -->
+<section>
+  <h2><span class="sec-no">02</span>共同语言与频道差</h2>
+  <p class="concl">{{CH02_CONCL}}</p>
+  <ul class="points">
+    {{CH02_POINTS}}
+  </ul>
+  {{CHANNEL_AXES}}
+  <p class="fig-note">图 5 · 感知轴×判断轴双面板 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：左面板看收信息的那对功能、右面板看做决定的那对功能；两点同在一线上＝共享（同侧或入口相反），各在各的线上＝不共享；面板题色即共享与否。</p>
+</section>
+
+<!-- ════════ 03 吸引的无意识根源 ════════ -->
+<section>
+  <h2><span class="sec-no">03</span>吸引的无意识根源</h2>
+  <p class="concl">{{CH03_CONCL}}</p>
+  <ul class="points">
+    {{CH03_POINTS}}
+  </ul>
+  {{HIT_BADGES}}
+  <span class="fig-inmark">机制示意，非实测</span>
+  <p class="fig-note">图 6 · 命中徽章 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：每枚徽章是一个你们之间实际发生的无意识机制——空心虚线圆是内容出处（平时不用的一侧），实心圆是它在对方意识里的落点，箭头方向＝内容所在一方指向对方；未命中的机制不出图。</p>
+</section>
+
+<!-- ════════ 04 冲突的固定剧本 ════════ -->
+<section>
+  <h2><span class="sec-no">04</span>冲突的固定剧本</h2>
+  <p class="concl">{{CH04_CONCL}}</p>
+  <ul class="points">
+    {{CH04_POINTS}}
+  </ul>
+  <figure class="chain-fig">
+    <span class="fig-inmark">机制示意，非实测</span>
+    <div class="cn-node"><span class="cn-no">1</span><div class="cn-body"><b>触发情境</b><p>{{CHAIN_STEP_1}}</p></div></div>
+    <div class="cn-node"><span class="cn-no">2</span><div class="cn-body"><b>退行结论</b><p>{{CHAIN_STEP_2}}</p></div></div>
+    {{INTERLOCK}}
+    <div class="cn-node"><span class="cn-no">3</span><div class="cn-body"><b>互相升级</b><p>{{CHAIN_STEP_3}}</p></div></div>
+    <div class="cn-node exit"><span class="cn-no">4</span><div class="cn-body"><b>出口</b><p>{{CHAIN_STEP_4}}</p></div></div>
+  </figure>
+  <p class="fig-note">图 7 · 冲突因果链 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：四步自上而下——触发、各自的退行结论、互相升级、出口；②③之间出现互锁带表示双方可能同时退行、互为触发器，未命中则不出现。</p>
+</section>
+
+<!-- ════════ 05 这段关系的功课 ════════ -->
+<section>
+  <h2><span class="sec-no">05</span>这段关系的功课</h2>
+  <p class="concl">{{CH05_CONCL}}</p>
+  <ul class="points">
+    {{CH05_POINTS}}
+  </ul>
+  {{THIRD_NODE}}
+  <span class="fig-inmark">机制示意，非实测</span>
+  <p class="fig-note">图 8 · 纵向汇流图 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：顶部两个立场盒是你们各自守的一端（甲实线、乙虚线），两条箭头向下汇进同一个盒——第三条路由两种立场一起长出来。</p>
+  <div class="recall">
+    <div class="recall-card">
+      <h3 class="pa">{{TAG_A}}功课清单</h3>
+      <ul class="rl">
+        {{TASK_A}}
+      </ul>
+    </div>
+    <div class="recall-card">
+      <h3 class="pb">{{TAG_B}}功课清单</h3>
+      <ul class="rl">
+        {{TASK_B}}
+      </ul>
+    </div>
+  </div>
+  <div class="translate">
+    <h3>翻译清单</h3>
+    <ul class="tl">
+      {{TRANSLATE_LIST}}
+    </ul>
+  </div>
+  <div class="conj">
+    <h3>共同任务</h3>
+    <p>{{COMMON_TASK}}</p>
+  </div>
+</section>
+
+<!-- ════════ 06 边界声明（固定文案，逐字） ════════ -->
+<section>
+  <h2><span class="sec-no">06</span>边界声明</h2>
+  <div class="bcard">
+    <p>本分析基于双方的自陈式偏好分数。八维分数是个体内相对数据（量表内八项之和恒定），只能说明每个人内部各功能的相对强弱，不能在两人之间比较绝对高低。</p>
+    <p>页眉雷达为全文唯一一处两人分数同图：它只呈现形状，径向刻度固定 0–100（超过 100 的分数画在满半径处），环形网格仅锚定均值（50.75），不构成跨人高低比较。</p>
+    <p>本报告双方分数出自同一测评工具及版本。</p>
+    <p>本分析不构成对任何一方的能力评价、临床诊断，也不构成对这段关系的判决——荣格框架描述的是动力机制与双方的功课，不是"合不合适"的答案。</p>
+    <p>类型与堆叠是理解心理定向的启发式工具（荣格《心理类型》前言立场），不是对人的固定分类。</p>
+    <p>分数为测量时点的快照；涉及压力状态（loop/grip）的结论仅是对当前状态的假设。</p>
+    <p>本分析按理论边界只覆盖心理动力机制，不覆盖关系史、依恋、沟通行为与外部压力源。</p>
+    <p>本规范的模式目录与交叉类别为位置语义的受控推演，非文献原表。</p>
+    {{COND_LOW_CONF}}
+  </div>
+</section>
+
+<footer>本报告由 analyzing-functions 生成 · 理论依据：荣格《心理类型》《作为心理关系的婚姻》及其主流延伸 · 非临床诊断 · 非关系判决</footer>
+
+</body>
+</html>

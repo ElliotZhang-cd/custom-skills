@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>八维认知报告 · {{TYPE_PRIMARY}}</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   视觉规格（观测手册方向）
+   - 设计代币、逐图几何公式、图形状态、图注与禁区的唯一出处：
+     references/single-visual-spec.md；本 <style> 是其实现。
+   - 标记契约不变：全部占位符 token 与类名（.sec-no/.concl/.points/.theory-note/.fn/.hl/
+     .badge/.card/.bar-row/.mean/.att-note/.pos-grid/.pos-notes/.faces-note/.qa-rows/
+     .axis 各类/.tension-bar/.duo/.loop-fig/.dialogue-fig/.dir-card/.dir-no/.fig-note/
+     .chart-note/.tx-gloss/.shadow-mark）继续有效；生成方只填 token、不增删层。
+   - 颜色规则（全篇执行）：
+     ① 功能码与功能中文名一律染功能文本色 var(--码-text)（stacks.json function_colors_text）；
+        图形形状（条形、圆点、渐变、描边）用功能原色 var(--码)；
+     ② 章级结论块（.concl）句内 1–2 个关键词染赭红（.hl）；彩色文字 ≤15% 版面（只统计文字颜色）；
+     ③ 数值一律加粗不上色；
+     ④ 身份/归属可用底色与描边（意识面白底、阴影面 --soft 底）；颜色不作量值。
+   - 章号排版：.sec-no 为 h2 行内大号衬线赭红数字（<h2><span class="sec-no">NN</span>标题</h2>，
+     编号本身被报告规范（references/workflow-single.md）锁定）；标题上方禁 kicker/眉行。
+   - 本模板只规定样式与图形；正文文案一字不改地来自生成步骤。
+   ════════════════════════════════════════════════════════════ */
+:root {
+  --bg:#f6f2ea; --fg:#29241d; --muted:#6f6759; --border:#ddd3c1;
+  --card:#fffdf8; --accent:#9A3B26; --hairline:#e0d6c2; --soft:#f2ecdf;
+  --ok:#2F5D50; --warn:#956723;
+  --fi:#c0392b; --ni:#8e44ad; --fe:#2980b9; --ti:#16a085;
+  --te:#d35400; --ne:#e67e22; --se:#27ae60; --si:#7f8c8d;
+  --fi-text:#c0392b; --ni-text:#8e44ad; --fe-text:#2473a6; --ti-text:#117c67;
+  --te-text:#bd4b00; --ne-text:#a55a18; --se-text:#1c7d45; --si-text:#656f70;
+  --font-heading:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",SimSun,serif;
+  --font-body:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;
+  --maxw:720px;
+  --shadow:0 1px 2px rgba(41,36,29,.05),0 10px 28px -20px rgba(41,36,29,.22);
+}
+* { box-sizing:border-box; }
+body {
+  margin:0 auto; max-width:var(--maxw); padding:34px 24px 80px;
+  font-family:var(--font-heading); font-size:16px; line-height:1.8;
+  color:var(--fg); background-color:var(--bg);
+  font-variant-numeric:tabular-nums;
+  /* 纸张噪点纹理：内联 SVG，无外部请求 */
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0.14 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+::selection { background:rgba(154,59,38,.18); }
+strong { font-weight:700; }
+.fn { font-weight:700; font-style:normal; }
+.hl { color:var(--accent); font-weight:700; }
+
+/* ── 页眉（观测手册卷首：题块居左、雷达居右；双细线收边） ── */
+.masthead { display:flex; justify-content:space-between; align-items:flex-end;
+  gap:24px; padding:6px 2px 20px; border-bottom:3px double var(--border); }
+.masthead h1 { font-family:var(--font-heading); font-weight:700; font-size:2.1em;
+  line-height:1.3; margin:0; letter-spacing:.06em; }
+.masthead .sub { font-family:var(--font-body); font-size:.8em; color:var(--muted); margin-top:8px; }
+.masthead .sub.dim { font-size:.72em; color:#8d8271; }
+.radar-box { width:230px; flex-shrink:0; }
+.radar-box svg { width:100%; height:auto; display:block; }
+.chart-note { font-family:var(--font-body); font-size:.78em; color:var(--muted);
+  line-height:1.9; margin:8px 0 0; text-align:center; }
+
+/* ── 章节（.sec-no 大号衬线赭红数字随行；上间距 > 下间距；禁眉行） ── */
+section { margin-top:52px; }
+.ch-head, h2 { break-after:avoid; }
+h2 { display:flex; align-items:baseline; gap:14px; margin:44px 0 16px;
+  border-bottom:1px solid var(--border); padding-bottom:12px;
+  font-family:var(--font-heading); font-weight:700; font-size:1.42em; line-height:1.5; }
+h2 .sec-no { font-family:var(--font-heading); font-size:1.55em; line-height:1;
+  color:var(--accent); font-weight:700; }
+h3 { font-family:var(--font-heading); font-weight:700; font-size:1.05em; margin:26px 0 12px; }
+
+.muted { color:var(--muted); font-size:.88em; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:18px 20px; margin:14px 0; box-shadow:var(--shadow); }
+
+/* ── 三段式（copy-rules 写法规则 9；措辞口径见 copy-rules） ── */
+.concl { font-family:var(--font-heading); font-size:1.1em; font-weight:600;
+  line-height:1.85; margin:16px 0 12px; }
+.points { list-style:none; margin:10px 0 18px; padding:0; }
+.points li { position:relative; padding-left:16px; font-family:var(--font-body);
+  font-size:.89em; color:#453f35; line-height:1.75; margin-bottom:7px; }
+.points li::before { content:"—"; position:absolute; left:0; color:var(--accent); opacity:.7; }
+.theory-note { font-family:var(--font-body); font-size:.8em; color:var(--muted);
+  margin:16px 0 0; line-height:1.7; }
+.theory-note::before { content:"▸ "; }
+
+/* ── 图A 横向条形图（降序 8 行；均值虚线 50.75%；几何见 visual-spec §6.1） ── */
+.bars { position:relative; display:flex; flex-direction:column; gap:10px; padding:10px 2px 4px; }
+.bar-row { display:grid; grid-template-columns:118px 1fr 52px; gap:12px; align-items:center; }
+.bar-name { display:flex; gap:7px; align-items:baseline; justify-content:flex-end;
+  font-size:.84em; color:var(--muted); }
+.bar-name .fn { font-size:1.1em; }
+.bar-track { height:15px; background:rgba(41,36,29,.05); border-radius:4px; }
+.bar-track .fill { display:block; height:100%; border-radius:4px; }
+.bar-val { text-align:right; font-size:.84em; font-weight:700; }
+.mean { position:absolute; left:50.75%; top:-2px; bottom:0;
+  border-left:1.5px dashed #8d8271; pointer-events:none; }
+.mean span { position:absolute; top:-16px; left:-32px; font-family:var(--font-body);
+  font-size:10.5px; color:#8d8271; white-space:nowrap; }
+.chart-note { text-align:left; border-top:1px solid var(--border); margin-top:12px; padding-top:9px; }
+
+/* ── 01 态度优势一行小注（.att-note；四组并列、灰字） ── */
+.att-note { font-family:var(--font-body); font-size:.78em; color:var(--muted);
+  line-height:1.95; margin:8px 0 0; padding-top:4px; border-top:none;
+  display:flex; flex-wrap:wrap; gap:4px 18px; }
+.att-note .at { white-space:nowrap; font-variant-numeric:tabular-nums; }
+
+/* ── 01 类型卡（类型大字 + 三态徽章 + 另一种可能一行注） ── */
+.type-hero { display:flex; align-items:center; gap:28px; margin:8px 0 4px;
+  padding:10px 8px; }
+.type-hero .type { font-family:var(--font-heading); font-size:3.4em; font-weight:700;
+  letter-spacing:.04em; line-height:1; }
+.type-side { display:flex; flex-direction:column; gap:10px; }
+.badge { display:inline-block; align-self:flex-start; padding:3px 12px; border-radius:20px;
+  font-family:var(--font-body); font-size:.78em; font-weight:700; letter-spacing:.04em; }
+.badge.high { background:#E2ECDF; color:#1F5D46; }
+.badge.mid { background:#F4E8CA; color:#7A5210; }
+.badge.low { background:#F0D9CB; color:#8A3A12; }
+.conf-reason { font-family:var(--font-body); font-size:.8em; color:var(--muted);
+  margin:0; line-height:1.7; }
+.alt-card { background:var(--soft); border:1px solid var(--border); border-radius:10px;
+  padding:10px 14px; font-family:var(--font-body); font-size:.84em; line-height:1.8;
+  margin-top:12px; color:#5c5548; }
+
+/* ── 02A 四原型 × 两面对照图（2 列等宽 ×4 行；行即配对；几何见 visual-spec §6.2） ── */
+.pos-grid { margin:14px 0 0; break-inside:avoid; }
+.pg-head { display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  font-family:var(--font-body); font-size:.76em; color:var(--muted); padding:2px 0 10px; }
+.pg-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px; }
+.pg-cell { display:flex; align-items:center; gap:10px; padding:10px 14px;
+  border:1px solid var(--border); border-radius:9px; background:var(--card); }
+.pg-cell.sha { background:var(--soft); }
+.pg-pos { font-family:var(--font-heading); font-weight:700; font-size:.9em;
+  color:var(--muted); min-width:18px; }
+.pg-role { font-family:var(--font-body); font-size:.78em; }
+.pg-code { margin-left:auto; font-weight:700; font-size:1em; white-space:nowrap; }
+.pg-score { font-size:.88em; min-width:42px; text-align:right; }
+
+/* 02A 图下注（白话定义逐字照抄 stacks.json；阴影位加激活场景行） */
+.pos-notes { display:grid; grid-template-columns:1fr 1fr; gap:10px 24px; margin-top:12px; }
+.pos-note { font-family:var(--font-body); font-size:.76em; color:var(--muted);
+  line-height:1.7; padding-left:12px; border-left:1px solid var(--border); }
+.pos-note-head { display:block; color:var(--fg); font-weight:600; margin-bottom:2px; }
+.pos-note .pn-act { display:block; margin-top:2px; }
+
+/* ── 02A 图下固定小注（一体两面 + 偏向五层；固定文案，逐字） ── */
+.faces-note { font-family:var(--font-body); font-size:.78em;
+  color:var(--muted); border-top:1px solid var(--border); padding-top:10px;
+  line-height:1.7; margin:10px 0 0; }
+
+/* ── 02B 四轴（轴卡；阴影轴整卡 opacity .55；几何见 visual-spec §6.3） ── */
+.axis { margin-bottom:14px; padding:16px 20px; background:var(--card);
+  border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow);
+  break-inside:avoid; }
+.axis.shadow { opacity:.55; }
+.axis-head { display:flex; align-items:baseline; gap:12px; margin-bottom:4px; }
+.axis-head .ax-name { font-weight:700; font-size:.92em; }
+.axis-head .ax-kind { font-family:var(--font-body); font-size:.72em; color:var(--muted);
+  letter-spacing:.06em; }
+.ax-body { display:grid; grid-template-columns:300px 1fr; gap:6px 26px; align-items:center; }
+.axis .beam { margin:0; }
+.axis .beam svg { width:100%; height:auto; display:block; }
+.axis-concl { font-weight:600; font-size:.85em; line-height:1.75; margin:6px 0; }
+.axis-points { margin:0 0 6px; padding:0; list-style:none; }
+.axis-points li { font-family:var(--font-body); font-size:.8em; color:#5c5548;
+  line-height:1.7; padding-left:14px; position:relative; }
+.axis-points li::before { content:"—"; position:absolute; left:0; color:var(--muted); }
+.axis-signal { font-family:var(--font-body); font-size:.78em; color:var(--muted);
+  line-height:1.7; margin:8px 0 0; }
+.axis-signal b { color:#8A4A2A; margin-right:8px; }
+.axis-tags { font-family:var(--font-body); font-size:.72em; letter-spacing:.08em;
+  color:var(--muted); margin:20px 0 10px; padding:6px 12px;
+  background:rgba(41,36,29,.045); border-radius:6px; display:inline-block; }
+
+/* ── 02B 三标签（阴影轴补偿/投射内容） ── */
+.qa-rows { display:flex; flex-direction:column; gap:7px; margin-top:4px;
+  font-family:var(--font-body); }
+.qa-rows .qa { display:grid; grid-template-columns:76px 1fr; gap:10px;
+  font-size:.8em; line-height:1.7; }
+.qa-rows .qa-k { color:var(--muted); font-size:.95em; padding-top:1px; }
+
+/* ── 表格（hairline 风格；对位列 ✓=.ok / ≈=.near 保留可用） ── */
+table { width:100%; border-collapse:collapse; margin:16px 0; font-size:.82em; }
+th, td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--border);
+  vertical-align:top; line-height:1.65; }
+th { white-space:nowrap; font-family:var(--font-body); color:var(--muted); font-weight:600;
+  font-size:.88em; letter-spacing:.05em; border-bottom:1.5px solid var(--border); }
+td { font-variant-numeric:tabular-nums; }
+th.num, td.num { text-align:right; }
+td.ok { color:var(--ok); font-weight:700; white-space:nowrap; }
+td.near { color:var(--warn); font-weight:700; white-space:nowrap; }
+.tbl-verdict { margin-top:12px; padding:10px 14px; background:rgba(41,36,29,.04);
+  border-radius:8px; font-family:var(--font-body); font-size:.82em; line-height:1.7; }
+
+/* ── 04 张力条（渐变轨道 + 意识重心标记；几何见 visual-spec §6.5） ── */
+.tension-bar { padding:6px 2px 2px; }
+.tn-labels { display:flex; justify-content:space-between; font-family:var(--font-body);
+  font-size:.82em; margin-bottom:22px; }
+.tn-bar { position:relative; height:16px; border-radius:5px; }
+.tn-marker { position:absolute; top:-7px; bottom:-7px; border-left:2.5px solid var(--fg); }
+.tn-marker span { position:absolute; top:-20px; left:-27px; font-family:var(--font-body);
+  font-size:11px; background:var(--card); padding:0 4px; white-space:nowrap; }
+.tn-caption { margin-top:16px; font-family:var(--font-body); font-size:.78em; color:var(--muted); }
+
+/* ── 04 对照小卡（渴望型 on / 盲区型对照；状态规则见 visual-spec §6.5） ── */
+.duo { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+.duo .mini-card { padding:14px 16px; border:1px solid var(--border); border-radius:10px;
+  background:var(--card); }
+.duo .mini-card.on { background:#f6efe2; border-color:#e0d2b4; }
+.mc-head { font-weight:700; font-size:.85em; display:flex; align-items:center; gap:8px;
+  margin-bottom:6px; }
+.mc-tag { font-family:var(--font-body); font-size:.68em; font-weight:600; color:#7a5210;
+  background:#f0e2bc; border-radius:20px; padding:2px 8px; }
+.mc-tag.off { color:var(--muted); background:rgba(41,36,29,.06); }
+.duo .mini-card p { font-family:var(--font-body); font-size:.8em; color:#5c5548;
+  line-height:1.7; margin:0; }
+
+/* ── 05 回路图 / 06 对话图（.loop-fig / .dialogue-fig 内联 SVG；几何见 visual-spec §6.6/§6.7） ── */
+.loop-fig, .dialogue-fig { margin:16px 0 0; break-inside:avoid; }
+.loop-fig svg, .dialogue-fig svg { width:100%; height:auto; display:block; }
+
+/* ── 06 超越功能一句白话（组件级白话注，不占理论注额度） ── */
+.tx-gloss { font-family:var(--font-heading); font-size:.94em; line-height:1.8;
+  margin:16px 0; padding:12px 18px; background:rgba(154,59,38,.055); border-radius:10px; }
+
+/* ── 06 个体化方向编号卡片（左边框 + 编号染主打功能色：copy-rules 写法规则 8） ── */
+.dir-card { display:flex; gap:12px; background:var(--card); border:1px solid var(--border);
+  border-left:3px solid var(--dir-color,var(--accent)); border-radius:10px;
+  padding:14px 14px 14px 16px; margin:12px 0; break-inside:avoid; }
+.dir-card h3 { margin:2px 0 6px; font-size:.9em; display:flex; align-items:center; gap:8px; }
+.dir-no { font-family:var(--font-heading); font-size:1.55em; font-weight:700;
+  line-height:1; color:var(--dir-color,var(--accent)); }
+.dir-card p { margin:0; font-family:var(--font-body); font-size:.78em; color:#5c5548;
+  line-height:1.7; }
+
+.shadow-mark { color:var(--muted); font-size:.78em; white-space:nowrap; font-weight:400; }
+
+/* ── 图注 ── */
+.fig-note { font-family:var(--font-body); font-size:.77em; color:var(--muted);
+  line-height:1.9; margin:8px 0 0; border-top:1px solid var(--border); padding-top:9px; }
+
+footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
+  text-align:center; font-family:var(--font-body); color:#8d8271; font-size:.75em; line-height:2; }
+
+/* ── 响应式 ── */
+@media (max-width:640px){
+  .masthead { flex-direction:column; align-items:flex-start; }
+  .ax-body { grid-template-columns:1fr; }
+  .duo, .pos-notes { grid-template-columns:1fr; }
+  .pg-row, .pg-head { grid-template-columns:1fr; }
+  .type-hero { flex-direction:column; align-items:flex-start; gap:12px; }
+}
+
+/* ── PDF 优先 ── */
+@page { size:A4; margin:16mm 15mm; }
+@media print {
+  body { background:#fff; background-image:none; max-width:none; padding:0; }
+  .masthead { padding:10px 0 4px; }
+  .radar-box { width:200px; }
+  section { margin-top:36px; }
+  h2 { margin-top:28px; }
+  section, .card, .axis, table, .pos-grid, .pos-note, .tension-bar,
+    .duo .mini-card, .dir-card, .qa-rows, .concl, .points, .faces-note,
+    .att-note, .loop-fig, .dialogue-fig
+    { break-inside:avoid; }
+  * { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+ 单人报告视觉语言与逐图几何的唯一出处：references/single-visual-spec.md。
+ 本头部注释承担 token↔markup 契约（占位符清单与填充规则）；几何算法不再在本注释复述，
+ 一律按 visual-spec 第 6 部分的公式静态直出。
+ 占位符填充规则（静态直出，页面不依赖 JS 渲染内容）：
+ {{REPORT_DATE}}       例：2026-09-25
+ {{TYPE_PRIMARY}}      首选类型（唯一一个大字结论），例：INTJ；备选一律走 {{ALT_NOTE}} 一行注
+ {{RADAR_POLYGON}}     页眉雷达数据多边形 points（轴序/截断/均值环公式见 visual-spec §6.0）
+ {{RADAR_DOTS}}        8 个顶点圆点（cx,cy 取多边形各点，fill 取各功能原色）
+ {{CONF_LOW_NOTE}}     图注低置信加挂（「（含低置信推定，按首选类型陈述）」；置信度为低时填入，
+                        否则空串；仅栈层图注使用——页眉雷达与图 A 属功能层、永不加挂）
+ {{CH01_CONCL}}        01 章一句话结论（1–2 个自包含完整句，含分数证据；句内 1–2 个关键词用 .hl）
+ {{CH01_POINTS}}       01 要点行（≤3 条完整短句，每条只装一个因果、绑定分数/位置；0 条则整块省略）
+ {{CH01_NOTE}}         01 理论注（≤1 句，单人专属；0 句则省略）。
+                       01 章特例：{{CH01_CONCL}} 承载章级类型判断句；类型大字、置信度徽章、
+                       {{ALT_NOTE}} 一行注、{{CHART_A_ROWS}} 条形图属该章呈现组件，排在 {{CH01_POINTS}} 之后
+ {{CHART_A_ROWS}}      图A条形图 8 行 .bar-row（降序；条宽 = min(分数,100)%，填充色 = var(--码)；
+                       条名功能码/中文名染 var(--码-text)；数值加粗不上色）。
+                       不设图例；均值说明由 .mean 竖线 + 图 A 固定 .chart-note 一行承载
+                       （文字见 visual-spec §6.1）；A 无独立 .fig-note、无 aria（A 组豁免）
+ {{ATTITUDE_NOTE}}     01 章同卡内、.chart-note 之后的态度优势一行小注（.att-note）：
+                       四组同类功能对逐组写出优势态度，形如
+                       <span class="at">▸ F 类 <span class="fn" style="color:var(--fi-text)">Fi</span> 84.6 ＞ <span class="fn" style="color:var(--fe-text)">Fe</span> 39.2</span>；
+                       T/F/S/N 四组全出；灰字小注、不得写成正文段落
+ {{CONF_BADGE_CLASS}}  high / mid / low
+ {{CONF_BADGE_TEXT}}   判定置信度：高/中/低（固定文案）
+ {{CONF_REASON}}       一句置信度理由
+ {{ALT_NOTE}}          "另一种可能"一行注（所有置信度必出；逐字句式唯一出处：copy-rules「固定文案」章）
+ {{CH02_CONCL}}        02 章一句话结论（口径同 {{CH01_CONCL}}）
+ {{CH02_POINTS}}       02 要点行（≤3 条；0 条则整块省略）
+ {{CH02_NOTE}}         02 理论注（≤1 句；0 句则省略；轴内小结论属组件内部，不占本额度）
+ {{POSITION_GRID}}     02A 四原型 × 两面对照图（.pos-grid；markup 骨架与几何见 visual-spec §6.2）：
+                       2 列等宽 ×（列头 + 4 行），行 = 毕比四原型（1 英雄/女英雄、2 父母、
+                       3 永恒少年/少女、4 阿尼玛·阿尼姆斯）；左列意识面（白底格），右列阴影面
+                       （--soft 底格 + (阴影) 标注）；每格 = 位号 + 原型全名 + 功能码（染文本色）+ 分数；
+                       格宽一律等长、不编码任何量。容器 role="img" + aria-label
+ {{POSITION_NOTES}}    02A 图下注（.pos-notes，两列行卡）：位置 1–8 各一行
+                       「位号 · 原型全名 + 功能码 + {function_plain.plain_definition}」
+                       （白话定义逐字照抄 stacks.json，禁止即兴；行内不得出现比喻与「实际情况」字样）；
+                       每个阴影位 5–8 另加一行激活场景（"可能倾向"级，按 theory-spec §1.8 目录推演；
+                       第 8 位用最谨慎级表述）
+ {{AXIS_SECTION}}      02B 四条轴（结构见 visual-spec §6.3；对照卡已并入 02A——两列对照由 02A 网格承载、
+                       一体两面+偏向五层固定小注随 02A 图下 .faces-note 静态给出）：
+                       .axis-tags 性质标签两组（逐字文本：意识轴=自我认同 · 主动调用 · 日常适应 · 比较分化；
+                       阴影轴=无意识 · 被动 · 补偿 · 投射 · 压力下爆发 · 整合后创造；copy-rules 固定文案）+
+                       4 × .axis（主导–劣势轴 / 辅助–第三轴 / 阴影轴一 / 阴影轴二；轴名按 stacks.json
+                       axis_rule 推导，左功能固定在前）。每个 .axis = .axis-head（轴名 + 功能对，
+                       双码染文本色 + 轴类徽注）+ 天平 SVG（viewBox 0 0 300 120，倾角公式
+                       θ = clamp(−(s左−s右)×0.22, ±14°)，同档 |Δ|≤3 → θ=0 并加「· 同档」；
+                       阴影轴两卡整卡 class="axis shadow" 即 opacity .55）+
+                       .axis-concl 小结（1–2 句）；意识轴加 .axis-points ×2 与 .axis-signal 失衡信号
+                       （"可能"级）；阴影轴用 .qa-rows 三标签（谁在冒头/在哪看到/常见误会，
+                       内容落在补偿/投射/压力爆发，theory-spec §1.8 有据）。
+                       轴内 .concl/.points/.theory-note 均属组件内部内容，不计章级三段式额度；
+                       02 章章级理论注只有 {{CH02_NOTE}} 一处
+ {{CH03_CONCL}}        03 章一句话结论（口径同 {{CH01_CONCL}}）
+ {{CH03_POINTS}}       03 要点行（≤3 条：高分阴影三解各一条——后天情境要求／防御性使用／测量噪声；0 条则整块省略）
+ {{CH03_NOTE}}         03 理论注（≤1 句；0 句则省略）
+ {{DIFF_TABLE}}        03 对位主表完整 <table>（8 行：位｜原型｜功能｜分数｜排序｜对位｜读数；5–8 位功能码后加
+                       <span class="shadow-mark">(阴影)</span>；可在表尾附一行 .tbl-verdict 组件内结论）
+ {{CH04_CONCL}}        04 章一句话结论（口径同 {{CH01_CONCL}}）
+ {{CH04_POINTS}}       04 要点行（≤3 条；0 条则整块省略）
+ {{CH04_NOTE}}         04 理论注（≤1 句；0 句则省略）
+ {{TENSION_BAR}}       张力求组件（.tension-bar；markup 与重心公式见 visual-spec §6.5）：
+                       .tn-labels（两端「功能码 · 分数 · 端名」，码染文本色）+
+                       .tn-bar（linear-gradient(90deg, 主导色 0%, 主导色 30%, 劣势色 100%)）+
+                       .tn-marker（left = 主导分/(主导分+劣势分)×100%，标签「意识重心」）+
+                       .tn-caption 白话一句；容器 role="img" + aria；无独立 fig-note（豁免）
+ {{CH04_CARDS}}        04 组件：div.duo 两张 .mini-card（渴望型低分 / 盲区型低分）；
+                       状态规则：最低分 == 劣势位功能 → 渴望型卡加 .on（角标「你的剖面属于这一型」），
+                       最低分 == 第 7 位功能 → 盲区型卡加 .on；另一张恒为对照态（角标「对照项」）
+ {{CH05_CONCL}}        05 章一句话结论（口径同 {{CH01_CONCL}}）
+ {{CH05_POINTS}}       05 要点行（≤3 条；0 条则整块省略）
+ {{CH05_NOTE}}         05 理论注（≤1 句）：装术语白话或机制指向；退行衔接句归此处承载
+ {{LOOP_FIG}}          05 回路图（.loop-fig 内联 SVG；四态几何见 visual-spec §6.6）：
+                       四节点横排 1 主导/2 辅助/3 第三/4 劣势；底图恒在（1→2→3→4 三段实线箭头）；
+                       loop 命中叠双向循环弧 + 「循环在走」+ 节点2 虚线灰化 + 「被绕开」；
+                       grip 命中时节点4 实心接管 + 「接管」+ 节点1–3 组 opacity .45；
+                       双命中两态并存；未命中不画命中态；容器 role="img" + aria-label
+ {{STATE_TABLE}}       05 检测表完整 <table>（2 行：loop/grip；检测项｜判据｜你的数据｜本次结果）
+ （05 章理论注层唯一成员 = {{CH05_NOTE}}。章末固定时效声明「这是这次测试的快照，不是对你人格的定论。」
+   为 copy-rules「固定文案」固定字，非 token、逐字保留于章末，不计入理论注额度。）
+ {{CH06_CONCL}}        06 章一句话结论（口径同 {{CH01_CONCL}}）
+ {{CH06_POINTS}}       06 要点行（≤3 条；0 条则整块省略）
+ {{CH06_NOTE}}         06 理论注（≤1 句；0 句则省略）
+ {{CH06_TRANSCEND}}    06 超越功能一句白话（只一句；以 .tx-gloss 组件渲染——不占章级理论注额度）；
+                       居本章结论块/要点行之后、{{DIALOGUE_FIG}} 之前
+ {{DIALOGUE_FIG}}      06 双向对话 + 第三物图（.dialogue-fig 内联 SVG；几何与行级条件见 visual-spec §6.7）：
+                       四行 1↔5 / 2↔6 / 3↔7 / 4↔8；连线一律双向；4↔8 行恒为虚线 + 「间接途径」标签；
+                       2↔6 行仅当"辅助发展不足"成立时加「优先恢复」标签；容器 role="img" + aria-label
+ {{CH06_CARDS}}        06 组件：四组对话表（意识第 k 位 × 阴影第 9−k 位；功能码染文本色）+
+                       编号卡片 .dir-card（3–5 张）；每张卡片 inline style：
+                       --dir-color = 该卡主打功能文本色（var(--te-text) 等）——左边框与 .dir-no
+                       均取该色（copy-rules 写法规则 8）；
+                       卡标题与正文中的功能码一律染对应功能文本色
+
+ ── 章级三段式（硬约束；01–06 章；07 章边界声明为固定文案、不走三段式）──
+   每章正文按固定顺序三段；模板已把每层槽位显式锁定，生成方只填文字、不增删层：
+     ① {{CH0x_CONCL}} → <p class="concl">：一句话结论，1–2 个自包含完整句，含分数证据。
+     ② {{CH0x_POINTS}} → <ul class="points">：要点行，≤3 条；0 条时整块连同 <ul> 省略。
+     ③ {{CH0x_NOTE}} → <p class="theory-note">：理论注，≤1 句；0 句时整块省略。
+   呈现型组件排在 ② 与 ③ 之间；组件内部可自带加粗小结论（如 02B 每轴），不占章级额度。
+   章级三段式 token：{{CH0x_CONCL}} / {{CH0x_POINTS}} / {{CH0x_NOTE}}（x=1…6）。
+
+ ── 四条结构声明（写作时逐条执行；措辞口径见 copy-rules「写法规则」）──
+   R1 块白名单：每章正文只有 .concl/.points/.theory-note 三种文字块 + 呈现型组件。
+   R2 一个因果一句。R3 括号注只管句中术语白话注（结构位 (阴影)、位置锚点、表头标签不受管辖）。
+   R4 三个以上并列拆要点行。
+
+ ════════════════════════════════════════════════════════════ -->
+
+<header class="masthead">
+  <div class="mast-left">
+    <h1>八维认知报告</h1>
+    <div class="sub">{{REPORT_DATE}} · 基于荣格《心理类型》及其主流延伸</div>
+  </div>
+  <div class="radar-box">
+    <!-- 页眉雷达（几何见 visual-spec §6.0；轴序 Se Si Ne Ni Te Ti Fe Fi；均值虚线环 50.75） -->
+    <svg viewBox="0 0 250 200" role="img" aria-label="八维雷达">
+      <circle cx="150" cy="100" r="17.5" fill="none" stroke="#e6ddca" stroke-width="1"/>
+      <circle cx="150" cy="100" r="35" fill="none" stroke="#e6ddca" stroke-width="1"/>
+      <circle cx="150" cy="100" r="52.5" fill="none" stroke="#e6ddca" stroke-width="1"/>
+      <circle cx="150" cy="100" r="70" fill="none" stroke="#e6ddca" stroke-width="1"/>
+      <circle cx="150" cy="100" r="35.5" fill="none" stroke="#8d8271" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <g stroke="#e6ddca" stroke-width="1">
+        <line x1="150" y1="100" x2="150" y2="30"/><line x1="150" y1="100" x2="199.5" y2="50.5"/>
+        <line x1="150" y1="100" x2="220" y2="100"/><line x1="150" y1="100" x2="199.5" y2="149.5"/>
+        <line x1="150" y1="100" x2="150" y2="170"/><line x1="150" y1="100" x2="100.5" y2="149.5"/>
+        <line x1="150" y1="100" x2="80" y2="100"/><line x1="150" y1="100" x2="100.5" y2="50.5"/>
+      </g>
+      <polygon points="{{RADAR_POLYGON}}" fill="rgba(74,66,56,.10)" stroke="#4a4238" stroke-width="2"/>
+      {{RADAR_DOTS}}
+      <text x="71.5" y="136" text-anchor="end" font-family="Noto Sans SC,Microsoft YaHei,sans-serif" font-size="9.5" fill="#8d8271">均值 50.75</text>
+      <g font-family="Noto Serif SC,Source Han Serif SC,Songti SC,serif" font-size="11" font-weight="600">
+        <text x="150" y="20" text-anchor="middle" fill="#1c7d45">Se</text>
+        <text x="209.4" y="44.6" text-anchor="start" fill="#656f70">Si</text>
+        <text x="234" y="104" text-anchor="start" fill="#a55a18">Ne</text>
+        <text x="209.4" y="163.4" text-anchor="start" fill="#8e44ad">Ni</text>
+        <text x="150" y="184" text-anchor="middle" fill="#bd4b00">Te</text>
+        <text x="90.6" y="163.4" text-anchor="end" fill="#117c67">Ti</text>
+        <text x="66" y="104" text-anchor="end" fill="#2473a6">Fe</text>
+        <text x="90.6" y="44.6" text-anchor="end" fill="#c0392b">Fi</text>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<!-- ════════ 01 分数与类型 ════════ -->
+<section>
+  <h2><span class="sec-no">01</span>分数与类型</h2>
+  <p class="concl">{{CH01_CONCL}}</p>
+  <ul class="points">
+    {{CH01_POINTS}}
+  </ul>
+  <div class="card">
+    <div class="bars">
+      <div class="mean"><span>均值 50.75</span></div>
+      {{CHART_A_ROWS}}
+    </div>
+    <p class="chart-note">条长即分数（量表上限 121.8，超 100 封顶）；竖虚线为八项均值 50.75。八维高低只在你的剖面内部比较才有意义。</p>
+    <div class="att-note">{{ATTITUDE_NOTE}}</div>
+  </div>
+  <div class="card">
+    <div class="type-hero">
+      <span class="type">{{TYPE_PRIMARY}}</span>
+      <div class="type-side">
+        <span class="badge {{CONF_BADGE_CLASS}}">{{CONF_BADGE_TEXT}}</span>
+        <p class="conf-reason">{{CONF_REASON}}</p>
+        <div class="alt-card">{{ALT_NOTE}}</div>
+      </div>
+    </div>
+  </div>
+  <p class="theory-note">{{CH01_NOTE}}</p>
+</section>
+
+<!-- ════════ 02 类型结构：八位置与意识/阴影轴 ════════ -->
+<section>
+  <h2><span class="sec-no">02</span>类型结构：八位置与意识/阴影轴</h2>
+  <p class="concl">{{CH02_CONCL}}</p>
+  <ul class="points">
+    {{CH02_POINTS}}
+  </ul>
+  <h3>A 四原型 × 两面</h3>
+  {{POSITION_GRID}}
+  <p class="fig-note">读法：左列意识面（白底格，堆叠 1–4 位），右列阴影面（浅底格，堆叠 5–8 位）；同一行是同一个功能的两种态度——功能不变、态度翻转，行即配对。本图属栈层{{CONF_LOW_NOTE}}。</p>
+  <p class="faces-note">这八个位置是一体两面：不是两个人格，是同一批功能的两个极。「偏向某功能」至少混着五层意思——多成熟、排第几、像不像我、劲往哪流、能不能随时调用（偏向五层）。</p>
+  {{POSITION_NOTES}}
+  <h3>B 意识轴与阴影轴</h3>
+  {{AXIS_SECTION}}
+  <p class="theory-note">{{CH02_NOTE}}</p>
+</section>
+
+<!-- ════════ 03 分化与发展 ════════ -->
+<section>
+  <h2><span class="sec-no">03</span>分化与发展：哪些用得顺，哪些还生着</h2>
+  <p class="concl">{{CH03_CONCL}}</p>
+  <ul class="points">
+    {{CH03_POINTS}}
+  </ul>
+  {{DIFF_TABLE}}
+  <p class="theory-note">{{CH03_NOTE}}</p>
+</section>
+
+<!-- ════════ 04 内在张力 ════════ -->
+<section>
+  <h2><span class="sec-no">04</span>内在张力：你的矛盾从哪来</h2>
+  <p class="concl">{{CH04_CONCL}}</p>
+  <ul class="points">
+    {{CH04_POINTS}}
+  </ul>
+  {{TENSION_BAR}}
+  {{CH04_CARDS}}
+  <p class="theory-note">{{CH04_NOTE}}</p>
+</section>
+
+<!-- ════════ 05 状态评估 ════════ -->
+<section>
+  <h2><span class="sec-no">05</span>状态评估：有没有在硬撑</h2>
+  <p class="concl">{{CH05_CONCL}}</p>
+  <ul class="points">
+    {{CH05_POINTS}}
+  </ul>
+  {{LOOP_FIG}}
+  <p class="fig-note">读法：灰节点是日常通路里被跳过的一环；赭红弧线是信号指向的循环——底图恒在，信号成立才叠加。本图属栈层{{CONF_LOW_NOTE}}；分数快照反映测量时点的状态。</p>
+  {{STATE_TABLE}}
+  <p class="theory-note">{{CH05_NOTE}}</p>
+  <p class="muted">这是这次测试的快照，不是对你人格的定论。</p>
+</section>
+
+<!-- ════════ 06 个体化方向 ════════ -->
+<section>
+  <h2><span class="sec-no">06</span>个体化方向：往哪里长</h2>
+  <p class="concl">{{CH06_CONCL}}</p>
+  <ul class="points">
+    {{CH06_POINTS}}
+  </ul>
+  <p class="tx-gloss">{{CH06_TRANSCEND}}</p>
+  {{DIALOGUE_FIG}}
+  <p class="fig-note">读法：每行是一对「意识位 ↔ 阴影位」的对话，双向箭头表示谁也不吃掉谁；中间深色菱形是两极都被容下时长出的第三条路；虚线行＝只给间接途径。本图属栈层{{CONF_LOW_NOTE}}。</p>
+  {{CH06_CARDS}}
+  <p class="theory-note">{{CH06_NOTE}}</p>
+</section>
+
+<!-- ════════ 07 边界声明（固定文案，逐字） ════════ -->
+<section>
+  <h2><span class="sec-no">07</span>这份报告的边界</h2>
+  <p>这份报告基于你对自己行为偏好的报告，是偏好数据，不是能力测评，更不是临床诊断。</p>
+  <p>类型是理解心理定向的工具，不是贴在你身上的固定标签——这是荣格本人的立场。</p>
+  <p>分数反映的是作答这一刻的状态；人在变，解读也只是此刻的一张快照。</p>
+</section>
+
+<footer>本报告由 analyzing-functions 生成 · 理论依据：荣格《心理类型》及其主流延伸 · 非临床诊断</footer>
+
+</body>
+</html>

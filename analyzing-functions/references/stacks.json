@@ -1,0 +1,57 @@
+{
+  "_comment": "16型堆叠数据。stack 为毕比 1-8 位功能码；roles 固定；loop/grip 文案依据 Quenk《In the Grip》。判定时 stack[0]=主导, stack[1]=辅助, stack[3]=劣势, stack[6]=小丑位。",
+  "roles": ["英雄/女英雄", "父母", "永恒少年/少女", "阿尼玛·阿尼姆斯", "对立人格", "长老/女巫", "小丑/恶作剧者", "恶魔"],
+  "axis_rule": "意识轴=堆叠1–4位同类功能配对（N/S为感知轴，T/F为判断轴）；阴影轴=堆叠5–8位同类功能配对（5&8、6&7各成一轴）。",
+  "function_labels": {
+    "Se": "外倾感觉", "Si": "内倾感觉", "Ne": "外倾直觉", "Ni": "内倾直觉",
+    "Te": "外倾思考", "Ti": "内倾思考", "Fe": "外倾情感", "Fi": "内倾情感"
+  },
+  "function_family": { "Te": "T", "Ti": "T", "Fe": "F", "Fi": "F", "Se": "S", "Si": "S", "Ne": "N", "Ni": "N" },
+  "function_colors": {
+    "Fi": "#c0392b", "Ni": "#8e44ad", "Fe": "#2980b9", "Ti": "#16a085",
+    "Te": "#d35400", "Ne": "#e67e22", "Se": "#27ae60", "Si": "#7f8c8d"
+  },
+  "_function_colors_text_comment": "功能文本色：浅色功能色在白/纸底作小号文字时低于 WCAG AA 4.5:1，文字染色一律用本表（模板 CSS 变量 --{码}-text）；同色相仅降明度。图形填充（条形、圆点、色块、chip 底、SVG 形状底色）仍用 function_colors 原色。",
+  "function_colors_text": {
+    "Fi": "#c0392b", "Ni": "#8e44ad", "Fe": "#2473a6", "Ti": "#117c67",
+    "Te": "#bd4b00", "Ne": "#a55a18", "Se": "#1c7d45", "Si": "#656f70"
+  },
+  "function_mnemonic": {
+    "Ni": "预见收敛", "Ne": "发散可能", "Si": "存档熟路", "Se": "体验当下",
+    "Ti": "自洽建模", "Te": "推进结果", "Fi": "忠于内核", "Fe": "回应他人"
+  },
+  "_function_plain_comment": "比喻库（生成时照抄，禁止即兴）。metaphor 须守比喻三律：具体日常场景、≤15字单句、后跟'实际情况：'。改文风直接改这里。",
+  "function_plain": {
+    "Ni": { "plain_definition": "向内收束信息，感知事物背后的走向与内在意象", "metaphor": "像提前看过一遍的地图", "everyday_example": "别人还在讨论方案，你心里已经推演完三种结局" },
+    "Ne": { "plain_definition": "在眼前事物里看到各种可能与潜在关联", "metaphor": "像调收音机，一转就是好几个台", "everyday_example": "一个念头冒出来，能瞬间岔出五条岔路" },
+    "Si": { "plain_definition": "用既往经验的沉淀感知现实，重细节与稳定", "metaphor": "像老柜子，什么都归档留底", "everyday_example": "同样的错不踩第二次，几年前的细节还记得" },
+    "Se": { "plain_definition": "直接、不经过加工地感知当下的现实", "metaphor": "像快门，按下就是现在", "everyday_example": "手比脑子快，一把接住掉下来的杯子" },
+    "Te": { "plain_definition": "用客观标准、效率和可验证的结果组织外部事务", "metaphor": "像项目经理，只认排期和交付", "everyday_example": "争论谁对没用，先看数据和时间表" },
+    "Ti": { "plain_definition": "以内在逻辑一致性为准绳，构建概念体系本身", "metaphor": "像校轨仪，差一格都要调平", "everyday_example": "为一个定义的精确措辞，能琢磨一晚上" },
+    "Fe": { "plain_definition": "以现场氛围和共同体的价值标准作判断，主动维护和谐", "metaphor": "像房间温度计，进门先读气氛", "everyday_example": "没人说话也知道谁不高兴，顺手去圆场" },
+    "Fi": { "plain_definition": "以自己内在的价值和真实性为准绳作判断", "metaphor": "像内罗盘，针只指自己的标准", "everyday_example": "可以少拿好处，但不能违背自己的标准" }
+  },
+  "attitude_pairs": [["Ti","Te"],["Fi","Fe"],["Si","Se"],["Ni","Ne"]],
+  "loop_formula": {
+    "I": "主导与第三同为内倾功能：绕开辅助后容易形成封闭的内循环——判断和知觉都在内部打转，与外部现实失联。",
+    "E": "主导与第三同为外倾功能：绕开辅助后容易向外空转——行动和反应都很快，但失去了内在校准。"
+  },
+  "types": [
+    { "type": "ISTJ", "stack": ["Si","Te","Fi","Ne","Se","Ti","Fe","Ni"], "grip": { "inferior": "Ne", "description": "灾难化想象：认定各种可怕的可能性即将发生，越想越具体。" } },
+    { "type": "ISFJ", "stack": ["Si","Fe","Ti","Ne","Se","Fi","Te","Ni"], "grip": { "inferior": "Ne", "description": "灾难化想象：认定各种可怕的可能性即将发生，越想越具体。" } },
+    { "type": "INFJ", "stack": ["Ni","Fe","Ti","Se","Ne","Fi","Te","Si"], "grip": { "inferior": "Se", "description": "沉溺感官：暴食、冲动消费、过度运动，或对环境细节强迫性地关注。" } },
+    { "type": "INTJ", "stack": ["Ni","Te","Fi","Se","Ne","Ti","Fe","Si"], "grip": { "inferior": "Se", "description": "沉溺感官：暴食、冲动消费、过度运动，或对环境细节强迫性地关注。" } },
+    { "type": "ISTP", "stack": ["Ti","Se","Ni","Fe","Te","Si","Ne","Fi"], "grip": { "inferior": "Fe", "description": "情绪爆发：强烈感到不被欣赏、被排挤，平时不在意的评价突然变得刺人。" } },
+    { "type": "ISFP", "stack": ["Fi","Se","Ni","Te","Fe","Si","Ne","Ti"], "grip": { "inferior": "Te", "description": "强迫性地控制和挑剔外界，对效率和结果有过度执念。" } },
+    { "type": "INFP", "stack": ["Fi","Ne","Si","Te","Fe","Ni","Se","Ti"], "grip": { "inferior": "Te", "description": "强迫性地控制和挑剔外界，对效率和结果有过度执念。" } },
+    { "type": "INTP", "stack": ["Ti","Ne","Si","Fe","Te","Ni","Se","Fi"], "grip": { "inferior": "Fe", "description": "情绪爆发：强烈感到不被欣赏、被排挤，平时不在意的评价突然变得刺人。" } },
+    { "type": "ESTP", "stack": ["Se","Ti","Fe","Ni","Si","Te","Fi","Ne"], "grip": { "inferior": "Ni", "description": "偏执的宿命式预感：反复做阴暗的内在想象，认定事情必然走向某个坏结局。" } },
+    { "type": "ESFP", "stack": ["Se","Fi","Te","Ni","Si","Fe","Ti","Ne"], "grip": { "inferior": "Ni", "description": "偏执的宿命式预感：反复做阴暗的内在想象，认定事情必然走向某个坏结局。" } },
+    { "type": "ENFP", "stack": ["Ne","Fi","Te","Si","Ni","Fe","Ti","Se"], "grip": { "inferior": "Si", "description": "躯体化担忧：疑心自己生病，对细节强迫，沉溺于过去的具体片段。" } },
+    { "type": "ENTP", "stack": ["Ne","Ti","Fe","Si","Ni","Te","Fi","Se"], "grip": { "inferior": "Si", "description": "躯体化担忧：疑心自己生病，对细节强迫，沉溺于过去的具体片段。" } },
+    { "type": "ESTJ", "stack": ["Te","Si","Ne","Fi","Ti","Se","Ni","Fe"], "grip": { "inferior": "Fi", "description": "突然感到不被赏识、情绪受伤，把中性的言行都个人化。" } },
+    { "type": "ESFJ", "stack": ["Fe","Si","Ne","Ti","Fi","Se","Ni","Te"], "grip": { "inferior": "Ti", "description": "强迫性挑错：过度分析、对他人尖刻批判，逻辑变成攻击的武器。" } },
+    { "type": "ENFJ", "stack": ["Fe","Ni","Se","Ti","Fi","Ne","Si","Te"], "grip": { "inferior": "Ti", "description": "强迫性挑错：过度分析、对他人尖刻批判，逻辑变成攻击的武器。" } },
+    { "type": "ENTJ", "stack": ["Te","Ni","Se","Fi","Ti","Ne","Si","Fe"], "grip": { "inferior": "Fi", "description": "突然感到不被赏识、情绪受伤，把中性的言行都个人化。" } }
+  ]
+}
