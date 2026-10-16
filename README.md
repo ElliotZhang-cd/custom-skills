@@ -94,5 +94,5 @@ bash scripts/sync-wsl.sh        # 脏树守卫 → git pull --ff-only → 自动
 - workbuddy：`C:\Users\elliot\.workbuddy\skills\`（其市场件由自身机制管理；`_user_meta.json` 已 gitignore）
 - TRAE：`C:\Users\elliot\.trae-cn\skills\`（TRAE 平台自带 skill 非本体系，对账仅报告不删除）
 - ZCode：`C:\Users\elliot\.zcode\skills\`（手动第三方件放此处并登记 `manual-skills.md`，见铁律 6）
-- 桌面版 DSH：`C:\Users\elliot\.dsh\skills\`（`@deepseek-ai/dsh-skill-filesystem` 的 user-dsh 根 = `<dshHome>/skills`，`dshHome` = `$DSH_HOME`（本机 `C:\Users\elliot\.dsh\`）；DSH **不**扫描 `~/.claude/skills`，故单独登记此面；watcher 热加载，补链后无需重启即出现在技能目录）
+- 桌面版 DSH：`C:\Users\elliot\.dsh\skills\`（`@deepseek-ai/dsh-skill-filesystem` 的 user-dsh 根 = `<dshHome>/skills`，`dshHome` = `$DSH_HOME`（本机 `C:\Users\elliot\.dsh\`）；DSH **不**扫描 `~/.claude/skills`，故单独登记此面；watcher 热加载，补链后无需重启即出现在技能目录；手动第三方件 31 条与 ZCode 同集（真实副本，非链接，按 `manual-skills.md` 的「所在面」列入账），其中 6 条为 `disable-model-invocation: true` 的用户命令（grill-me / grill-with-docs / handoff / teach / to-questionnaire / wait-what）——DSH 按作者意图只把它们放进 `/` 命令面板、**不进模型技能目录**，用 `/grill-with-docs` 调用）
 - 脚本真相源：`scripts/sync-windows.bat` + `scripts/ensure_junctions.ps1`（`%USERPROFILE%` 派生路径，不硬编码用户名）
