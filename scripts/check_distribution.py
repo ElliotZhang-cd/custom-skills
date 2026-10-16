@@ -58,7 +58,7 @@ def thirdparty_set():
 
 
 LEDGER_TOKENS = {"agents": "wsl", "claude": "wsl", "workbuddy": "workbuddy",
-                 "trae": "trae", "zcode": "zcode"}
+                 "trae": "trae", "zcode": "zcode", "dsh": "dsh"}
 
 
 def manual_entries():

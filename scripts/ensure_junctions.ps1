@@ -1,5 +1,5 @@
-# ensure_junctions.ps1 - link-as-list (v6): create missing junctions for
-# selfbuilt + mllw on the three Windows surfaces. Idempotent.
+# ensure_junctions.ps1 - link-as-list (v6/v7): create missing junctions for
+# selfbuilt + mllw on the four Windows surfaces. Idempotent.
 # Manual third-party items (manual-skills.md ledger) are NOT managed here;
 # same-name real directories are skipped and reported.
 $ErrorActionPreference = 'Continue'
@@ -8,8 +8,17 @@ $mllwSrc = Join-Path $env:USERPROFILE 'Documents\LLMWiki\skills\maintaining-llm-
 $targets = @(
   (Join-Path $env:USERPROFILE '.workbuddy\skills'),
   (Join-Path $env:USERPROFILE '.trae-cn\skills'),
-  (Join-Path $env:USERPROFILE '.zcode\skills')
+  (Join-Path $env:USERPROFILE '.zcode\skills'),
+  (Join-Path $env:USERPROFILE '.dsh\skills')
 )
+# v7: desktop DSH materializes its skills root lazily, so link-as-list owns it:
+# create it as soon as the DSH home exists (a missing surface is otherwise skipped).
+$dshHome = Join-Path $env:USERPROFILE '.dsh'
+$dshSkills = Join-Path $dshHome 'skills'
+if ((Test-Path $dshHome) -and -not (Test-Path $dshSkills)) {
+  New-Item -ItemType Directory -Path $dshSkills -Force | Out-Null
+  Write-Output ("  [new] surface created: " + $dshSkills)
+}
 $items = @()
 Get-ChildItem $repo -Directory | Where-Object { Test-Path (Join-Path $_.FullName 'SKILL.md') } | ForEach-Object {
   $items += ,@($_.Name, $_.FullName)
