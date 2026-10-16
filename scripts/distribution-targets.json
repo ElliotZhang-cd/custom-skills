@@ -1,5 +1,5 @@
 {
-  "_comment": "custom-skills 分发白名单（封闭投影面），唯一配置源。sync 脚本与 check_distribution.py 共同消费。新增工具目录必须先在此显式登记。expect 字段控制该面 expected 包含的来源：selfbuilt / mllw / thirdparty / manual（manual = manual-skills.md 账本驱动，逐面取所在面匹配行）。role 字段（v7.3 起成为消费方，不再只是注解）：junction = Windows junction 面（只有这类面由 ensure_junctions.ps1 补链/清链）；link = POSIX 符号链接面；storage = 存储面（其自建/mllw 也是符号链接，但第三方为真实目录，不由 ensure_junctions.ps1 管）。required 字段（布尔，缺省 false，v7.3 新增）：该面是否属于本机在装的使用面——面目录不存在时只打 [WARN]，但 required=true 会计入退出码 1（check_distribution.py 与 ensure_junctions.ps1 同款口径），required=false/缺省时仅 WARN、不影响退出码。",
+  "_comment": "custom-skills 分发白名单（封闭投影面），唯一配置源。sync 脚本与 check_distribution.py 共同消费。新增工具目录必须先在此显式登记。expect 字段控制该面 expected 包含的来源：selfbuilt / mllw / thirdparty / manual（manual = manual-skills.md 账本驱动，逐面取所在面匹配行）。role 字段（v7.4 起成为消费方，不再只是注解）：junction = Windows junction 面（只有这类面由 ensure_junctions.ps1 补链/清链）；link = POSIX 符号链接面；storage = 存储面（其自建/mllw 也是符号链接，但第三方为真实目录，不由 ensure_junctions.ps1 管）。required 字段（布尔，缺省 false，v7.4 新增）：该面是否属于本机在装的使用面——面目录不存在时只打 [WARN]，但 required=true 会计入退出码 1（check_distribution.py 与 ensure_junctions.ps1 同款口径），required=false/缺省时仅 WARN、不影响退出码。",
   "version": 3,
   "surfaces": [
     {"id": "agents", "platform": "posix", "relpath": [".agents", "skills"], "expect": ["selfbuilt", "mllw", "thirdparty"], "role": "storage", "required": true},
