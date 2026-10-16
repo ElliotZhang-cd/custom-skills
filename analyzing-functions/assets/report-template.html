@@ -360,9 +360,8 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
  {{CH06_NOTE}}         06 理论注（≤1 句；0 句则省略）
  {{CH06_TRANSCEND}}    06 超越功能一句白话（只一句；以 .tx-gloss 组件渲染——不占章级理论注额度）；
                        居本章结论块/要点行之后、{{DIALOGUE_FIG}} 之前
- {{DIALOGUE_FIG}}      06 双向对话 + 第三物图（.dialogue-fig 内联 SVG；几何与行级条件见 visual-spec §6.7）：
-                       四行 1↔5 / 2↔6 / 3↔7 / 4↔8；连线一律双向；4↔8 行恒为虚线 + 「间接途径」标签；
-                       2↔6 行仅当"辅助发展不足"成立时加「优先恢复」标签；容器 role="img" + aria-label
+ {{DIALOGUE_FIG}}      06 双向对话 + 第三物图（.dialogue-fig 内联 SVG）；几何、行级条件与用色纪律的
+                       唯一出处是 visual-spec §6.7，本注释不复述；容器恒带 role="img" + aria-label（文案见 §6.7）
  {{CH06_CARDS}}        06 组件：四组对话表（意识第 k 位 × 阴影第 9−k 位；功能码染文本色）+
                        编号卡片 .dir-card（3–5 张）；每张卡片 inline style：
                        --dir-color = 该卡主打功能文本色（var(--te-text) 等）——左边框与 .dir-no
@@ -511,7 +510,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
   </ul>
   <p class="tx-gloss">{{CH06_TRANSCEND}}</p>
   {{DIALOGUE_FIG}}
-  <p class="fig-note">读法：每行是一对「意识位 ↔ 阴影位」的对话，双向箭头表示谁也不吃掉谁；中间深色菱形是两极都被容下时长出的第三条路；虚线行＝只给间接途径。本图属栈层{{CONF_LOW_NOTE}}。</p>
+  <p class="fig-note">读法：每行是一对「意识位 ↔ 阴影位」的对话，左右两段对称的双向箭头表示谁也不吃掉谁；四行都汇到中轴那条自下而上贯通的主干上——两端的对立被同时容下时，长出来的就是那条主干，也就是第三条路；最下一行 4↔8 用虚线，表示那一端只给间接途径。本图属栈层{{CONF_LOW_NOTE}}。</p>
   {{CH06_CARDS}}
   <p class="theory-note">{{CH06_NOTE}}</p>
 </section>
