@@ -251,8 +251,12 @@ def main():
 
     new_section = build_section(skills)
 
-    with open(args.output, "r", encoding="utf-8") as f:
-        content = f.read()
+    if os.path.isfile(args.output):
+        with open(args.output, "r", encoding="utf-8") as f:
+            content = f.read()
+    else:
+        # 首次运行：目标文件还不存在（新家目录的常见情形）——不要崩在 FileNotFoundError 上
+        content = ""
     new_content = replace_section(content, new_section)
     if new_content == content:
         print(f"{args.output}: no change ({len(skills)} skills)")
@@ -272,10 +276,13 @@ def main():
         return
 
     backup = args.output + ".bak"
-    shutil.copy2(args.output, backup)
+    if os.path.isfile(args.output):
+        shutil.copy2(args.output, backup)
+        print(f"{args.output}: updated ({len(skills)} skills), backup at {backup}")
+    else:
+        print(f"{args.output}: created ({len(skills)} skills)，目标原本不存在故无备份")
     with open(args.output, "w", encoding="utf-8", newline="\n") as f:
         f.write(new_content)
-    print(f"{args.output}: updated ({len(skills)} skills), backup at {backup}")
     return 0
 
 
