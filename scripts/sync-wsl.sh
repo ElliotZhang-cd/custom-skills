@@ -3,7 +3,8 @@
 # sync-wsl.sh - WSL 侧同步 custom-skills（GitHub 为唯一真相源）
 # 架构: GitHub repo = 唯一真相源; WSL ~/custom-skills 与 Windows 均为 clone + 编辑入口
 # 用法: bash ~/custom-skills/scripts/sync-wsl.sh   （或 ~/.local/bin 软链后直接跑）
-# 流程: 脏树守卫(含 untracked) -> git pull --ff-only -> 同步两级符号链接 -> 刷新 AGENTS.md 技能表 -> 分发对账 -> 锁文件快照备份
+# 流程: 脏树守卫(含 untracked) -> git pull --ff-only -> 同步两级符号链接(清失效链 + 建链)
+#       -> 刷新 AGENTS.md 技能表 -> 分发对账 -> 锁文件快照备份
 # 注意: 自建 skill 绝不进入 skills CLI 锁文件; 编辑只发生在任一 clone, push 后他端 pull
 # ============================================================
 set -u
@@ -35,37 +36,88 @@ fi
 git pull --ff-only "$ORIGIN" "$BRANCH" || fail "pull 失败（已排除本地修改干扰），请检查网络/代理"
 echo "[sync] 当前版本: $(git log -1 --oneline)"
 
-# ---- [3/6] 同步两级符号链接 ----
+# ---- [3/6] 同步两级符号链接（清失效链 + 建链）----
 # 仓库根目录含 SKILL.md 的目录 = 自建 skill（真相源）
 mapfile -t SKILLS < <(find "$REPO" -maxdepth 2 -name SKILL.md -printf "%h\n" | sed "s|$REPO/||" | sort)
 
-echo "[sync] 同步符号链接（共 ${#SKILLS[@]} 个自建 skill）..."
-for s in "${SKILLS[@]}"; do
-    link="$AGENTS_DIR/$s"
-    if [ ! -L "$link" ]; then
-        ln -s "$REPO/$s" "$link"
-        echo "  [agents] + $s -> $REPO/$s"
-    fi
-    link_c="$CLAUDE_DIR/$s"
-    if [ ! -L "$link_c" ]; then
-        ln -s "../../.agents/skills/$s" "$link_c"
-        echo "  [claude] + $s -> ../../.agents/skills/$s"
-    fi
-done
+is_repo_skill() { [ -f "$REPO/$1/SKILL.md" ]; }
 
-# 清理过期链接（仓库中已不存在的自建 skill；realpath 解析两级链，claude 链接也能命中）
+# .agents 层的归属：看链接自己的目标是否以 $REPO/ 开头。
+# v7.1 修正（补 2026-10-12 记录的缺口）：不再用 `realpath -m` 链式解析——
+# .agents 旧链先被删后，.claude 链的 realpath 会断在半途，落不进 "$REPO"/* 分支而漏删。
+agents_link_owned() {
+    local target
+    target="$(readlink "$AGENTS_DIR/$1" 2>/dev/null)" || return 1
+    case "$target" in
+        "$REPO"/*) return 0 ;;
+    esac
+    return 1
+}
+
+echo "[sync] 清理失效链接（只看链接自身目标；非本体系链接一律保留）..."
+cleaned=0
 for link in "$AGENTS_DIR"/* "$CLAUDE_DIR"/*; do
     [ -L "$link" ] || continue
     name="$(basename "$link")"
-    case "$(realpath -m "$link")" in
-        "$REPO"/*)
-            if [ ! -d "$REPO/$name" ]; then
+    case "$link" in
+        "$AGENTS_DIR"/*)
+            if agents_link_owned "$name" && ! is_repo_skill "$name"; then
                 rm "$link"
-                echo "  [clean] - $name（仓库已无此 skill）"
+                echo "  [clean] - .agents/$name（仓库已无此 skill）"
+                cleaned=$((cleaned + 1))
+            fi
+            ;;
+        *)
+            # .claude 层：目标为 .agents 层同名链接（两级链）或直接指仓库
+            target="$(readlink "$link" 2>/dev/null)"
+            owned=0
+            case "$target" in
+                "$REPO"/*) owned=1 ;;
+                *".agents/skills/$name"|"$AGENTS_DIR/$name")
+                    # 跟随 .agents 层归属：该层完全不存在（本轮已删或从未建立）→ 本体系残留；
+                    # 该层是本体系链接 → 本体系；该层是 foreign 链接（含悬空）或真实条目 → 不动。
+                    # 注意用 -L/-e 区分“不存在”与“存在但悬空”，否则会误删 foreign 链的二级链
+                    if { [ ! -L "$AGENTS_DIR/$name" ] && [ ! -e "$AGENTS_DIR/$name" ]; } \
+                       || { [ -L "$AGENTS_DIR/$name" ] && agents_link_owned "$name"; }; then
+                        owned=1
+                    fi
+                    ;;
+            esac
+            if [ "$owned" = 1 ] && ! is_repo_skill "$name"; then
+                rm "$link"
+                echo "  [clean] - .claude/$name（仓库已无此 skill）"
+                cleaned=$((cleaned + 1))
             fi
             ;;
     esac
 done
+[ "$cleaned" -eq 0 ] && echo "  （无失效链接）"
+
+echo "[sync] 同步符号链接（共 ${#SKILLS[@]} 个自建 skill）..."
+added=0
+for s in "${SKILLS[@]}"; do
+    link="$AGENTS_DIR/$s"
+    if [ ! -L "$link" ]; then
+        if [ -e "$link" ]; then
+            echo "  [note] 非符号链接，保留原样: $link"
+        else
+            ln -s "$REPO/$s" "$link"
+            echo "  [agents] + $s -> $REPO/$s"
+            added=$((added + 1))
+        fi
+    fi
+    link_c="$CLAUDE_DIR/$s"
+    if [ ! -L "$link_c" ]; then
+        if [ -e "$link_c" ]; then
+            echo "  [note] 非符号链接，保留原样: $link_c"
+        else
+            ln -s "../../.agents/skills/$s" "$link_c"
+            echo "  [claude] + $s -> ../../.agents/skills/$s"
+            added=$((added + 1))
+        fi
+    fi
+done
+echo "  [sum]  新增 $added / 清理 $cleaned"
 
 # ---- [4/6] 刷新 AGENTS.md 技能表 ----
 if [ -f "$TABLE_SCRIPT" ]; then
