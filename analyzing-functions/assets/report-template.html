@@ -88,7 +88,7 @@ h3 { font-family:var(--font-heading); font-weight:700; font-size:1.05em; margin:
   margin:16px 0 0; line-height:1.7; }
 .theory-note::before { content:"▸ "; }
 
-/* ── 图A 横向条形图（降序 8 行；均值虚线 50.75%；几何见 visual-spec §6.1） ── */
+/* ── 图A 横向条形图（严格降序 8 行，仅平分按输入顺序破平；均值虚线 50.75%；几何见 visual-spec §6.1） ── */
 .bars { position:relative; display:flex; flex-direction:column; gap:10px; padding:10px 2px 4px; }
 .bar-row { display:grid; grid-template-columns:118px 1fr 52px; gap:12px; align-items:center; }
 .bar-name { display:flex; gap:7px; align-items:baseline; justify-content:flex-end;
@@ -152,11 +152,14 @@ h3 { font-family:var(--font-heading); font-weight:700; font-size:1.05em; margin:
   color:var(--muted); border-top:1px solid var(--border); padding-top:10px;
   line-height:1.7; margin:10px 0 0; }
 
-/* ── 02B 四轴（轴卡；阴影轴整卡 opacity .55；几何见 visual-spec §6.3） ── */
+/* ── 02B 四轴（轴卡；阴影轴元素级弱化：卡底与虚线边框弱化、仅天平图形图元降透明（SVG 内文字与卡内正文全不透明）；几何见 visual-spec §6.3） ── */
 .axis { margin-bottom:14px; padding:16px 20px; background:var(--card);
   border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow);
   break-inside:avoid; }
-.axis.shadow { opacity:.55; }
+.axis.shadow { background:var(--soft); border:1px dashed var(--border); }
+.axis.shadow .beam svg line,
+.axis.shadow .beam svg circle,
+.axis.shadow .beam svg polygon { opacity:.55; }
 .axis-head { display:flex; align-items:baseline; gap:12px; margin-bottom:4px; }
 .axis-head .ax-name { font-weight:700; font-size:.92em; }
 .axis-head .ax-kind { font-family:var(--font-body); font-size:.72em; color:var(--muted);
@@ -289,7 +292,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
  {{CH01_NOTE}}         01 理论注（≤1 句，单人专属；0 句则省略）。
                        01 章特例：{{CH01_CONCL}} 承载章级类型判断句；类型大字、置信度徽章、
                        {{ALT_NOTE}} 一行注、{{CHART_A_ROWS}} 条形图属该章呈现组件，排在 {{CH01_POINTS}} 之后
- {{CHART_A_ROWS}}      图A条形图 8 行 .bar-row（降序；条宽 = min(分数,100)%，填充色 = var(--码)；
+ {{CHART_A_ROWS}}      图A条形图 8 行 .bar-row（严格降序，仅平分时按输入顺序破平；条宽 = min(分数,100)%，填充色 = var(--码)；
                        条名功能码/中文名染 var(--码-text)；数值加粗不上色）。
                        不设图例；均值说明由 .mean 竖线 + 图 A 固定 .chart-note 一行承载
                        （文字见 visual-spec §6.1）；A 无独立 .fig-note、无 aria（A 组豁免）
@@ -322,7 +325,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
                        axis_rule 推导，左功能固定在前）。每个 .axis = .axis-head（轴名 + 功能对，
                        双码染文本色 + 轴类徽注）+ 天平 SVG（viewBox 0 0 300 120，倾角公式
                        θ = clamp(−(s左−s右)×0.22, ±14°)，同档 |Δ|≤3 → θ=0 并加「· 同档」；
-                       阴影轴两卡整卡 class="axis shadow" 即 opacity .55）+
+                       阴影轴两卡 class="axis shadow"：元素级弱化（仅天平图元降透明、正文全不透明）)+
                        .axis-concl 小结（1–2 句）；意识轴加 .axis-points ×2 与 .axis-signal 失衡信号
                        （"可能"级）；阴影轴用 .qa-rows 三标签（谁在冒头/在哪看到/常见误会，
                        内容落在补偿/投射/压力爆发，theory-spec §1.8 有据）。
@@ -343,14 +346,17 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
                        .tn-caption 白话一句；容器 role="img" + aria；无独立 fig-note（豁免）
  {{CH04_CARDS}}        04 组件：div.duo 两张 .mini-card（渴望型低分 / 盲区型低分）；
                        状态规则：最低分 == 劣势位功能 → 渴望型卡加 .on（角标「你的剖面属于这一型」），
-                       最低分 == 第 7 位功能 → 盲区型卡加 .on；另一张恒为对照态（角标「对照项」）
+                       最低分 == 第 7 位功能 → 盲区型卡加 .on；同档条款（机制依据 theory-spec 补偿信号条）：
+                       最低分落在其他位置、但与劣势位（或第 7 位）相差 ≤3 分时，视同该位为最低、对应卡加 .on，
+                       且该卡措辞不得写「最低处」，须写成「垫底两档里，落在{位名}的是 {码} {分}（第 N 名），
+                       全场最低的 {码} {分} 只低 X.XX 分，同属一档」；另一张恒为对照态（角标「对照项」）
  {{CH05_CONCL}}        05 章一句话结论（口径同 {{CH01_CONCL}}）
  {{CH05_POINTS}}       05 要点行（≤3 条；0 条则整块省略）
  {{CH05_NOTE}}         05 理论注（≤1 句）：装术语白话或机制指向；退行衔接句归此处承载
  {{LOOP_FIG}}          05 回路图（.loop-fig 内联 SVG；四态几何见 visual-spec §6.6）：
                        四节点横排 1 主导/2 辅助/3 第三/4 劣势；底图恒在（1→2→3→4 三段实线箭头）；
                        loop 命中叠双向循环弧 + 「循环在走」+ 节点2 虚线灰化 + 「被绕开」；
-                       grip 命中时节点4 实心接管 + 「接管」+ 节点1–3 组 opacity .45；
+                       grip 命中时节点4 实心接管 + 「接管」+ 节点1–3 圆形 fill-opacity .45 + 功能码淡化（不用组级 opacity）；
                        双命中两态并存；未命中不画命中态；容器 role="img" + aria-label
  {{STATE_TABLE}}       05 检测表完整 <table>（2 行：loop/grip；检测项｜判据｜你的数据｜本次结果）
  （05 章理论注层唯一成员 = {{CH05_NOTE}}。章末固定时效声明「这是这次测试的快照，不是对你人格的定论。」
@@ -456,7 +462,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
   </ul>
   <h3>A 四原型 × 两面</h3>
   {{POSITION_GRID}}
-  <p class="fig-note">读法：左列意识面（白底格，堆叠 1–4 位），右列阴影面（浅底格，堆叠 5–8 位）；同一行是同一个功能的两种态度——功能不变、态度翻转，行即配对。本图属栈层{{CONF_LOW_NOTE}}。</p>
+  <p class="fig-note">读法：左列意识面（白底格，毕比 1–4 位），右列阴影面（浅底格，毕比 5–8 位）；同一行是同一个功能的两种态度——功能不变、态度翻转，行即配对。本图属栈层{{CONF_LOW_NOTE}}。</p>
   <p class="faces-note">这八个位置是一体两面：不是两个人格，是同一批功能的两个极。「偏向某功能」至少混着五层意思——多成熟、排第几、像不像我、劲往哪流、能不能随时调用（偏向五层）。</p>
   {{POSITION_NOTES}}
   <h3>B 意识轴与阴影轴</h3>

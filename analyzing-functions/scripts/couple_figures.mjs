@@ -294,7 +294,7 @@ export function hitBadges(hits = []) {
       const whom = kind === 'soul-a' ? '乙方' : '甲方';
       dir = kind === 'soul-a' ? '甲 → 乙' : '乙 → 甲';
       title = `${who}最深的一面，正是${whom}的日常`;
-      desc = `${who}第 4 位的内容，恰是${whom}看家本领所在的位置（见各行标注）——${whom}自然而然把它演出来，${who}却怎么也学不会${h.recv && h.recv > 1 ? '（承接位越靠后，强度越缓）' : ''}。`;
+      desc = `${who}第 4 位的内容，恰是${whom}看家本领所在的位置（看徽章里两个圆下面的小字）——${whom}自然而然把它演出来，${who}却怎么也学不会${h.recv && h.recv > 1 ? `（由对方的第 ${h.recv} 位接住，比由第 1 位接住力道缓一些）` : ''}。`;
     } else if (kind === 'flow-a' || kind === 'flow-b') {
       const lines = h.lines || [];
       emb = emblemLines(lines);

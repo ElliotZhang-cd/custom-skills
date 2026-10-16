@@ -330,6 +330,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
                                    否则空串；页眉雷达无图注、永不加挂）
   ── 06 边界声明（§5.3 固定文案；仅低置信条件行走 token）──
   {{COND_LOW_CONF}}                低置信行（逐字：§5.3 括注行；无低置信留空）
+  {{COND_TERM_LOWCONF}}            00 节术语注的低置信用法句（逐字：§5.3 低置信说明；无低置信留空；置于术语注块内 ipsative 段之前）
   ── 章节两段式（硬约束，00–05 节；06 固定文案）──
   每节只有 .concl 与 .points 两种文字块 + 呈现型组件；组件内部小结论不占额度；
   行文槽位 {{CH0x_CONCL}} / {{CH0x_POINTS}}（x=0…5）。分级不进版面。
@@ -400,6 +401,9 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
   <p class="concl">{{CH00_CONCL}}</p>
   <div class="cfg-notes">
     <p>术语注：主导功能＝意识世界的主要组织者，最省力最可靠；劣势功能＝最不熟练、却最容易在压力下以原始方式接管的那一面。</p>
+    <p>意识面＝日常优先、随时能调用的那半；阴影面＝平时不用、常在别人身上看到的那半。关系地图四象限：左上＝你们俩都日常优先的；右上＝甲方日常优先、乙方平时不用的；左下＝乙方日常优先、甲方平时不用的；右下＝你们俩都用得少的。</p>
+    <p>页眉雷达是你们各自八项投入的形状（实线＝甲方、虚线＝乙方），虚线环是两人共同的均值圈。</p>
+    {{COND_TERM_LOWCONF}}
     <p>以下所有比较都在"各自内部"的意义上进行："高"指在本人剖面内居前，不意味着比对方"强"。</p>
   </div>
 </section>
@@ -413,7 +417,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
        格底 = 功能原色 13% 淡底（{{MAP_CELLS}} 由 mapCells() 产出）；
        格内只标功能码，不印位置/排序数字、无分数 -->
   <div class="qmap-fig">
-    <div class="qmap-grid" role="img" aria-label="关系地图：行是甲方守的位、列是乙方守的位，行列按「英雄、父母、少年、阿尼玛、对立、长老、小丑、恶魔」排（原型名下的小字即位号）；矩阵分四象限——左上双方意识面、右上甲意识面·乙阴影面、左下乙意识面·甲阴影面、右下双方阴影面；八个功能各落一格，格底为该功能自己的淡色，不表示任何高低">
+    <div class="qmap-grid" role="img" aria-label="关系地图：行＝甲方各功能的号位，列＝乙方各功能的号位，行列按「英雄、父母、少年、阿尼玛、对立、长老、小丑、恶魔」排（原型名下的小字即位号）；矩阵分四象限——左上双方意识面、右上甲意识面·乙阴影面、左下乙意识面·甲阴影面、右下双方阴影面；八个功能各落一格，格底为该功能自己的淡色，不表示任何高低">
       <span class="q-corner" aria-hidden="true"><b>甲方 ↓</b><i>乙方 →</i></span>
       <span class="q-colhead" aria-hidden="true" style="grid-column:2">英雄<span class="pn">1</span></span>
       <span class="q-colhead" aria-hidden="true" style="grid-column:3">父母<span class="pn">2</span></span>
@@ -448,7 +452,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
       {{MAP_ROWS}}
     </tbody>
   </table>
-  <p class="fig-note">图 3 · 关系地图（8×8 位置对应矩阵） ｜ 图形层级：功能层 ｜ 读法：行是甲方守的位、列是乙方守的位，行列按「英雄 → 父母 → 少年 → 阿尼玛 → 对立 → 长老 → 小丑 → 恶魔」排（原型名下的小字即位号）；十字虚线把矩阵切成四象限——左上双方意识面、右上甲意识面·乙阴影面、左下乙意识面·甲阴影面、右下双方阴影面；格底色＝该功能自己的颜色，不表示任何高低。</p>
+  <p class="fig-note">图 3 · 关系地图（8×8 位置对应矩阵） ｜ 图形层级：功能层 ｜ 读法：行＝甲方各功能的号位，列＝乙方各功能的号位，行列按「英雄 → 父母 → 少年 → 阿尼玛 → 对立 → 长老 → 小丑 → 恶魔」排（原型名下的小字即位号）；十字虚线把矩阵切成四象限——左上双方意识面、右上甲意识面·乙阴影面、左下乙意识面·甲阴影面、右下双方阴影面；格底色＝该功能自己的颜色，不表示任何高低。</p>
 </section>
 
 <!-- ════════ 01 相遇的地基 ════════ -->
@@ -459,7 +463,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
     {{CH01_POINTS}}
   </ul>
   {{ATTITUDE_AXES}}
-  <p class="fig-note">图 4 · 态度×节律格位图 ｜ 图形层级：双层{{CONF_LOW_TAG}} ｜ 读法：横排看劲朝外还是朝内，竖排看生活偏计划还是偏弹性；两个圆点落进同一个格，说明朝向与节律都同侧。</p>
+  <p class="fig-note">图 4 · 态度×节律格位图 ｜ 图形层级：双层{{CONF_LOW_TAG}} ｜ 读法：横排看劲朝外还是朝内，竖排看生活偏计划还是偏弹性；两个圆点落在同一个格，说明朝向与节律都同侧，落在两个格则两者都不同。</p>
 </section>
 
 <!-- ════════ 02 共同语言与频道差 ════════ -->
@@ -470,7 +474,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
     {{CH02_POINTS}}
   </ul>
   {{CHANNEL_AXES}}
-  <p class="fig-note">图 5 · 感知轴×判断轴双面板 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：左面板看收信息的那对功能、右面板看做决定的那对功能；两点同在一线上＝共享（同侧或入口相反），各在各的线上＝不共享；面板题色即共享与否。</p>
+  <p class="fig-note">图 5 · 感知轴×判断轴双面板 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：左面板看收信息的那对功能、右面板看做决定的那对功能；两个圆点挂在同一根轴上＝共享（同侧或入口相反），各挂各的轴＝不共享；面板题色即共享与否。</p>
 </section>
 
 <!-- ════════ 03 吸引的无意识根源 ════════ -->
@@ -482,7 +486,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
   </ul>
   {{HIT_BADGES}}
   <span class="fig-inmark">机制示意，非实测</span>
-  <p class="fig-note">图 6 · 命中徽章 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：每枚徽章是一个你们之间实际发生的无意识机制——空心虚线圆是内容出处（平时不用的一侧），实心圆是它在对方意识里的落点，箭头方向＝内容所在一方指向对方；未命中的机制不出图。</p>
+  <p class="fig-note">图 6 · 命中徽章 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：每枚徽章是一个你们之间实际发生的无意识机制——空心虚线圆是内容出处（平时不用的一侧），实心圆是它在对方意识里的落点，箭头方向＝内容所在一方指向对方。</p>
 </section>
 
 <!-- ════════ 04 冲突的固定剧本 ════════ -->
@@ -500,7 +504,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
     <div class="cn-node"><span class="cn-no">3</span><div class="cn-body"><b>互相升级</b><p>{{CHAIN_STEP_3}}</p></div></div>
     <div class="cn-node exit"><span class="cn-no">4</span><div class="cn-body"><b>出口</b><p>{{CHAIN_STEP_4}}</p></div></div>
   </figure>
-  <p class="fig-note">图 7 · 冲突因果链 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：四步自上而下——触发、各自的退行结论、互相升级、出口；②③之间出现互锁带表示双方可能同时退行、互为触发器，未命中则不出现。</p>
+  <p class="fig-note">图 7 · 冲突因果链 ｜ 图形层级：栈层{{CONF_LOW_TAG}} ｜ 读法：四步自上而下——触发、各自的退行结论、互相升级、出口；图上出现互锁带才表示双方可能同时退行、互为触发器，只出底链即无此信号。</p>
 </section>
 
 <!-- ════════ 05 这段关系的功课 ════════ -->
@@ -550,7 +554,7 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
     <p>类型与堆叠是理解心理定向的启发式工具（荣格《心理类型》前言立场），不是对人的固定分类。</p>
     <p>分数为测量时点的快照；涉及压力状态（loop/grip）的结论仅是对当前状态的假设。</p>
     <p>本分析按理论边界只覆盖心理动力机制，不覆盖关系史、依恋、沟通行为与外部压力源。</p>
-    <p>本规范的模式目录与交叉类别为位置语义的受控推演，非文献原表。</p>
+    <p>本分析里的各类模式与位置关系判定，属对位置语义的受控推演，不是文献原表。</p>
     {{COND_LOW_CONF}}
   </div>
 </section>
