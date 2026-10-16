@@ -21,6 +21,10 @@
              自建的真实副本顶掉了。manual/thirdparty 池豁免（它们在投影面本来就是真实副本）。
              只在 role 为 junction/link/storage（或未声明 role）的面启用。
   WARN(面) = 面目录不存在（本机无此面）：只打 [WARN]，但该面 required: true 时计入退出码 1。
+配置自检 = 分发清单字段缺失/拼错、目标 id 不在 LEDGER_TOKENS、账本「所在目标」列含未声明的
+              token —— 一律明确报错并退出码 1，不再静默剔除或静默降级（见 specs/syncing-skills R5）。
+未登记目标 = 本机家目录下非空、含 SKILL.md、却不在分发清单里的技能目录 —— 只打 [NEW?] 提醒，
+              不影响退出码（空目录不报）。这是「工具在用、体系不知道」类事故的防线（R4）。
 默认只报告不删除；MISSING/EXTRA/BROKEN/CONFLICT/STALE 与 required 面缺失有哪样退出码 1；
 UNKNOWN 不影响结论。`--retire <surface-id>` 只打印该面的待清理链接清单，绝不删除（退出码 0）。
 """
@@ -67,6 +71,156 @@ def thirdparty_set():
 LEDGER_TOKENS = {"agents": "wsl", "claude": "wsl", "workbuddy": "workbuddy",
                  "zcode": "zcode", "dsh": "dsh"}
 
+VALID_PLATFORM = {"win", "posix"}
+VALID_EXPECT = {"selfbuilt", "mllw", "thirdparty", "manual"}
+VALID_ROLE = {"junction", "link", "storage"}
+SURFACE_KEYS = {"id", "platform", "relpath", "expect", "role", "required", "note"}
+
+
+def ledger_faces():
+    """账本第 5 列（所在目标）的原样取值 → 行号列表。用于校验 token 是否已声明。"""
+    if not LEDGER.is_file():
+        return {}
+    out = {}
+    try:
+        text = LEDGER.read_text(encoding="utf-8")
+    except OSError:
+        return {}
+    for n, line in enumerate(text.splitlines(), 1):
+        if not line.lstrip().startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 5 or cells[0] in ("名字", ""):
+            continue
+        if all(set(c) <= {"-", ":", " "} for c in cells):
+            continue   # markdown 分隔行 |---|---|
+        out.setdefault(cells[4], []).append(n)
+    return out
+
+
+def validate_config(surfaces):
+    """声明自检（R5）：字段缺失/拼错一律报错，不静默降级。
+
+    三类历史静默失败：platform 漏写 → Windows 端静默剔除该目标（连 [skip] 都不打）；
+    expect 键名或值拼错 → 该目标全部条目降 UNKNOWN；目标 id 不在 LEDGER_TOKENS →
+    该目标的 manual 池恒为空、账本里的手工技能一起失踪。"""
+    errors = []
+    tokens = set(LEDGER_TOKENS.values())
+    seen_ids = set()
+    for i, s in enumerate(surfaces, 1):
+        where = f"surfaces[{i}]"
+        if not isinstance(s, dict):
+            errors.append(f"{where} 不是对象")
+            continue
+        sid = s.get("id")
+        if sid:
+            where = f"surfaces[{i}] (id={sid})"
+        unknown = sorted(set(s) - SURFACE_KEYS)
+        if unknown:
+            errors.append(f"{where} 含未知字段: {', '.join(unknown)}"
+                          f"（合法字段: {', '.join(sorted(SURFACE_KEYS))}）")
+        if not isinstance(sid, str) or not sid:
+            errors.append(f"{where} 缺少 id")
+        elif not all(c.islower() or c.isdigit() or c == "-" for c in sid):
+            errors.append(f"{where} id 只能用小写字母/数字/连字符: {sid!r}")
+        elif sid in seen_ids:
+            errors.append(f"{where} id 与其他条目重复")
+        else:
+            seen_ids.add(sid)
+        if s.get("platform") not in VALID_PLATFORM:
+            errors.append(f"{where} platform 必须是 win 或 posix（当前 {s.get('platform')!r}）；"
+                          f"漏写会让该目标在 Windows 端被静默剔除")
+        rel = s.get("relpath")
+        if not isinstance(rel, list) or not rel or not all(
+                isinstance(x, str) and x for x in rel):
+            errors.append(f"{where} relpath 必须是非空字符串数组")
+        if "expect" not in s:
+            errors.append(f"{where} 缺少 expect（键名拼错会静默把该目标全部降为「多余」）")
+        else:
+            exp = s.get("expect")
+            if not isinstance(exp, list):
+                errors.append(f"{where} expect 必须是数组")
+            else:
+                bad = sorted(set(exp) - VALID_EXPECT)
+                if bad:
+                    errors.append(f"{where} expect 含非法来源: {', '.join(bad)}"
+                                  f"（合法: {', '.join(sorted(VALID_EXPECT))}）")
+                if "manual" in exp and sid not in LEDGER_TOKENS:
+                    errors.append(f"{where} 声明了 manual 但 id 不在 LEDGER_TOKENS，"
+                                  f"该目标的 manual 池会恒为空")
+        if s.get("role") not in VALID_ROLE:
+            errors.append(f"{where} role 必须是 junction / link / storage"
+                          f"（当前 {s.get('role')!r}）")
+        if "required" in s and not isinstance(s["required"], bool):
+            errors.append(f"{where} required 必须是布尔（当前 {s['required']!r}）")
+    for face, lines in sorted(ledger_faces().items()):
+        for part in [p.strip().lower() for p in face.split("+")]:
+            if part and part not in tokens:
+                errors.append(f"账本第 {lines[0]} 行「{face}」含未声明的目标 token: {part!r}"
+                              f"（已声明: {', '.join(sorted(tokens))}）")
+    return errors
+
+
+DISCOVER_MAX_DEPTH = 4
+DISCOVER_SKIP = {"node_modules", ".git", "__pycache__", ".vscode-server",
+                 ".cargo", ".rustup", ".venv", "venv"}
+
+
+def _same_path(a, b):
+    try:
+        return a.resolve() == b.resolve()
+    except OSError:
+        return a == b
+
+
+def discover_skill_dirs(declared, root=None):
+    """本机家目录下「非空、含 SKILL.md、却不在分发清单里」的技能目录（R4）。
+
+    这是 09-03（ZCode 冻结快照）与 10-16（DSH 未登记）两次「工具在用、体系不知道」
+    事故的防线。空目录不报——2026-08-04 的历史清理留下过 58 个空壳。"""
+    base = Path(root) if root else Path.home()
+    base_depth = len(base.parts)
+    found = []
+    for dirpath, dirnames, _ in os.walk(base, followlinks=False):
+        cur = Path(dirpath)
+        if len(cur.parts) - base_depth >= DISCOVER_MAX_DEPTH:
+            dirnames[:] = []
+            continue
+        dirnames[:] = [d for d in dirnames
+                       if d not in DISCOVER_SKIP and not (cur / d).is_symlink()]
+        if cur.name != "skills":
+            continue
+        if any(_same_path(cur, d) for d in declared):
+            continue
+        try:
+            names = sorted(e.name for e in cur.iterdir()
+                           if e.is_dir() and (e / "SKILL.md").is_file())
+        except OSError:
+            continue
+        if names:
+            found.append((cur, names))
+    return found
+
+
+def mllw_source_dirs():
+    """第二个来源自身的目录（它是来源、不是分发目标，发现机制应排除，避免自报）。"""
+    cands = [Path.home() / "Documents" / "LLMWiki" / "skills"]
+    mnt = Path("/mnt/c/Users")
+    if mnt.is_dir():
+        cands += [u / "Documents" / "LLMWiki" / "skills"
+                  for u in mnt.iterdir() if u.is_dir() and u.name not in SKIP_WIN_USERS]
+    return [c for c in cands if (c / MLLW).is_dir()]
+
+
+def report_undeclared(declared):
+    """[NEW?] 提醒：未登记的非空技能目录。只提醒，不改退出码。"""
+    for path, names in discover_skill_dirs(declared):
+        shown = ", ".join(names[:12])
+        if len(names) > 12:
+            shown += f" …(+{len(names) - 12})"
+        print(f"  [NEW?] {path}  未登记的非空技能目录: {len(names)} 项（{shown}）"
+              f"—— 属提醒、不影响退出码；在用则登记进分发清单，不用则清理")
+
 
 def manual_entries():
     """manual-skills.md 账本 → {surface_id: set(名字)}；账本缺失返回空（不假装对账）。
@@ -84,6 +238,8 @@ def manual_entries():
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
         if len(cells) < 5 or cells[0] in ("名字", ""):
             continue
+        if all(set(c) <= {"-", ":", " "} for c in cells):
+            continue   # markdown 分隔行 |---|---|
         face = cells[4].lower()
         for sid, token in LEDGER_TOKENS.items():
             if token in face:
@@ -303,6 +459,12 @@ def main(argv=None):
     surfaces = load_surfaces()
     if surfaces is None:
         return 1   # 配置不可用：不静默空跑
+    errs = validate_config(surfaces)
+    if errs:
+        print("[audit] 错误: 分发清单/账本自检未通过（不静默降级，见 R5）:")
+        for e in errs:
+            print(f"  - {e}")
+        return 1
     if "--retire" in argv:
         i = argv.index("--retire")
         if i + 1 >= len(argv):
@@ -333,6 +495,7 @@ def main(argv=None):
         if not sf["path"].is_dir() and sf["required"]:
             req_missing.append(sf["label"])
         bad |= audit(sf["label"], sf["path"], sub, sf["role"], sf["required"])
+    report_undeclared([sf["path"] for sf in expanded] + mllw_source_dirs())
     if bad:
         if req_missing:
             print(f"[audit] required 面缺失 {len(req_missing)} 个（计入退出码 1）: "

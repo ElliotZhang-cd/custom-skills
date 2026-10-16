@@ -1,11 +1,11 @@
-# elliot-skill-authoring
+# authoring-skills
 
 A portable meta-skill for creating, reviewing, and improving Agent Skills (`SKILL.md`).
 
 ## Structure
 
 ```text
-elliot-skill-authoring/
+authoring-skills/
 ├── SKILL.md
 ├── README.md
 ├── references/

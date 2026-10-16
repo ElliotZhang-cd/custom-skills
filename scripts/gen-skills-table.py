@@ -10,8 +10,14 @@ Usage:
   python3 gen-skills-table.py --dry-run  # print diff, no write
   python3 gen-skills-table.py --output /path/to/AGENTS.md
   python3 gen-skills-table.py --agents-dir /path/to/skills
+  python3 gen-skills-table.py --readme ~/custom-skills/README.md
+                                         # 重建 README 里的两个生成块（分发目标一览 + 自建技能表）
+
+为什么有 --readme：README 里的目标数与技能表以前靠人工维护，正是「文档↔事实」漂移的
+高频来源（2026-10-17 对齐现状报告 B1–B5）。生成取代校验：让漂移不可能，而不是检测它。
 """
 import argparse
+import json
 import os
 import re
 import shutil
@@ -19,6 +25,10 @@ import sys
 import yaml
 
 SKILLS_SYSTEM_RE = re.compile(r"<skills_system[^>]*>.*?</skills_system>", re.DOTALL)
+
+# --readme 模式的生成块：标记之间的一切由本脚本重建，标记之外一律是手写内容。
+EXPECT_LABEL = {"selfbuilt": "自建", "mllw": "第二个来源",
+                "thirdparty": "第三方", "manual": "手工技能"}
 
 USAGE_BLOCK = """<usage>
 When users ask you to perform tasks, check if any of the available skills below can help complete the task more effectively. Skills provide specialized capabilities and domain knowledge.
@@ -108,12 +118,131 @@ def replace_section(content, new_section):
     return content.rstrip() + "\n\n" + new_section + "\n"
 
 
+def first_sentence(text, limit=110):
+    part = re.split(r"(?<=[。！？!?])\s*", text.strip())[0].strip()
+    if len(part) > limit:
+        part = part[:limit].rstrip() + "…"
+    return part.replace("|", "\\|")
+
+
+def build_targets_table(targets):
+    """分发目标一览（给人看）。平台加载机制的细节不复述——见清单条目的 note 字段。"""
+    lines = ["| 目标 | 路径 | 角色 | 加载什么 |", "|---|---|---|---|"]
+    for t in targets:
+        rel = [x for x in t.get("relpath", []) if x]
+        if t.get("platform", "posix") == "win":
+            path = "%USERPROFILE%\\" + "\\".join(rel)
+        else:
+            path = "~/" + "/".join(rel)
+        expect = "、".join(EXPECT_LABEL.get(e, e) for e in t.get("expect", []))
+        lines.append(f"| `{t.get('id', '')}` | `{path}` | {t.get('role', '')} | {expect} |")
+    return "\n".join(lines)
+
+
+def build_selfbuilt_table(skills):
+    lines = ["| 技能 | 一句话 |", "|---|---|"]
+    for s in skills:
+        lines.append(f"| `{s['name']}` | {first_sentence(s['description'])} |")
+    return "\n".join(lines)
+
+
+def replace_readme_block(content, marker, body):
+    """替换 <!-- MARKER_START --> … <!-- MARKER_END -->；标记缺失即报错（不静默追加）。"""
+    pat = re.compile(r"<!-- " + marker + r"_START -->.*?<!-- " + marker + r"_END -->",
+                     re.DOTALL)
+    if not pat.search(content):
+        raise KeyError(marker)
+    block = f"<!-- {marker}_START -->\n{body}\n<!-- {marker}_END -->"
+    return pat.sub(lambda m: block, content, count=1)
+
+
+def inside_git_worktree(path):
+    """目标是否在 git 工作树内：是的话 git 就是备份，不必再写 .bak（.bak 会变成未跟踪文件）。"""
+    p = os.path.dirname(os.path.abspath(path))
+    while True:
+        if os.path.exists(os.path.join(p, ".git")):
+            return True
+        parent = os.path.dirname(p)
+        if parent == p:
+            return False
+        p = parent
+
+
+def main_readme(args):
+    targets_path = args.targets or os.path.join(args.repo, "scripts",
+                                                "distribution-targets.json")
+    if not os.path.isfile(targets_path):
+        print(f"error: 缺少分发清单 {targets_path}", file=sys.stderr)
+        return 1
+    try:
+        with open(targets_path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+    except (OSError, ValueError) as e:
+        print(f"error: 分发清单读取失败 {targets_path}: {e}", file=sys.stderr)
+        return 1
+    targets = cfg.get("surfaces")
+    if not isinstance(targets, list):
+        print(f"error: 分发清单缺少 surfaces 数组 {targets_path}", file=sys.stderr)
+        return 1
+    skills = collect_skills(args.repo)
+    if not skills:
+        print(f"error: 未在 {args.repo} 找到自建技能（含 SKILL.md 的目录）", file=sys.stderr)
+        return 1
+    try:
+        with open(args.readme, "r", encoding="utf-8") as f:
+            content = f.read()
+    except OSError as e:
+        print(f"error: {args.readme} 读取失败: {e}", file=sys.stderr)
+        return 1
+    new_content = content
+    for marker, body in (("TARGETS_TABLE", build_targets_table(targets)),
+                         ("SELF_BUILT_TABLE", build_selfbuilt_table(skills))):
+        try:
+            new_content = replace_readme_block(new_content, marker, body)
+        except KeyError:
+            print(f"error: {args.readme} 缺少生成块标记 "
+                  f"<!-- {marker}_START --> / <!-- {marker}_END -->", file=sys.stderr)
+            return 1
+    if new_content == content:
+        print(f"{args.readme}: no change ({len(targets)} targets, {len(skills)} skills)")
+        return 0
+    if args.dry_run:
+        import difflib
+        sys.stdout.writelines(difflib.unified_diff(
+            content.splitlines(keepends=True), new_content.splitlines(keepends=True),
+            fromfile=f"{args.readme} (current)", tofile=f"{args.readme} (new)", n=2))
+        print(f"\n[{len(targets)} targets, {len(skills)} skills, write skipped (dry-run)]")
+        return 0
+    if inside_git_worktree(args.readme):
+        with open(args.readme, "w", encoding="utf-8", newline="\n") as f:
+            f.write(new_content)
+        print(f"{args.readme}: updated ({len(targets)} targets, {len(skills)} skills)，"
+              f"未写 .bak（在 git 工作树内，git 即备份）")
+        return 0
+    backup = args.readme + ".bak"
+    shutil.copy2(args.readme, backup)
+    with open(args.readme, "w", encoding="utf-8", newline="\n") as f:
+        f.write(new_content)
+    print(f"{args.readme}: updated ({len(targets)} targets, {len(skills)} skills), "
+          f"backup at {backup}")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true", help="print diff without writing")
     parser.add_argument("--output", default=os.path.expanduser("~/AGENTS.md"))
     parser.add_argument("--agents-dir", default=os.path.expanduser("~/.agents/skills"))
+    parser.add_argument("--readme", default=None,
+                        help="改为重建 README 里的生成块（分发目标一览 + 自建技能表）")
+    parser.add_argument("--repo", default=os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))), help="自建仓库根（--readme 模式用）")
+    parser.add_argument("--targets", default=None,
+                        help="分发清单路径（默认 <repo>/scripts/distribution-targets.json）")
     args = parser.parse_args()
+
+    if args.readme:
+        return main_readme(args)
 
     skills = collect_skills(args.agents_dir)
     if not skills:
@@ -144,10 +273,11 @@ def main():
 
     backup = args.output + ".bak"
     shutil.copy2(args.output, backup)
-    with open(args.output, "w", encoding="utf-8") as f:
+    with open(args.output, "w", encoding="utf-8", newline="\n") as f:
         f.write(new_content)
     print(f"{args.output}: updated ({len(skills)} skills), backup at {backup}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

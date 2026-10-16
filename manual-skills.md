@@ -1,11 +1,12 @@
-# 手动安装第三方技能账本（manual-skills.md）
+# 手工技能登记表（manual-skills.md）
 
-> 记录不经 sync-windows.bat 自建分发、由人工放置的第三方 skill（现存面：ZCode、DSH）。
-> check_distribution.py 读取本表，把对账时的 UNKNOWN 升格为「有账手动件」；「待溯源」条目需人工补来源。
-> workbuddy 的 skillhub/市场件由其自身市场机制管理，不入本账。
-> 新增/裁撤使用面：手动件在各面是**真实副本**（不是链接），须把目录复制到该面 skills 下，并在本表「所在面」列补/删该面名；漏改则该面条目会被对账判为 UNKNOWN（仅列出、不报错）。
+> 记录不由同步脚本分发、由人工放置的第三方技能（现存目标：ZCode、DSH）。它们在分发目标里是**真实副本**，不是链接。
+> `check_distribution.py` 读取本表：有账的名字不再算「多余」，漏登则该名字会以提醒形式出现（仅列出、不报错）。
+> 入账纪律：名字若在锁文件 `~/.agents/.skill-lock.json` 里，**来源以锁文件为准**（取 `sourceUrl`）；查不到就写「来源不详」，不要留空。
+> workbuddy 的市场件由其自身市场机制管理，不入本账。
+> 新增/下线分发目标：把目录复制到该目标的 skills 下（或删除），并在本表「所在目标」列补/删该目标名。漏改只会产生提醒，不会报错。
 
-| 名字 | 来源 | 一句话 | 更新时间 | 所在面 |
+| 名字 | 来源 | 一句话 | 更新时间 | 所在目标 |
 |---|---|---|---|---|
 | Humanizer-zh-main | humanizer-zh（具体仓库待确认） | 去除文本 AI 生成痕迹 | 2026-08-23 | ZCode+DSH |
 | domain-modeling | github.com/mattpocock/skills | 构建打磨项目领域模型（CONTEXT.md/ADR），grill-with-docs 的依赖 | 2026-08-23 | ZCode+DSH |
@@ -24,21 +25,21 @@
 | wait-what | github.com/mattpocock/skills | 消息没落地时停止并用统一语言重述 | 2026-08-23 | ZCode+DSH |
 | writing-for-agents | github.com/mattpocock/skills | 给 agent 写文档（skills/AGENTS.md/CLAUDE.md） | 2026-08-23 | ZCode+DSH |
 | archify | tt-a1i/archify（skills CLI WSL 锁文件，v3.0.1；Windows 两面为同版本手动副本） | Agent 出 JSON IR → 校验 → 编译成单文件可交互架构/流程/时序/数据流/生命周期图，带机器可读修复回执 | 2026-09-30 | ZCode+DSH |
-| agent-browser | 待溯源 | Browser automation CLI for AI agents. Use when the user need… | 2026-08-13 | ZCode+DSH |
-| ai-textbook-distilling | 待溯源 | Distills multiple textbooks and lecture videos into one priv… | 2026-08-24 | ZCode+DSH |
-| banner-design | 待溯源 | Design banners for social media, ads, website heroes, creati… | 2026-08-13 | ZCode+DSH |
-| brand | 待溯源 | Brand voice, visual identity, messaging frameworks, asset ma… | 2026-08-13 | ZCode+DSH |
-| chart-visualization | 待溯源 | This skill should be used when the user wants to visualize d… | 2026-08-13 | ZCode+DSH |
-| consulting-analysis | 待溯源 | Use this skill when the user requests to generate, create, o… | 2026-08-13 | ZCode+DSH |
-| data-analysis | 待溯源 | Use this skill when the user uploads Excel (.xlsx/.xls) or C… | 2026-08-13 | ZCode+DSH |
-| design | 待溯源 | Comprehensive design skill: brand identity, design tokens, U… | 2026-08-13 | ZCode+DSH |
-| design-system | 待溯源 | Token architecture, component specifications, and slide gene… | 2026-08-13 | ZCode+DSH |
-| frontend-design | 待溯源 | Create distinctive, production-grade frontend interfaces wit… | 2026-08-13 | ZCode+DSH |
-| gh-cli | 待溯源 | GitHub CLI (gh) comprehensive reference for repositories, is… | 2026-08-13 | ZCode+DSH |
-| git-commit | 待溯源 | Execute git commit with conventional commit message analysis… | 2026-08-13 | ZCode+DSH |
-| slides | 待溯源 | Create strategic HTML presentations with Chart.js, design to… | 2026-08-13 | ZCode+DSH |
-| ui-styling | 待溯源 | Create beautiful, accessible user interfaces with shadcn/ui … | 2026-08-13 | ZCode+DSH |
+| agent-browser | 来源不详 | Browser automation CLI for AI agents. Use when the user need… | 2026-08-13 | ZCode+DSH |
+| ai-textbook-distilling | 来源不详 | Distills multiple textbooks and lecture videos into one priv… | 2026-08-24 | ZCode+DSH |
+| banner-design | 来源不详 | Design banners for social media, ads, website heroes, creati… | 2026-08-13 | ZCode+DSH |
+| brand | 来源不详 | Brand voice, visual identity, messaging frameworks, asset ma… | 2026-08-13 | ZCode+DSH |
+| chart-visualization | 来源不详 | This skill should be used when the user wants to visualize d… | 2026-08-13 | ZCode+DSH |
+| consulting-analysis | 来源不详 | Use this skill when the user requests to generate, create, o… | 2026-08-13 | ZCode+DSH |
+| data-analysis | 来源不详 | Use this skill when the user uploads Excel (.xlsx/.xls) or C… | 2026-08-13 | ZCode+DSH |
+| design | 来源不详 | Comprehensive design skill: brand identity, design tokens, U… | 2026-08-13 | ZCode+DSH |
+| design-system | 来源不详 | Token architecture, component specifications, and slide gene… | 2026-08-13 | ZCode+DSH |
+| frontend-design | 来源不详 | Create distinctive, production-grade frontend interfaces wit… | 2026-08-13 | ZCode+DSH |
+| gh-cli | 来源不详 | GitHub CLI (gh) comprehensive reference for repositories, is… | 2026-08-13 | ZCode+DSH |
+| git-commit | 来源不详 | Execute git commit with conventional commit message analysis… | 2026-08-13 | ZCode+DSH |
+| slides | 来源不详 | Create strategic HTML presentations with Chart.js, design to… | 2026-08-13 | ZCode+DSH |
+| ui-styling | 来源不详 | Create beautiful, accessible user interfaces with shadcn/ui … | 2026-08-13 | ZCode+DSH |
 
 > 依赖：`grill-me` → `grilling`；`grill-with-docs` → `grilling` + `domain-modeling`。
 > 目录名变体：`Humanizer-zh-main` 对应锁文件中的 `humanizer-zh`，待归一。
-> 更新：2026-10-03，共 31 条（待溯源 14 条）；brainstorming / test-driven-development / writing-plans 三件已溯源为 obra/superpowers v5.0.6/5.0.7（2026-03），本机清理删除。
+> 更新：2026-10-03，共 31 条（来源不详 14 条）；brainstorming / test-driven-development / writing-plans 三件已溯源为 obra/superpowers v5.0.6/5.0.7（2026-03），本机清理删除。
