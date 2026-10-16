@@ -8,7 +8,8 @@ rem   read selfbuilt + mllw via junctions to this repo (or LLMWiki), so
 rem   there is NOTHING to robocopy-distribute anymore. This script
 rem   refreshes the local clone (which the junctions follow), ensures
 rem   every selfbuilt/mllw skill has a junction on every surface
-rem   (link-as-list, idempotent), and runs the audit.
+rem   (link-as-list, idempotent), prunes the links this repo owns that no
+rem   longer resolve to a skill, and runs the audit.
 rem Usage: double-click, or schedule in Task Scheduler
 rem Audit: scripts\check_distribution.py (six surfaces, four on Windows;
 rem        manual items tracked via manual-skills.md ledger)
@@ -17,7 +18,8 @@ rem   cmd's multi-byte misparse (investigated 2026-08-13). Chinese in echo lines
 rem History: robocopy distribution + .custom-src markers removed 2026-09-03
 rem   (v6 all-junction, link-as-list via ensure_junctions.ps1);
 rem   desktop DSH (.dsh\skills) registered 2026-10-16 as a fourth Windows
-rem   junction surface (v7);
+rem   junction surface (v7); v7.1 2026-10-17 makes the link script also
+rem   prune links it owns whose target is dead or is no longer a skill;
 rem   see LLMWiki skill-maintenance-workflow v6/v7.
 rem ============================================================
 setlocal enabledelayedexpansion
@@ -55,7 +57,7 @@ if !errorlevel! neq 0 (
 )
 for /f "delims=" %%v in ('git log -1 --oneline') do echo [sync] 当前版本: %%v
 
-echo [2/3] ensuring junctions (link-as-list: selfbuilt + mllw on four surfaces)...
+echo [2/3] ensuring junctions (link-as-list: 四面补链 + 清理失效链)...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%REPO%\scripts\ensure_junctions.ps1"
 if !errorlevel! neq 0 (
     echo [sync] 注意: 存在源缺失， junction 未完全建齐。

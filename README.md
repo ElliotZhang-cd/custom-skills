@@ -49,7 +49,7 @@
 ### 架构
 
 - GitHub remote（`ElliotZhang-cd/custom-skills`）= **唯一真相源**（唯一账本）；WSL `~/custom-skills/` 与 Windows `C:\Users\elliot\custom-skills` 均为 clone + 编辑入口，任一端改完 push，他端 pull
-- 分发：WSL 侧 `~/.agents/skills/` → `~/.claude/skills/` 全为符号链接；Windows 四面（workbuddy / TRAE / ZCode / 桌面版 DSH）自建/mllw **全部 junction 化**（v6.1；DSH 面 2026-10-16 v7 纳入），`scripts/ensure_junctions.ps1` 幂等补链（link-as-list），push + 跑一次 bat 即全局生效
+- 分发：WSL 侧 `~/.agents/skills/` → `~/.claude/skills/` 全为符号链接；Windows 四面（workbuddy / TRAE / ZCode / 桌面版 DSH）自建/mllw **全部 junction 化**（v6.1；DSH 面 2026-10-16 v7 纳入），`scripts/ensure_junctions.ps1` = link-as-list：幂等补链 **+ 清理失效链**（v7.1 起，只清目标落在本仓库或 LLMWiki\skills 之下、且已不解析为技能的 junction/符号链接；foreign 链接与手动件不动），push + 跑一次 bat 即全局生效
 - 分发面白名单：`scripts/distribution-targets.json` 为唯一配置源（封闭投影面，新增工具目录须先在此显式登记）
 - 对账闭环：`scripts/check_distribution.py` 由白名单驱动六面对账（Windows 四面），输出 MISSING / EXTRA / UNKNOWN / BROKEN / CONFLICT（前四类缺失退出码 1，不中断同步）
 - 手动件账本：`manual-skills.md` 记录人工放置的第三方技能（TRAE / ZCode / DSH，含来源与更新时间），对账时把 UNKNOWN 升格为「有账手动件」
@@ -63,7 +63,7 @@
 4. 维护面 = 使用面，且使用面必须显式登记于 `distribution-targets.json`：WSL-claude/opencode、workbuddy、TRAE、ZCode（2026-09-03 v6 起纳入）、桌面版 DSH（2026-10-16 v7 起纳入）。新工具要加载技能，先登记再使用——DSH 只扫 `.dsh`/`.agents`/customSkillDirs/`<dshHome>`/`<agentsHome>` 五类固定根，**不读 `~/.claude/skills`**，照搬 Claude 面会静默漏技能
 5. 任何 add/update/remove 后运行 `python3 scripts/gen-skills-table.py` 刷新 AGENTS.md 技能表格
 6. Windows `C:\Users\elliot\.agents\skills` 已于 2026-09-03 废弃删除，不得重建为技能存放处；ZCode 的手动第三方件放 `.zcode\skills` 并登记 `manual-skills.md`（禁止无账拷贝）；桌面版 DSH 的手动第三方件放 `.dsh\skills` 并同样登记。⚠️ DSH 的 skill-filesystem 默认还会扫 `~/.agents/skills`（rank 500），该面在 Windows 已废弃，须保持不存在——重建它等于给 DSH 喂冻结快照
-7. 严禁向 junction 面 robocopy/复制——junction 指回本仓库，会引发自我复制污染真相源
+7. 严禁向 junction 面 robocopy/复制——junction 指回本仓库，会引发自我复制污染真相源；投影面的链接只由 `ensure_junctions.ps1` 增删（v7.1 起含自动清理失效链），手工放置的链接/目录会被对账点名为 UNKNOWN/EXTRA 而不自动处理
 
 ### 更新自建（任一端编辑 → push → 他端同步）
 
@@ -89,7 +89,7 @@ bash scripts/sync-wsl.sh        # 脏树守卫 → git pull --ff-only → 自动
 
 ### Windows 侧同步（workbuddy + TRAE + ZCode + 桌面版 DSH 全 junction）
 
-- 机制：v6.1 起 Windows 各面自建/mllw 全部为 junction（直指本仓库与 LLMWiki），**无副本、无冻结**；bat 退化为「pull + 幂等补链 + 对账」
+- 机制：v6.1 起 Windows 各面自建/mllw 全部为 junction（直指本仓库与 LLMWiki），**无副本、无冻结**；bat 退化为「pull + 幂等补链（含清理失效链）+ 对账」
 - push 后 → Windows 运行 `sync-custom-skills.bat`（git pull + ensure_junctions.ps1 补链 + 六面对账）
 - workbuddy：`C:\Users\elliot\.workbuddy\skills\`（其市场件由自身机制管理；`_user_meta.json` 已 gitignore）
 - TRAE：`C:\Users\elliot\.trae-cn\skills\`（TRAE 平台自带 skill 非本体系，对账仅报告不删除）
