@@ -124,7 +124,7 @@ if [ -f "$TABLE_SCRIPT" ]; then
     python3 "$TABLE_SCRIPT"
 fi
 
-# ---- [5/6] 分发对账（六面: .agents/.claude + workbuddy/TRAE/ZCode/DSH 经 /mnt/c；缺口退出码 1 但不中断） ----
+# ---- [5/6] 分发对账（五面: .agents/.claude + workbuddy/ZCode/DSH 经 /mnt/c；缺口退出码 1 但不中断） ----
 AUDIT_SCRIPT="$REPO/scripts/check_distribution.py"
 if [ -f "$AUDIT_SCRIPT" ]; then
     python3 "$AUDIT_SCRIPT" || true

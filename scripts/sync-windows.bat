@@ -2,7 +2,7 @@
 chcp 65001 >nul
 rem ============================================================
 rem sync-windows.bat - Windows side sync: pull + ensure-junctions + audit
-rem Since v6 (2026-09-03) ALL Windows surfaces (workbuddy / TRAE / zcode /
+rem Since v6 (2026-09-03) ALL Windows surfaces (workbuddy / zcode /
 rem   dsh, the last registered in v7 2026-10-16)
 rem   read selfbuilt + mllw via junctions to this repo (or LLMWiki), so
 rem   there is NOTHING to robocopy-distribute anymore. This script
@@ -11,15 +11,18 @@ rem   every selfbuilt/mllw skill has a junction on every surface
 rem   (link-as-list, idempotent), prunes the links this repo owns that no
 rem   longer resolve to a skill, and runs the audit.
 rem Usage: double-click, or schedule in Task Scheduler
-rem Audit: scripts\check_distribution.py (six surfaces, four on Windows;
+rem Audit: scripts\check_distribution.py (five surfaces, three on Windows;
 rem        manual items tracked via manual-skills.md ledger)
 rem NOTE: comments MUST stay ASCII-only. Chinese rem lines + chcp 65001 trigger
 rem   cmd's multi-byte misparse (investigated 2026-08-13). Chinese in echo lines only.
 rem History: robocopy distribution + .custom-src markers removed 2026-09-03
 rem   (v6 all-junction, link-as-list via ensure_junctions.ps1);
-rem   desktop DSH (.dsh\skills) registered 2026-10-16 as a fourth Windows
+rem   desktop DSH (.dsh\skills) registered 2026-10-16 as a Windows
 rem   junction surface (v7); v7.1 2026-10-17 makes the link script also
 rem   prune links it owns whose target is dead or is no longer a skill;
+rem   v7.3 2026-10-17 retires the TRAE surface (.trae-cn gone): four->three
+rem   Windows surfaces, six->five total, and the link script is driven by
+rem   distribution-targets.json instead of a hardcoded surface list;
 rem   see LLMWiki skill-maintenance-workflow v6/v7.
 rem ============================================================
 setlocal enabledelayedexpansion
@@ -57,13 +60,13 @@ if !errorlevel! neq 0 (
 )
 for /f "delims=" %%v in ('git log -1 --oneline') do echo [sync] 当前版本: %%v
 
-echo [2/3] ensuring junctions (link-as-list: 四面补链 + 清理失效链)...
+echo [2/3] ensuring junctions (link-as-list: 三面补链 + 清理失效链)...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%REPO%\scripts\ensure_junctions.ps1"
 if !errorlevel! neq 0 (
     echo [sync] 注意: 存在源缺失， junction 未完全建齐。
 )
 
-echo [3/3] 分发对账（六面，Windows 四面）...
+echo [3/3] 分发对账（五面，Windows 三面）...
 python "%REPO%\scripts\check_distribution.py"
 if !errorlevel! neq 0 (
     echo [sync] 注意: 上方存在缺口，按提示处理后重跑本脚本。
