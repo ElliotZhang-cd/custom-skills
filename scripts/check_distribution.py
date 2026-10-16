@@ -163,18 +163,44 @@ def resolve_surface_paths(s):
     return [wh.joinpath(*rel) for wh in win_homes()]
 
 
+_MANAGED_ROOTS = None
+
+
+def managed_roots():
+    """本体系管理根（is_managed 的判据来源）。
+
+    本机 clone（REPO）之外还要认 WSL 经 /mnt/c 看到的 Windows clone：WSL 审计 win 面时
+    面里的 junction 被 drvfs 暴露为符号链接，目标是 /mnt/c/Users/<u>/custom-skills/...，
+    而 Path.home() 在 WSL 是 /home/<u>——只认 home 会把每个 Windows junction 误判成
+    「外来真实副本」，STALE 就会全线误报。"""
+    global _MANAGED_ROOTS
+    if _MANAGED_ROOTS is None:
+        roots = [REPO, Path.home() / "custom-skills"]
+        mnt = Path("/mnt/c/Users")
+        if mnt.is_dir():
+            roots += [u / "custom-skills" for u in mnt.iterdir()
+                      if u.is_dir() and u.name not in SKIP_WIN_USERS]
+        _MANAGED_ROOTS = roots
+    return _MANAGED_ROOTS
+
+
 def is_managed(entry):
     """管理标记 = bat 写入的 .custom-src，或指向自建仓库/LLMWiki 的符号链接或 junction"""
     if (entry / MARKER).is_file():
         return True
-    custom = Path.home() / "custom-skills"
 
     def under_managed(real):
-        try:
-            real.relative_to(custom)
+        posix = real.as_posix().replace("\\", "/")
+        if "LLMWiki/skills" in posix:
             return True
-        except ValueError:
-            return "LLMWiki/skills" in real.as_posix()
+        for root in managed_roots():
+            try:
+                real.relative_to(root)
+                return True
+            except ValueError:
+                continue
+        # 兜底：Windows 盘符形式的目标（C:/Users/<u>/custom-skills/...）转不成 /mnt 路径
+        return "/custom-skills/" in posix
 
     if entry.is_symlink():
         try:
