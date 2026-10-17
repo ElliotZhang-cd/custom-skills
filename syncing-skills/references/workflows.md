@@ -111,7 +111,7 @@
 
 ## 第三方技能
 
-「第三方」= 由 `npx skills` 管理的技能。WSL 侧落在 `~/.agents/skills/`（真实目录），权威清单是锁文件 `~/.agents/.skill-lock.json`（v3，每条带 `sourceUrl` / `skillFolderHash` / `installedAt` / `updatedAt`）。**Windows 各目标没有 CLI 存储面**——那里的第三方是手工副本，走下一节。
+「第三方」= 由 `npx skills` 管理的技能。两端各有**一份存储面**：WSL `~/.agents/skills/`、Windows `%USERPROFILE%\.agents\skills`（2026-10-17 起，见 `docs/adr/0004`）；权威是各自目录下的锁文件 `.skill-lock.json`（v3，每条带 `sourceUrl` / `skillFolderHash` / `installedAt` / `updatedAt`）。CLI 会把技能物化到它**认识**的 agent 目录；不认识的面（`dsh` / `workbuddy`）仍需手工副本，走下一节。
 
 命令面（`skills` v1.7.0，可用 `npx skills --help` 复核）：
 
@@ -140,8 +140,8 @@
 
 ### 注意
 
-- 第三方在 WSL 是**真实目录**、在 Windows 是**手工副本**，两者不会自动一致；跨端差异靠对账点名，不靠脚本同步。
-- 锁文件是权威；`scripts/.backup/skill-lock.json` 只是快照兜底（**目前无消费方**）。
+- 两端的第三方存储面**各自独立**（各一份锁）：跨端不一致是常态，靠对账点名、不靠脚本抹平。
+- 锁文件是权威（按平台各一份）；`scripts/.backup/skill-lock.json` 只是 WSL 那份锁的快照兜底（**目前无消费方**）。
 - CLI 只往它自己的面注册表里列出的目录物化，因此它落的条目**可能不在分发清单里** → 靠对账的 `[UNK ]` 与 `[NEW?]` 点名，别假设它只动已登记的面。
 
 ---

@@ -22,7 +22,7 @@
 |---|---|---|---|
 | 自建 | 本仓库根下含 `SKILL.md` 的目录 | 链接（WSL 两级符号链接 / Windows junction） | 仓库自身——仓库即列表 |
 | 第二个来源 | `maintaining-llm-wiki` | 同上，指向 LLMWiki 源目录 | LLMWiki 仓库是否存在 |
-| 第三方 | `npx skills` 管理的技能 | WSL：`~/.agents/skills` 下的真实目录；Windows：不适用（无存储面） | 锁文件 `~/.agents/.skill-lock.json` |
+| 第三方 | `npx skills` 管理的技能 | 两端各有一份存储面：WSL `~/.agents/skills`、Windows `%USERPROFILE%\.agents\skills`（由 CLI 物化真实副本；它不认识 `dsh`/`workbuddy`，那两面靠手工副本） | 各平台自己的锁文件 `.skill-lock.json` |
 | 手工技能 | 人工放置、无仓库来源的第三方技能 | Windows 各目标下的真实副本 | 账本 `manual-skills.md` |
 
 ## 分发目标一览
@@ -32,6 +32,7 @@
 |---|---|---|---|
 | `agents` | `~/.agents/skills` | storage | 自建、第二个来源、第三方 |
 | `claude` | `~/.claude/skills` | link | 自建、第二个来源、第三方 |
+| `agents-win` | `%USERPROFILE%\.agents\skills` | storage | 第三方 |
 | `workbuddy` | `%USERPROFILE%\.workbuddy\skills` | junction | 自建、第二个来源 |
 | `zcode` | `%USERPROFILE%\.zcode\skills` | junction | 自建、第二个来源、手工技能 |
 | `dsh` | `%USERPROFILE%\.dsh\skills` | junction | 自建、第二个来源、手工技能 |
@@ -58,7 +59,7 @@
 
 ## 第三方与手工技能
 
-- 第三方（WSL 侧）由 `npx skills` 管理，权威名字清单是锁文件 `~/.agents/.skill-lock.json`（含来源 URL 与哈希）。
+- 第三方（两端各一份存储面）由 `npx skills` 管理，权威名字清单是各平台的锁文件 `.skill-lock.json`（含来源 URL 与哈希）。
 - 手工技能（Windows 各目标）是**真实副本**，权威清单是 `manual-skills.md`；它们会漂移，靠对账点名发现。
 - 工具自带市场、云端管理的条目不属本体系：对账只把它们列为「多余」提醒，不删除——要清就去工具自己的界面删。
 
@@ -71,7 +72,7 @@
 3. **编辑只发生在两个 clone 里**；不编辑任何分发目标内的条目（那里全是链接或副本）。改完 commit + push，另一端 pull 后才生效。
 4. **每个分发目标必须在 `scripts/distribution-targets.json` 里声明**——登记了才算在管；不再使用的目标要显式下线。
 5. **任何技能增删改后刷新派生表**（本文件的生成块、`~/AGENTS.md` 的技能表）。`~/AGENTS.md` 那张表只能在 WSL 侧刷新，因为它的来源面在 WSL。
-6. **禁止无账拷贝**：手工技能必须登记 `manual-skills.md`；Windows 不得重建 `~/.agents/skills`（理由见 `docs/adr/0004`）。
+6. **禁止无账拷贝**：手工技能必须登记 `manual-skills.md`。Windows 的 `%USERPROFILE%\.agents\skills` 是第三方存储面，**只能由 `npx skills` 写**：不得手工往里放、不得让它变陈旧（理由见 `docs/adr/0004`）。
 7. **严禁向 junction 目标复制**；目标的链接只由 `ensure_junctions.ps1` 增删。
 
 ## 日常操作
@@ -106,6 +107,6 @@ sync-custom-skills.bat   Windows 一键同步入口（转发到 scripts/sync-win
 
 ## 决定与沿革
 
-- `docs/adr/` — 4 条难回退的决定：唯一源头与双 clone、链接与副本的分工、对账的子集语义、Windows 不设 `.agents` 存储面。
+- `docs/adr/` — 4 条难回退的决定：自建看 git / 第三方看 npx、链接与副本的分工、对账的子集语义、Windows `.agents` 存储面只能由 npx 管理。
 - `specs/syncing-skills/` — 本技能构建期的需求、设计、任务与规则。
 - LLMWiki 的 `wiki/syntheses/skill-maintenance-workflow.md` — 为什么这样定、版本沿革与事故教训。
