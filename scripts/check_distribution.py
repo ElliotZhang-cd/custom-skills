@@ -415,10 +415,12 @@ def audit(label, path, pools, role="", required=False):
         owned = pools.get("selfbuilt", set()) | pools.get("mllw", set())
         stale_owned = (present - managed) & owned
         # 第三方（该面声明了 thirdparty 且不是存储面）：必须是**链接**——指向该平台的 npx 仓库层，
-        # 因此不必落在仓库/LLMWiki 之下；登记在册的存量副本显式接纳，存储面本身就是真实目录。
+        # 因此不必落在仓库/LLMWiki 之下。**不看登记表**：一个名字只要进了该平台的仓库层，
+        # 这一面就必须用链接承载它；仍是真实副本就是"冻结副本"，如实报出来（迁移由人做）。
+        # 存储面本身是第三方真实目录的所在地，不参与。
         stale_tp = set()
         if role != "storage":
-            for n in sorted(present & (pools.get("thirdparty", set()) - pools.get("manual", set()))):
+            for n in sorted(present & pools.get("thirdparty", set())):
                 e = path / n
                 if not (e.is_symlink() or read_link_target(e) is not None):
                     stale_tp.add(n)
