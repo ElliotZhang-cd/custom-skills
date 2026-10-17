@@ -102,25 +102,49 @@ done < <(find "$REPO" -maxdepth 2 -name SKILL.md -printf "%h\n" 2>/dev/null \
 [ -n "$MLLW_SRC" ] && SRC["$MLLW_NAME"]="$MLLW_SRC"
 [ "${#SRC[@]}" -gt 0 ] || fail "仓库里没找到任何自建 skill（根下含 SKILL.md 的目录）"
 
-# 归属判定：只看链接自身的**字面目标**（v7.1 的教训——不要用 realpath -m 链式解析，
+# 归属判定：只看链接自身的**字面目标**（v7.1 的教训——不要用 realpath 链式解析，
 # 否则 .agents 旧链先删后，.claude 链会断在半途而漏删）。
-link_owned() {  # $1=面目录 $2=名字
-    local dir="$1" name="$2" tgt d rel
-    tgt="$(readlink "$dir/$name" 2>/dev/null)" || return 1
-    case "$tgt" in
+#
+# 关键：指向另一个已声明面的同名条目时，必须**跟随该基准条目的归属**再判——
+# 基准层是真实目录/外来链（例如第三方的真实目录、人工放置的副本）就一律不动。
+# 2026-10-17 实证：少了这一步会把第三方在 .claude 面的 20 条二级链当成本体系残留删掉。
+entry_owned() {  # $1 = 指向链接的绝对路径
+    local e="$1" t d rel name base bt
+    [ -L "$e" ] || return 1                      # 真实目录/文件 → 不是我们的
+    t="$(readlink "$e" 2>/dev/null)" || return 1
+    case "$t" in
         "$REPO"/*) return 0 ;;
     esac
-    # 第二个来源的链：只有在我们**知道**源在哪时才认领，避免误删指向别处活链
+    # 第二个来源的链：只在**知道源在哪**时才认领，避免误删指向别处的活链
     if [ -n "$MLLW_SRC" ]; then
-        case "$tgt" in
+        case "$t" in
             *"Documents/LLMWiki/skills/$MLLW_NAME"*) return 0 ;;
         esac
     fi
-    # 指向另一个已声明面的同名条目（两级链）
+    name="$(basename "$e")"
     for d in "${FACE_DIR[@]}"; do
         rel="${d#"$HOME"/}"
-        case "$tgt" in
-            "$d/$name"|*"/$rel/$name") return 0 ;;
+        case "$t" in
+            "$d/$name"|*"/$rel/$name")
+                base="$d/$name"
+                # 基准条目整个不存在（既非文件也非链接）→ 我们的残留
+                if [ ! -e "$base" ] && [ ! -L "$base" ]; then
+                    return 0
+                fi
+                # 基准条目是我们的链接 → 跟随归属；否则（真实条目/外来链）不动
+                if [ -L "$base" ]; then
+                    bt="$(readlink "$base" 2>/dev/null)"
+                    case "$bt" in
+                        "$REPO"/*) return 0 ;;
+                    esac
+                    if [ -n "$MLLW_SRC" ]; then
+                        case "$bt" in
+                            *"Documents/LLMWiki/skills/$MLLW_NAME"*) return 0 ;;
+                        esac
+                    fi
+                fi
+                return 1
+                ;;
         esac
     done
     return 1
@@ -135,7 +159,7 @@ for id in "${!FACE_DIR[@]}"; do
     for link in "$dir"/*; do
         [ -L "$link" ] || continue
         name="$(basename "$link")"
-        if link_owned "$dir" "$name" && [ -z "${SRC[$name]:-}" ]; then
+        if entry_owned "$link" && [ -z "${SRC[$name]:-}" ]; then
             rm "$link"
             echo "  [clean] - ${dir#"$HOME"/}/$name（源已不存在）"
             cleaned=$((cleaned + 1))
