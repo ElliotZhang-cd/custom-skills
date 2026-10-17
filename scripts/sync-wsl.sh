@@ -96,11 +96,26 @@ MLLW_SRC="$(find_mllw_src || true)"
 
 # ---- 源集合：仓库根下含 SKILL.md 的目录（仓库即列表）+ 第二个来源 ----
 declare -A SRC=()
+declare -A SRC_POOL=()   # 名字 -> 归属池（selfbuilt / mllw）：门控必须按**池**判，不能按名字
 while IFS= read -r s; do
-    [ -n "$s" ] && SRC["$s"]="$REPO/$s"
+    if [ -n "$s" ]; then
+        SRC["$s"]="$REPO/$s"
+        SRC_POOL["$s"]="selfbuilt"
+    fi
 done < <(find "$REPO" -maxdepth 2 -name SKILL.md -printf "%h\n" 2>/dev/null \
          | sed "s|$REPO/||" | sort)
-[ -n "$MLLW_SRC" ] && SRC["$MLLW_NAME"]="$MLLW_SRC"
+# 第二个来源：**只有仓库里没有同名时才作为 mllw 池的一员**（仓库优先）。
+# 2026-10-17 两条实证教训：① 门控若按名字判（`[ "$name" = "$MLLW_NAME" ]`），一个名字从
+# mllw 迁进仓库后会被当成"还是 mllw"，于是任何未声明 mllw 的面都跳过它（合成面直接报 [MISS]）；
+# ② 两个仓库同时存在同名技能时必须有确定归属，不能看谁先写进 map。
+if [ -n "$MLLW_SRC" ]; then
+    if [ -n "${SRC[$MLLW_NAME]:-}" ]; then
+        note "$MLLW_NAME 同时在仓库与第二个来源里；按**仓库**归属（selfbuilt）"
+    else
+        SRC["$MLLW_NAME"]="$MLLW_SRC"
+        SRC_POOL["$MLLW_NAME"]="mllw"
+    fi
+fi
 [ "${#SRC[@]}" -gt 0 ] || fail "仓库里没找到任何自建 skill（根下含 SKILL.md 的目录）"
 
 # ---- 第三方池（**仓库层**）：npx 只管存储面与锁，本脚本负责把这些条目链到各面 ----
@@ -206,11 +221,8 @@ for id in "${!FACE_DIR[@]}"; do
         fi
     fi
     for name in $(printf '%s\n' "${!SRC[@]}" | sort); do
-        if [ "$name" = "$MLLW_NAME" ]; then
-            case "$exp" in *" mllw "*) ;; *) continue ;; esac
-        else
-            case "$exp" in *" selfbuilt "*) ;; *) continue ;; esac
-        fi
+        # 按**来源池**门控（不是按名字）：该名字所属的池 ∈ 本面 expect 才链
+        case "$exp" in *" ${SRC_POOL[$name]} "*) ;; *) continue ;; esac
         link="$dir/$name"
         if [ -L "$link" ]; then
             # 死链必须修：`-L` 对**死链**同样为真，只看它会把它当成"已有链接"跳过，
