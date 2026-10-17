@@ -213,9 +213,15 @@ for id in "${!FACE_DIR[@]}"; do
         fi
         link="$dir/$name"
         if [ -L "$link" ]; then
-            continue
-        fi
-        if [ -e "$link" ]; then
+            # 死链必须修：`-L` 对**死链**同样为真，只看它会把它当成"已有链接"跳过，
+            # 于是目标已消失的旧链接永远不被修复（2026-10-17 实证：一个名字从 mllw
+            # 迁到 selfbuilt 后，两面一直报 [BRK]，而本脚本报"新增 0"）。
+            if [ -e "$link" ]; then
+                continue
+            fi
+            rm -f "$link"
+            echo "  [$id] ~ $name 死链已清，重建"
+        elif [ -e "$link" ]; then
             note "非符号链接，保留原样: $link"
             continue
         fi
@@ -242,8 +248,11 @@ for id in "${!FACE_DIR[@]}"; do
             for name in $(printf '%s\n' "${!TP[@]}" | sort); do
                 [ -n "$name" ] || continue
                 link="$dir/$name"
-                if [ -L "$link" ]; then continue; fi
-                if [ -e "$link" ]; then
+                if [ -L "$link" ]; then
+                    if [ -e "$link" ]; then continue; fi
+                    rm -f "$link"
+                    echo "  [$id] ~ $name 第三方死链已清，重建"
+                elif [ -e "$link" ]; then
                     note "真实副本占位（第三方在本面应为链接，确认后删掉再跑一次）: ${link#"$HOME"/}"
                     continue
                 fi
