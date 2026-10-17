@@ -6,15 +6,15 @@
 
 ## 第二个来源（`maintaining-llm-wiki`）
 
-它不在本仓库里，两个平台的建链方式**不一样**，而且 WSL 侧**不由同步脚本负责**（这是实测结论，别照 `sync-wsl.sh` 的名字猜）：
+它不在本仓库里。两个平台**都由同步脚本按分发清单建链**，前提是源目录可被发现（候选：`$HOME/Documents/LLMWiki/skills/maintaining-llm-wiki`，以及 `/mnt/c/Users/*/Documents/LLMWiki/skills/maintaining-llm-wiki`）：
 
 | 平台 | 谁建链 | 命令 |
 |---|---|---|
-| Windows | 同步脚本自动（`ensure_junctions.ps1` 读清单，把 mllw 源目录也纳入） | `sync-custom-skills.bat` |
-| WSL | **LLMWiki 仓库自己的脚本**，只建 `.agents` 那一条 | `bash skills/maintaining-llm-wiki/scripts/install_links.sh` |
-| WSL | `.claude` 的二级链要**手工**补（`sync-wsl.sh` 只处理仓库内的自建技能） | `ln -s ../../.agents/skills/maintaining-llm-wiki ~/.claude/skills/maintaining-llm-wiki` |
+| Windows | `ensure_junctions.ps1` 读清单，把 mllw 源目录也纳入 | `sync-custom-skills.bat` |
+| WSL | `sync-wsl.sh` 读清单（面的 `expect` 含 `mllw` 才建），storage 面直指源、link 面走二级链 | `bash scripts/sync-wsl.sh` |
+| 任意（备用） | LLMWiki 仓库自己的脚本，只建 storage 面那一条 | `bash skills/maintaining-llm-wiki/scripts/install_links.sh` |
 
-**全新 WSL 家目录必须先做这一步**：两个 POSIX 目标都声明了 `mllw`，不建这两条链，对账永远到不了退出码 0（会留两条 `[MISS] maintaining-llm-wiki`）。
+**全新 WSL 家目录**：跑一次 `sync-wsl.sh` 就会把两个面都建好。若源不在候选位置（脚本会打印"源: N 个"而不含 mllw），先确认 LLMWiki 仓库在不在，再用上面第三条手工补。
 
 审计入口：LLMWiki 仓库的 `scripts/check_skill_links.py` 会按分发清单逐平台检查 mllw 入口是否指向源目录。
 
@@ -84,12 +84,10 @@
    - `required`：本机在装则 `true`；目标目录缺失会计入退出码 1。
    - `note` 里写清该平台的加载机制细节（README 只指路到这里）。
    自检会拦住字段缺失、拼错、未知字段、`id` 重复或在 `LEDGER_TOKENS` 里缺失。
-3. **建链接 / 建副本**——两个平台的自动化程度**不一样**：
-   - **Windows（`role: junction`）**：跑 `sync-custom-skills.bat`。`ensure_junctions.ps1` **读清单**、按 `role=junction` 补链，并在父目录在而 `skills` 不在时自动建目录。
-   - **WSL（`role: link`）**：**同步脚本不读清单**——`sync-wsl.sh` 里 `$HOME/custom-skills`、`$HOME/.agents/skills`、`$HOME/.claude/skills` 三个路径是写死的，全文对清单零引用。
-     所以新增/改名 POSIX 目标必须**同时改 `sync-wsl.sh`**（把它加进去），或者手工建链并在 log 里留痕。
-     "不要手工建链接"这条纪律只对 junction 目标成立——别把它套到 POSIX 面上。
-   - `expect` 含 `manual` 时，还要把手工技能目录**复制**过去并改账（手工技能是真实副本）。
+3. **建链接 / 建副本**——两端都**读清单**，但还是有差别：
+   - **Windows（`role: junction`）**：跑 `sync-custom-skills.bat`。`ensure_junctions.ps1` 按 `role=junction` 补链，并在父目录在而 `skills` 不在时自动建目录。
+   - **WSL（`role: link` / `storage`）**：跑 `bash scripts/sync-wsl.sh`。它按清单取 `platform=posix` 的面，按 `role` 建链——`storage` 面直指源目录，`link` 面用**相对路径**指向第一个 `storage` 面的同名条目（二级链，形制见 `docs/adr/0002`）；父目录在而技能根不在时自动建目录。**新增 POSIX 面不需要改脚本**。
+   - `expect` 含 `manual` 时，还要把手工技能目录**复制**过去并改账（手工技能是真实副本）；`thirdparty` 由 CLI 自己落盘，同步脚本不碰。
 4. **逐链接校验**：目标末段 == 技能名，且目标下 `SKILL.md` 可达。只查"目录存在"会漏——曾有一批 junction 指向仓库根，`[ -d ]` 与对账双双假信号。
 5. **对账**（两端）。登记了目标目录却还没建链时，`required: true` 会先报 `[WARN] surface missing` + 退出码 1，这是预期。
 6. **加载实证**：见「技能 → 新增」第 7 条。
@@ -97,14 +95,14 @@
    1. `README.md` 目标一览——生成块，重跑 `--readme` 即可，**不要手改**。
    2. **仅当 `expect` 含 `manual`**：先给 `check_distribution.py` 的 `LEDGER_TOKENS` 加 `"<id>": "<token>"`，然后才能在账本表格的「所在目标」列写该 token。**顺序不能反**：先加账本行会立刻触发自检错误（`账本第 N 行…含未声明的目标 token`）。
       `expect` 不含 `manual` 时**两处都不用动**——动了反而会因"声明了 manual 但 id 不在 LEDGER_TOKENS"或未声明 token 而报错。
-   3. POSIX 目标：改 `sync-wsl.sh`（见第 3 条）。
+   3. POSIX 面：**不用改脚本**（清单驱动）；只需确认清单条目本身，然后跑一次 `sync-wsl.sh`。
    4. `log.md` 与版本表：见「落账」。
    5. `~/AGENTS.md` 的技能表与本改动**无关**（它只列技能，不列目标）。
 
 ### 下线
 
 1. **先看清单**：`python3 scripts/check_distribution.py --retire <id>`（只打印、绝不删除；**必须在删清单条目前跑**，否则报未知目标）。
-2. **同步销账**：清单条目、`check_distribution.py` 的 `LEDGER_TOKENS`（若该目标有 manual 池）、`manual-skills.md` 表格的「所在目标」列、`README.md`（生成）、POSIX 目标还要清 `sync-wsl.sh` 里的对应代码。
+2. **同步销账**：清单条目、`check_distribution.py` 的 `LEDGER_TOKENS`（若该目标有 manual 池）、`manual-skills.md` 表格的「所在目标」列、`README.md`（生成）。POSIX 面删清单条目后，`sync-wsl.sh` 下次运行会把它从管辖范围里去掉（脚本按清单遍历面）。
 3. **清盘**：只删「目标落在本仓库或 `LLMWiki/skills` 之下、且已不解析为技能」的链接；**手工技能副本属用户内容**，确认后删除或移出账本。
 4. **验证**：对账输出里不再出现该目标；重启工具确认它没有被自带管理器物化回来。
 5. **落账**：见「落账」；`~/AGENTS.md` 的 Skill 管理章节同步（手写，无脚本可查）。

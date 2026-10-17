@@ -10,7 +10,7 @@
 | 来源 | 是什么 | 怎么分发 | 谁声明 |
 |---|---|---|---|
 | `selfbuilt` | 本仓库根下含 `SKILL.md` 的目录 | 链接（WSL 两级符号链接 / Windows junction） | 仓库自身——仓库即列表 |
-| `mllw` | `maintaining-llm-wiki` | Windows：同步脚本读清单自动处理；**WSL：不由同步脚本负责**（见 `references/workflows.md`「第二个来源」） | LLMWiki 仓库是否存在 |
+| `mllw` | `maintaining-llm-wiki` | 两端都由同步脚本按清单建链（Windows：junction；WSL：storage 面直指源 + link 面二级链），前提是源可被发现 | LLMWiki 仓库是否存在 |
 | `thirdparty` | `npx skills` 管理的第三方技能 | WSL：`~/.agents/skills` 下的真实目录；Windows：不适用（无存储面，见 `docs/adr/0004`） | 锁文件 `~/.agents/.skill-lock.json` |
 | `manual` | 人工放置、无仓库来源的第三方技能 | Windows 各目标下的真实副本 | 账本 `manual-skills.md` |
 
@@ -32,7 +32,7 @@
 | 刷新 README 生成块 | ✓ `--readme` | ✓ `--readme` |
 | 对账覆盖 | 只审 `platform: win` 的目标 | 全部：本机 posix 面 + 所有 `/mnt/c/Users/*` 上的 win 面 |
 | 第三方池 | 结构性为空 | 读锁文件 |
-| 建链接 | `junction`：**读清单**、按 `role=junction` 补链（`ensure_junctions.ps1`） | 两级符号链接：**路径写死在 `sync-wsl.sh` 里、不读清单**——新增 POSIX 面必须改脚本；第二个来源另走 `install_links.sh` |
+| 建链接 | `junction`：**读清单**、按 `role=junction` 补链（`ensure_junctions.ps1`） | 符号链接：**读清单**、按 `role` 建链（`storage` 直指源 / `link` 走二级链），父目录在时自动建技能根（`sync-wsl.sh`，v7.7 起） |
 
 ## 文档分工（别在错的地方找东西）
 
