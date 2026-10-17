@@ -46,7 +46,7 @@ description: 维护和管理我的技能列表与各 agent 平台的分发，让
 
 ## 约束
 
-体系硬规则（禁止无账拷贝、禁止向 junction 目标复制、自建不进第三方 CLI 锁文件、Windows 不重建 `.agents/skills`）见 `README.md`；为什么这样定见 `docs/adr/`。
+体系硬规则（禁止无账拷贝、禁止向 junction 目标复制、自建不进第三方 CLI 锁文件、各平台第三方仓库层只能由 npx 写）见 `README.md`；整体结构与不变量见 `docs/architecture.md`；为什么这样定见 `docs/adr/`。
 
 ## 验证
 

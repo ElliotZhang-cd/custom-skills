@@ -9,6 +9,8 @@
 
 一句话：把写好的技能分发到每个 agent 平台，并让**实际加载到的技能列表**与**声明的**一致。
 
+整体结构（五层归属、不变量、机制契约、盲区总账）见 `docs/architecture.md`——那是先读的一份。
+
 两个真相源：
 
 - **自建技能** = 本仓库（GitHub `ElliotZhang-cd/custom-skills`）。WSL `~/custom-skills/` 与 Windows `%USERPROFILE%\custom-skills` 都是它的 clone，都能编辑；**push 才算发布**。
@@ -107,6 +109,7 @@ sync-custom-skills.bat   Windows 一键同步入口（转发到 scripts/sync-win
 
 ## 决定与沿革
 
+- `docs/architecture.md` — **结构总图**：五层归属、不变量、机制契约、盲区总账、文档分工（先读这个）。
 - `docs/adr/` — 4 条难回退的决定：自建看 git / 第三方看 npx、链接与副本的分工、对账的子集语义、Windows `.agents` 存储面只能由 npx 管理。
-- `specs/syncing-skills/` — 本技能构建期的需求、设计、任务与规则。
+- `specs/syncing-skills/` — 本技能**构建期**的需求、设计、任务与规则（已冻结，勿据以操作）。
 - LLMWiki 的 `wiki/syntheses/skill-maintenance-workflow.md` — 为什么这样定、版本沿革与事故教训。

@@ -1,5 +1,9 @@
 # requirements.md — syncing-skills
 
+> ⚠ **构建期产物（2026-10-17 标注为冻结）**：本文记录**构建当时的设计意图**，不是现行规范。
+> 现行结构与不变量见 `docs/architecture.md`，操作见 `syncing-skills/`，为什么这样定见 `docs/adr/` 与 LLMWiki 合成页。
+> 文中的目标数、字段取值等一律按当时状态，**勿据以操作**。
+
 ## 范围
 
 本 spec 定义 **syncing-skills** 这个 skill 及其治理的机制：让**每个 agent 平台加载到的技能列表**与真相源保持一致。
