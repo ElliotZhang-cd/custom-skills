@@ -9,6 +9,7 @@
 - 理论：`references/theory-spec.md`（单人）、`references/couple-theory-spec.md`（双人）
 - 写法、禁区与固定文案：`references/copy-rules.md`
 - 图形几何：`references/single-visual-spec.md`、`references/couple-visual-spec.md`
+- 06 章不设图：四组对话表（数据绑定见 `references/workflow-single.md` 06 行；布局见 `references/single-visual-spec.md §6.7`）
 - 判定数据：`references/stacks.json`；术语表：`references/glossary.md`
 - 交付前核对：`references/qa-checklist.md`
 - 报告模板：`assets/report-template.html`、`assets/report-couple-template.html`

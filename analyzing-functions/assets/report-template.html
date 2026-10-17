@@ -12,8 +12,8 @@
      references/single-visual-spec.md；本 <style> 是其实现。
    - 标记契约不变：全部占位符 token 与类名（.sec-no/.concl/.points/.theory-note/.fn/.hl/
      .badge/.card/.bar-row/.mean/.att-note/.pos-grid/.pos-notes/.faces-note/.qa-rows/
-     .axis 各类/.tension-bar/.duo/.loop-fig/.dialogue-fig/.dir-card/.dir-no/.fig-note/
-     .chart-note/.tx-gloss/.shadow-mark）继续有效；生成方只填 token、不增删层。
+     .axis 各类/.tension-bar/.duo/.loop-fig/.dir-card/.dir-no/.fig-note/
+     .chart-note/.tx-gloss/.shadow-mark/.dlg-map）继续有效；生成方只填 token、不增删层。
    - 颜色规则（全篇执行）：
      ① 功能码与功能中文名一律染功能文本色 var(--码-text)（stacks.json function_colors_text）；
         图形形状（条形、圆点、渐变、描边）用功能原色 var(--码)；
@@ -222,9 +222,9 @@ td.near { color:var(--warn); font-weight:700; white-space:nowrap; }
 .duo .mini-card p { font-family:var(--font-body); font-size:.8em; color:#5c5548;
   line-height:1.7; margin:0; }
 
-/* ── 05 回路图 / 06 对话图（.loop-fig / .dialogue-fig 内联 SVG；几何见 visual-spec §6.6/§6.7） ── */
-.loop-fig, .dialogue-fig { margin:16px 0 0; break-inside:avoid; }
-.loop-fig svg, .dialogue-fig svg { width:100%; height:auto; display:block; }
+/* ── 05 回路图（.loop-fig 内联 SVG；几何见 visual-spec §6.6） ── */
+.loop-fig { margin:16px 0 0; break-inside:avoid; }
+.loop-fig svg { width:100%; height:auto; display:block; }
 
 /* ── 06 超越功能一句白话（组件级白话注，不占理论注额度） ── */
 .tx-gloss { font-family:var(--font-heading); font-size:.94em; line-height:1.8;
@@ -241,6 +241,26 @@ td.near { color:var(--warn); font-weight:700; white-space:nowrap; }
   line-height:1.7; }
 
 .shadow-mark { color:var(--muted); font-size:.78em; white-space:nowrap; font-weight:400; }
+
+/* ── 06 四组对话表（06 章不设图；布局见 visual-spec §6.7，内容规则见 workflow-single 06 行） ── */
+.dlg-map { width:100%; table-layout:fixed; margin:16px 0 6px; }
+.dlg-map caption { caption-side:top; text-align:left; font-family:var(--font-body);
+  font-size:.74em; color:var(--muted); line-height:1.8; padding:0 0 8px; }
+.dlg-map th { font-size:.88em; }
+.dlg-map th .th-sub { display:block; font-weight:400; font-size:.86em; color:var(--muted); margin-top:2px; }
+.dlg-map td { vertical-align:top; }
+.dlg-map .pos { display:block; font-size:.92em; color:var(--muted); line-height:1.6; }
+.dlg-map .code-line { display:block; margin-top:2px; font-variant-numeric:tabular-nums; }
+.dlg-map .code-line .score { font-weight:700; }
+.dlg-map .gap { display:block; margin-top:4px; font-size:.72em; color:var(--muted);
+  white-space:nowrap; font-variant-numeric:tabular-nums; }
+.dlg-map .pair-say, .dlg-map .pair-grow { margin:0; font-family:var(--font-body);
+  font-size:.82em; line-height:1.7; color:#453f35; }
+.dlg-map .pair-grow { margin-top:6px; }
+.dlg-map .pair-label { display:inline-block; margin-right:4px; font-weight:700; color:var(--fg); }
+.dlg-map .route-tag { display:inline-block; margin-left:4px; padding:0 4px; border:1px solid rgba(154,59,38,.45);
+  border-radius:2px; color:var(--accent); font-family:var(--font-body); font-size:.78em;
+  font-weight:700; line-height:1.6; white-space:nowrap; }
 
 /* ── 图注 ── */
 .fig-note { font-family:var(--font-body); font-size:.77em; color:var(--muted);
@@ -268,8 +288,11 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
   h2 { margin-top:28px; }
   section, .card, .axis, table, .pos-grid, .pos-note, .tension-bar,
     .duo .mini-card, .dir-card, .qa-rows, .concl, .points, .faces-note,
-    .att-note, .loop-fig, .dialogue-fig
+    .att-note, .loop-fig
     { break-inside:avoid; }
+  .dlg-map { break-inside:auto; }
+  .dlg-map thead { display:table-header-group; }
+  .dlg-map tr { break-inside:avoid; }
   * { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
 }
 </style>
@@ -365,11 +388,19 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
  {{CH06_POINTS}}       06 要点行（≤3 条；0 条则整块省略）
  {{CH06_NOTE}}         06 理论注（≤1 句；0 句则省略）
  {{CH06_TRANSCEND}}    06 超越功能一句白话（只一句；以 .tx-gloss 组件渲染——不占章级理论注额度）；
-                       居本章结论块/要点行之后、{{DIALOGUE_FIG}} 之前
- {{DIALOGUE_FIG}}      06 双向对话 + 第三物图（.dialogue-fig 内联 SVG）；几何、行级条件与用色纪律的
-                       唯一出处是 visual-spec §6.7，本注释不复述；容器恒带 role="img" + aria-label（文案见 §6.7）
- {{CH06_CARDS}}        06 组件：四组对话表（意识第 k 位 × 阴影第 9−k 位；功能码染文本色）+
-                       编号卡片 .dir-card（3–5 张）；每张卡片 inline style：
+                       居本章结论块/要点行之后、{{CH06_CARDS}} 之前
+ {{CH06_CARDS}}        06 组件：四组对话表 + 编号卡片 .dir-card（3–5 张）。06 章不设图、不设 .fig-note。
+                       表为 <table class="dlg-map">，4 列 colgroup 12% / 24% / 24% / 40%：
+                       对话（含分差）｜意识位｜阴影位｜这一对在说什么 / 往哪里长。
+                       td 骨架：列1 `<b>1 ↔ 5</b><span class="gap">分差 X.XX</span>`；
+                       列2/3 `<span class="pos">第 k 位 · 原型名</span><span class="code-line">码 <span class="score">分</span></span>`；
+                       列4 `<p class="pair-say"><span class="pair-label">在说什么</span>…</p>
+                       <p class="pair-grow"><span class="pair-label">往哪里长</span>…<span class="route-tag">间接途径</span></p>`；
+                       第四列表头 `<span class="th-sub">往哪里长</span>`。
+                       表内容规则（分差公式、往哪里长的硬约束、途径签）见 workflow-single 第 3 步 06 行；
+                       表标题 <caption> 含读法、分差公式与 {{CONF_LOW_NOTE}}；
+                       4↔8 行挂「间接途径」，2↔6 行仅辅助不足时挂「优先恢复」；不设 .fig-note。
+                       每张卡片 inline style：
                        --dir-color = 该卡主打功能文本色（var(--te-text) 等）——左边框与 .dir-no
                        均取该色（copy-rules 写法规则 8）；
                        卡标题与正文中的功能码一律染对应功能文本色
@@ -515,8 +546,6 @@ footer { border-top:1px solid var(--border); margin-top:60px; padding-top:16px;
     {{CH06_POINTS}}
   </ul>
   <p class="tx-gloss">{{CH06_TRANSCEND}}</p>
-  {{DIALOGUE_FIG}}
-  <p class="fig-note">读法：每行是一对「意识位 ↔ 阴影位」的对话，左右两段对称的双向箭头表示谁也不吃掉谁；四行都汇到中轴那条自下而上贯通的主干上——两端的对立被同时容下时，长出来的就是那条主干，也就是第三条路；最下一行 4↔8 用虚线，表示那一端只给间接途径。本图属栈层{{CONF_LOW_NOTE}}。</p>
   {{CH06_CARDS}}
   <p class="theory-note">{{CH06_NOTE}}</p>
 </section>
