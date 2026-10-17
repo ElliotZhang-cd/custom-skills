@@ -23,7 +23,7 @@
 | 自建 | 本仓库根下含 `SKILL.md` 的目录 | 链接（WSL 两级符号链接 / Windows junction） | 仓库自身——仓库即列表 |
 | 第二个来源 | `maintaining-llm-wiki` | 同上，指向 LLMWiki 源目录 | LLMWiki 仓库是否存在 |
 | 第三方 | `npx skills` 管理的技能 | 两端各有一份存储面：WSL `~/.agents/skills`、Windows `%USERPROFILE%\.agents\skills`（由 CLI 物化真实副本；它不认识 `dsh`/`workbuddy`，那两面靠手工副本） | 各平台自己的锁文件 `.skill-lock.json` |
-| 手工技能 | 人工放置、无仓库来源的第三方技能 | Windows 各目标下的真实副本 | 账本 `manual-skills.md` |
+| 手工技能 | 人工放置、无仓库来源的第三方技能 | Windows 各目标下的真实副本 | 登记表 `manual-skills.md` |
 
 ## 分发目标一览
 
