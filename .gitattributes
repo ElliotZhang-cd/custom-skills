@@ -1,7 +1,5 @@
-* text=auto
-*.py text eol=lf
-*.md text eol=lf
-*.html text eol=lf
-*.sh text eol=lf
-*.json text eol=lf
+# 除 Windows 批处理外一律 LF。core.autocrlf=true 是本机 git 的系统级默认（Git for Windows），
+# 没有兜底 eol=lf 时，未显式声明的文件（如 .gitignore、.gitattributes 自身）会被检出成 CRLF，
+# 与下方各规则表达出的意图矛盾——2026-10-17 实测：只改工作副本没用，必须在这里写死。
+* text=auto eol=lf
 *.bat text eol=crlf
