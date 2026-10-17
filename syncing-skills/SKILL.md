@@ -1,13 +1,15 @@
 ---
 name: syncing-skills
-description: 维护技能到各 agent 平台的分发与对齐：新增/改名/退役技能、登记或下线分发目标、手工技能入账、跨端同步、对账排查；不评审技能写法（转 authoring-skills），不处理知识库正文（转 maintaining-llm-wiki）。当用户说某平台看不到某技能、技能没生效、对账不绿，或要接入/弃用某个 agent 平台时使用。
+description: 维护和管理我的技能列表与各 agent 平台的分发：技能有增添、删除、修改，或平台有新增、删除时，同步更新并分发到每个平台，并对账排查偏差。当用户说某平台看不到某技能、技能没生效、对账不绿，或要接入/弃用某个 agent 平台时使用。
 ---
 
 # Syncing Skills
 
 ## 目标
 
-让人在每个 agent 平台上看到的技能列表与真相源一致，并把「不一致」变成可判定、可复现的输出。
+维护和管理我的技能列表与 agent 分发：**技能有增添、删除、修改，或 agent 平台有新增、删除时，让每个平台加载到的技能跟着同步更新与分发**，并把「不一致」变成可判定、可复现的输出。
+
+本技能从**已经写好的技能包**出发——管的是它落到哪、怎么分发、怎么对账、怎么退役。
 
 ## 工作流
 
@@ -17,7 +19,7 @@ description: 维护技能到各 agent 平台的分发与对齐：新增/改名/�
    - 手工第三方技能的入账 / 恢复 → `references/workflows.md` 「手工技能」
    - 只是「对不齐 / 没生效」 → `references/reconciliation.md`
 2. **先改声明层，再动投影层**：读 `scripts/distribution-targets.json`（声明有哪些目标、各自期望什么）与 `manual-skills.md`（手工技能的账），然后才动目录。
-3. **两端各同步一次**：Windows 跑 `sync-custom-skills.bat`，WSL 跑 `bash scripts/sync-wsl.sh`。push 只让另一端"可以拉"，不会让它自动生效；**只在一端同步时，另一端必然报 `[MISS]`，这是预期**。WSL 侧另有一条链不归同步脚本管（第二个来源 `maintaining-llm-wiki`），见 `references/workflows.md`。
+3. **两端各同步一次**：Windows 跑 `sync-custom-skills.bat`，WSL 跑 `bash scripts/sync-wsl.sh`——两者都读分发清单。push 只让另一端"可以拉"，不会让它自动生效；**只在一端同步时，另一端必然报 `[MISS]`，这是预期**。
 4. **刷新派生表并再次提交**：`python3 scripts/gen-skills-table.py`（AGENTS.md，仅 WSL）与 `python3 scripts/gen-skills-table.py --readme README.md`（两端）。生成会改动文件、工作树变脏，而同步脚本有脏树守卫——不提交，下一次同步会被自己挡住。
 5. **读对账结论**（判定分级与排查手册见 `references/reconciliation.md`）：失败必须清零；提醒逐条裁定——在用就登记进清单，不用就清理。
 6. **落账**：常规技能增删改**不需要人工写日志**（派生表由脚本生成，对账输出就是记录）；只有体系级改动（新增/下线分发目标、判定语义变化）才要在 LLMWiki 的 `log.md` 记一条。本仓库没有 `log.md`。
