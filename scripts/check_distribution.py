@@ -79,6 +79,10 @@ VALID_PLATFORM = {"win", "posix"}
 VALID_EXPECT = {"selfbuilt", "mllw", "thirdparty", "manual"}
 VALID_ROLE = {"junction", "link", "storage"}
 SURFACE_KEYS = {"id", "platform", "relpath", "expect", "role", "required", "note"}
+KNOWN_NOISE_KEYS = {"relpath", "note"}
+# 已裁定的长期噪音（清单里的 known_noise）由 load_surfaces() 填，供自检与提醒共用。
+# 不变量 I8：不登记就会每次倾倒数百条，把真信号稀释掉。
+KNOWN_NOISE = []
 
 
 def ledger_faces():
@@ -102,7 +106,7 @@ def ledger_faces():
     return out
 
 
-def validate_config(surfaces):
+def validate_config(surfaces, known_noise=()):
     """声明自检（R5）：字段缺失/拼错一律报错，不静默降级。
 
     三类历史静默失败：platform 漏写 → Windows 端静默剔除该目标（连 [skip] 都不打）；
@@ -162,6 +166,23 @@ def validate_config(surfaces):
             if part and part not in tokens:
                 errors.append(f"账本第 {lines[0]} 行「{face}」含未声明的目标 token: {part!r}"
                               f"（已声明: {', '.join(sorted(tokens))}）")
+    for i, k in enumerate(known_noise or [], 1):
+        where = f"known_noise[{i}]"
+        if not isinstance(k, dict):
+            errors.append(f"{where} 不是对象")
+            continue
+        unknown = sorted(set(k) - KNOWN_NOISE_KEYS)
+        if unknown:
+            errors.append(f"{where} 含未知字段: {', '.join(unknown)}"
+                          f"（合法字段: {', '.join(sorted(KNOWN_NOISE_KEYS))}）")
+        rp = k.get("relpath")
+        if not isinstance(rp, str) or not rp.strip():
+            errors.append(f"{where} relpath 必须是非空字符串（家目录相对路径，如 .hub/skills）")
+        elif rp.startswith(("/", "\\")) or ":" in rp:
+            errors.append(f"{where} relpath 必须是**家目录相对**路径，不能是绝对路径: {rp!r}")
+        note = k.get("note")
+        if not isinstance(note, str) or not note.strip():
+            errors.append(f"{where} note 必须写清为何裁定为噪音（没写等于没裁定）")
     return errors
 
 
@@ -216,14 +237,36 @@ def mllw_source_dirs():
     return [c for c in cands if (c / MLLW).is_dir()]
 
 
-def report_undeclared(declared):
-    """[NEW?] 提醒：未登记的非空技能目录。只提醒，不改退出码。"""
+def _home_rel(path):
+    """把发现到的目录换算成"家目录相对路径"（两端一致）；换算不出来返回 None。"""
+    for base in [Path.home()] + win_homes():
+        try:
+            return path.relative_to(base).as_posix()
+        except ValueError:
+            continue
+    return None
+
+
+def report_undeclared(declared, known_noise=()):
+    """[NEW?] 提醒 + [裁定] 已登记的长期噪音。两者都只提醒，不改退出码。
+
+    已裁定的噪音必须逐条登记在清单的 `known_noise` 里（不变量 I8）：登记后只打一行、
+    不再倾倒条目清单——否则数百条长期噪音会把真信号稀释掉（`[UNK ]` 还会抑制该面的
+    `[OK]` 行）。**数量或构成一变就是新信号**，要重新裁定。"""
+    noisy = {}
+    for k in known_noise or []:
+        if isinstance(k, dict) and isinstance(k.get("relpath"), str):
+            noisy[k["relpath"].strip("/\\")] = (k.get("note") or "").strip()
     for path, names in discover_skill_dirs(declared):
+        rel = (_home_rel(path) or path.as_posix()).strip("/\\")
+        if rel in noisy:
+            print(f"  [裁定] {path}  {len(names)} 项（已裁定：{noisy[rel]}）—— 只提醒、不影响退出码")
+            continue
         shown = ", ".join(names[:12])
         if len(names) > 12:
             shown += f" …(+{len(names) - 12})"
         print(f"  [NEW?] {path}  未登记的非空技能目录: {len(names)} 项（{shown}）"
-              f"—— 属提醒、不影响退出码；在用则登记进分发清单，不用则清理")
+              f"—— 属提醒、不影响退出码；在用则登记进分发清单，不用则清理（长期噪音请登记进 known_noise）")
 
 
 def manual_entries():
@@ -277,6 +320,9 @@ def load_surfaces():
     if not isinstance(surfaces, list):
         print(f"[audit] 错误: 配置缺少 surfaces 数组 {CONFIG}。")
         return None
+    global KNOWN_NOISE
+    kn = cfg.get("known_noise") or []
+    KNOWN_NOISE = kn if isinstance(kn, list) else []
     return surfaces
 
 
@@ -476,7 +522,7 @@ def main(argv=None):
     surfaces = load_surfaces()
     if surfaces is None:
         return 1   # 配置不可用：不静默空跑
-    errs = validate_config(surfaces)
+    errs = validate_config(surfaces, KNOWN_NOISE)
     if errs:
         print("[audit] 错误: 分发清单/账本自检未通过（不静默降级，见 R5）:")
         for e in errs:
@@ -514,7 +560,7 @@ def main(argv=None):
         if not sf["path"].is_dir() and sf["required"]:
             req_missing.append(sf["label"])
         bad |= audit(sf["label"], sf["path"], sub, sf["role"], sf["required"])
-    report_undeclared([sf["path"] for sf in expanded] + mllw_source_dirs())
+    report_undeclared([sf["path"] for sf in expanded] + mllw_source_dirs(), KNOWN_NOISE)
     if bad:
         if req_missing:
             print(f"[audit] required 面缺失 {len(req_missing)} 个（计入退出码 1）: "
