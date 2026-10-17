@@ -11,8 +11,8 @@
 |---|---|---|---|
 | `selfbuilt` | 本仓库根下含 `SKILL.md` 的目录 | 链接（WSL 两级符号链接 / Windows junction） | 仓库自身——仓库即列表 |
 | `mllw` | `maintaining-llm-wiki` | 两端都由同步脚本按清单建链（Windows：junction；WSL：storage 面直指源 + link 面二级链），前提是源可被发现 | LLMWiki 仓库是否存在 |
-| `thirdparty` | `npx skills` 管理的第三方技能 | WSL：`~/.agents/skills` 下的真实目录；Windows：不适用（无存储面，见 `docs/adr/0004`） | 锁文件 `~/.agents/.skill-lock.json` |
-| `manual` | 人工放置、无仓库来源的第三方技能 | Windows 各目标下的真实副本 | 账本 `manual-skills.md` |
+| `thirdparty` | `npx skills` 管理的第三方技能 | WSL：`~/.agents/skills` 下的真实目录（增删改流程见 `references/workflows.md`「第三方技能」）；Windows：不适用（无存储面，见 `docs/adr/0004`） | 锁文件 `~/.agents/.skill-lock.json` |
+| `manual` | 人工放置、无仓库来源的第三方技能 | Windows 各目标下的真实副本 | 登记表 `manual-skills.md` |
 
 链接与副本的分工理由见 `docs/adr/0002`。
 

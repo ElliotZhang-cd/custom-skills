@@ -51,7 +51,7 @@
 | `authoring-skills` | Creates, reviews, and iterates on portable Agent Skills (SKILL.md packages) that follow open SKILL.md / AgentS… |
 | `defining-products` | Use when 用户在产品/功能/项目立项或审查阶段需要回答"为什么做、为谁做、先做什么、凭什么是我们"。 |
 | `researching-user-costs` | Use when 用户在做用户访谈、收集反馈、评估"用户是否真的接受产品/功能"。 |
-| `syncing-skills` | 维护和管理我的技能列表与各 agent 平台的分发：技能有增添、删除、修改，或平台有新增、删除时，同步更新并分发到每个平台，并对账排查偏差。 |
+| `syncing-skills` | 维护和管理我的技能列表与各 agent 平台的分发，让每个平台加载到的技能与真相源保持一致。 |
 <!-- SELF_BUILT_TABLE_END -->
 
 > 同样由上面那条命令生成；新增或改名的技能会自动出现在这里。

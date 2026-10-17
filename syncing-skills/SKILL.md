@@ -1,6 +1,6 @@
 ---
 name: syncing-skills
-description: 维护和管理我的技能列表与各 agent 平台的分发：技能有增添、删除、修改，或平台有新增、删除时，同步更新并分发到每个平台，并对账排查偏差。当用户说某平台看不到某技能、技能没生效、对账不绿，或要接入/弃用某个 agent 平台时使用。
+description: 维护和管理我的技能列表与各 agent 平台的分发，让每个平台加载到的技能与真相源保持一致。当用户说某平台看不到某技能、技能没生效、对账不绿，或要接入、弃用某个 agent 平台时使用。
 ---
 
 # Syncing Skills
@@ -9,14 +9,15 @@ description: 维护和管理我的技能列表与各 agent 平台的分发：技
 
 维护和管理我的技能列表与 agent 分发：**技能有增添、删除、修改，或 agent 平台有新增、删除时，让每个平台加载到的技能跟着同步更新与分发**，并把「不一致」变成可判定、可复现的输出。
 
-本技能从**已经写好的技能包**出发——管的是它落到哪、怎么分发、怎么对账、怎么退役。
+本技能从**已经写好的技能包**出发——管的是它们落到哪些平台、怎么同步、怎么对账、怎么退役。
 
 ## 工作流
 
 1. **先判定输入属于哪一类**（四类来源与两个真相源见 `references/environment.md`）：
-   - 自建技能的新增 / 改名 / 退役 → `references/workflows.md` 「技能」
-   - agent 平台的新增 / 下线 → `references/workflows.md` 「分发目标」
-   - 手工第三方技能的入账 / 恢复 → `references/workflows.md` 「手工技能」
+   - 自建技能的新增 / 改名 / 退役 / 改内容 → `references/workflows.md`「技能」
+   - 第三方技能的引入 / 更新 / 卸载（`npx skills` 管的那些）→ `references/workflows.md`「第三方技能」
+   - 人工放置的手工技能入账 / 恢复 → `references/workflows.md`「手工技能」
+   - agent 平台的新增 / 下线 → `references/workflows.md`「分发目标」
    - 只是「对不齐 / 没生效」 → `references/reconciliation.md`
 2. **先改声明层，再动投影层**：读 `scripts/distribution-targets.json`（声明有哪些目标、各自期望什么）与 `manual-skills.md`（手工技能的账），然后才动目录。
 3. **两端各同步一次**：Windows 跑 `sync-custom-skills.bat`，WSL 跑 `bash scripts/sync-wsl.sh`——两者都读分发清单。push 只让另一端"可以拉"，不会让它自动生效；**只在一端同步时，另一端必然报 `[MISS]`，这是预期**。
@@ -26,7 +27,7 @@ description: 维护和管理我的技能列表与各 agent 平台的分发：技
 
 ## 成功标准
 
-- 声明自检 0 错：清单字段无缺失/拼错，账本「所在目标」列只出现已声明的 token。
+- 声明自检 0 错：清单字段无缺失/拼错，登记表「所在目标」列只出现已声明的 token。
 - 两端对账退出码 0：没有缺失、没有损坏、没有被顶替、没有同名冲突。
 - **两端都同步过**：单端改动会让另一端报 `[MISS]`，不算完成。
 - 提醒项被逐条裁定过，而不是被忽略。
@@ -53,6 +54,6 @@ description: 维护和管理我的技能列表与各 agent 平台的分发：技
 
 ## References
 
-- [references/workflows.md](references/workflows.md) — 四类操作的分步流程与清单
+- [references/workflows.md](references/workflows.md) — 各类操作（自建 / 第三方 / 手工技能、分发目标）的分步流程与清单
 - [references/reconciliation.md](references/reconciliation.md) — 对账输出怎么读、判定分级、排查手册
 - [references/environment.md](references/environment.md) — 真相源与来源类别、本机路径、平台前提
