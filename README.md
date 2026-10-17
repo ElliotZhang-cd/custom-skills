@@ -88,7 +88,7 @@ Windows:  sync-custom-skills.bat
 WSL:      bash scripts/sync-wsl.sh
 ```
 
-两者做同样五件事：脏树守卫 → `git pull --ff-only` → 建链接 / 清死链接 → 刷新派生表 → 对账。
+两端脚本各自的分步流程（步数、顺序、脏树守卫、锁快照等）见 skill 的 `references/workflows.md`——本文不复述操作细节。
 
 ## 目录
 

@@ -44,7 +44,7 @@ python3 scripts/check_distribution.py --retire <id>   # 下线预览：只打印
 | 症状 | 处置 |
 |---|---|
 | `[MISS]` 某个技能 | 跑对应端的同步脚本。仍缺则查该目标 `expect` 是否漏了对应来源、`role` 是否为 `junction`（补链只处理这一类） |
-| `[STALE]` | 说明该面 expected 的链接类来源被真实副本顶替了：跑对应端的同步脚本恢复（Windows `ensure_junctions.ps1` / WSL `sync-wsl.sh`）；若该名字已在 `manual-skills.md` 里，那是**尚未纳入 npx 的存量件**，属显式接纳——要迁移就先销账，再删副本、重跑同步 |
+| `[STALE]` | 说明该面 expected 的链接类来源被真实副本顶替了：跑对应端的同步脚本恢复（Windows `ensure_junctions.ps1` / WSL `sync-wsl.sh`）。**登记表不豁免**——一个名字只要进了该平台的仓库层，这一面就必须是链接；若它同时还在 `manual-skills.md` 上，那是"迁移做了一半"，先销账再删副本重跑（顺序见 `references/workflows.md`「第三方技能」） |
 | `[EXTRA]` | 本体系僵尸。确认源已改名/删除后手工删 |
 | `[BRK ]` | 同步脚本会自动清死链；若清不掉，查源目录（仓库或 LLMWiki）是否还在 |
 | `[UNK ]` | **不删**。逐条判断：市场件 → 留给工具自己管；旧副本 → 确认后清理 |

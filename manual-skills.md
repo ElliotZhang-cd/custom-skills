@@ -35,6 +35,6 @@
 | slides | 来源不详 | Create strategic HTML presentations with Chart.js, design to… | 2026-08-13 | ZCode+DSH |
 | ui-styling | 来源不详 | Create beautiful, accessible user interfaces with shadcn/ui … | 2026-08-13 | ZCode+DSH |
 
-> 依赖：`grill-me` → `grilling`；`grill-with-docs` → `grilling` + `domain-modeling`。
+> 依赖：`grill-with-docs` → `domain-modeling`（其另一依赖 `grilling` 已迁入 npx 仓库层，不在本表）。
 > 目录名变体：`Humanizer-zh-main` 对应锁文件中的 `humanizer-zh`，待归一。
-> 更新：2026-10-03，共 31 条（来源不详 14 条）；brainstorming / test-driven-development / writing-plans 三件已溯源为 obra/superpowers v5.0.6/5.0.7（2026-03），本机清理删除。
+> 本表**只保留仍在账上的名字与其来源**；不写条目数、不写已删除项、不写溯源进度——那些是历史的活，归 git 历史与 LLMWiki 的 `log.md`（写在这里必漂）。

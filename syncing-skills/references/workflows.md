@@ -71,7 +71,7 @@
 
 ## 分发目标
 
-「分发目标」= 某个 agent 平台加载技能的目录。声明在 `scripts/distribution-targets.json`，那是"应该有什么"的唯一**声明处**（注意：登记表 token 词表另有一处在代码里，见下）。
+「分发目标」= 某个 agent 平台加载技能的目录。它声明在 `scripts/distribution-targets.json`——但**声明层一共五处**（清单 / token 词表 / 登记表 / 各平台锁 / 仓库目录），清单只是其中最全的一处，见 `docs/architecture.md` 第二节。
 
 ### 新增
 

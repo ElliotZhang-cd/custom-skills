@@ -18,7 +18,7 @@
 
 ## 分发目标
 
-唯一声明处 = `scripts/distribution-targets.json`。**这里不列目标清单**——那份清单只有这一个来源；`README.md` 里有一览，由脚本生成。
+目标清单的唯一来源 = `scripts/distribution-targets.json`（**注意它只是声明层五处之一**，见 `docs/architecture.md` 第二节）。**这里不列目标清单**；`README.md` 里有一览，由脚本生成。
 
 每个目标的加载机制细节（扫描根、rank、是否读 `~/.claude/skills`、是否跟随链接、第三方策略）写在该条目的 `note` 字段里，别在文档里复述。
 
