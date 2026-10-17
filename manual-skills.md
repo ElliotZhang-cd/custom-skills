@@ -16,13 +16,8 @@
 | domain-modeling | github.com/mattpocock/skills | 构建打磨项目领域模型（CONTEXT.md/ADR），grill-with-docs 的依赖 | 2026-08-23 | ZCode+DSH |
 | grill-with-docs | github.com/mattpocock/skills | 拷问式访谈 + 顺带产出 ADR 和术语表（编排 grilling + domain-modeling） | 2026-08-23 | ZCode+DSH |
 | handoff | github.com/mattpocock/skills | 把当前对话压缩成交接文档 | 2026-08-23 | ZCode+DSH |
-| market-research | skills CLI（WSL 锁文件） | Conduct market research, competitive analysis, investor due … | 2026-08-13 | ZCode+DSH |
-| marketing-campaign | skills CLI（WSL 锁文件） | End-to-end marketing campaign planning and execution. Covers… | 2026-08-13 | ZCode+DSH |
-| ppt-master | skills CLI（WSL 锁文件） | AI-driven presentation workflow for generating editable PPTX… | 2026-08-13 | ZCode+DSH |
-| huashu-design | alchaincyf/huashu-design（skills CLI WSL 锁文件） | 花叔 Design：HTML 原生设计系统，高保真原型/幻灯片/动画/可视化，20 种设计哲学 + 5 维专家评审（任何新设计强制先出三个方向初稿再执行） | 2026-09-16 | ZCode+DSH |
 | teach | github.com/mattpocock/skills | 在工作区内多会话教你新技能/概念 | 2026-08-23 | ZCode+DSH |
 | to-questionnaire | github.com/mattpocock/skills | 把答不了的决策转成问卷给别人填 | 2026-08-23 | ZCode+DSH |
-| ui-ux-pro-max | skills CLI（WSL 锁文件） | UI/UX design intelligence for web and mobile. Searchable loc… | 2026-08-13 | ZCode+DSH |
 | wait-what | github.com/mattpocock/skills | 消息没落地时停止并用统一语言重述 | 2026-08-23 | ZCode+DSH |
 | writing-for-agents | github.com/mattpocock/skills | 给 agent 写文档（skills/AGENTS.md/CLAUDE.md） | 2026-08-23 | ZCode+DSH |
 | agent-browser | 来源不详 | Browser automation CLI for AI agents. Use when the user need… | 2026-08-13 | ZCode+DSH |
