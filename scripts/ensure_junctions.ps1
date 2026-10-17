@@ -32,7 +32,7 @@
 $ErrorActionPreference = 'Continue'
 $repo = Join-Path $env:USERPROFILE 'custom-skills'
 $mllwSrc = Join-Path $env:USERPROFILE 'Documents\LLMWiki\skills\maintaining-llm-wiki'
-$store = Join-Path $env:USERPROFILE '.agents\skills'   # npx 仓库层（第三方存储面）
+$store = Join-Path $env:USERPROFILE '.agents\skills'   # npx repo layer: third-party store. ASCII ONLY!
 $configPath = Join-Path $PSScriptRoot 'distribution-targets.json'
 
 function Get-Prop($obj, [string]$name, $default) {
