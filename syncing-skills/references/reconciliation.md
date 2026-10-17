@@ -19,7 +19,7 @@ python3 scripts/check_distribution.py --retire <id>   # 下线预览：只打印
 |---|---|
 | `[MISS]` | 声明的名字在该目标缺失 |
 | `[BRK ]` | 声明的链接悬空（死链 / 死 junction） |
-| `[STALE]` | 名字在、`SKILL.md` 也在，但**不是**指向本仓库/LLMWiki 的链接——被工具自建副本顶掉了 |
+| `[STALE]` | 名字在、`SKILL.md` 也在，但**不是**指向该来源权威位置的链接——被工具自建的真实副本顶掉了。链接类来源 = 自建（→仓库）、第二个来源（→LLMWiki）、以及**该面声明了 `thirdparty` 时的第三方**（→该平台的 npx 仓库层）；`manual` 池与存储面不参与 |
 | `[EXTRA]` | 本体系僵尸：带管理标记但已不在声明里（改名/删除后的残留） |
 | `[CONFLICT]` | 自建与第三方同名（触发不可判定，必须改名） |
 | `[WARN] surface missing` | 目标目录不存在；该目标 `required: true` 时计入退出码 1 |
@@ -44,7 +44,7 @@ python3 scripts/check_distribution.py --retire <id>   # 下线预览：只打印
 | 症状 | 处置 |
 |---|---|
 | `[MISS]` 某个技能 | 跑对应端的同步脚本。仍缺则查该目标 `expect` 是否漏了对应来源、`role` 是否为 `junction`（补链只处理这一类） |
-| `[STALE]` | 说明我们的链接被真实副本顶替了：Windows 跑 `ensure_junctions.ps1` 恢复；再查是不是工具自带管理器干的（它会再犯） |
+| `[STALE]` | 说明该面 expected 的链接类来源被真实副本顶替了：跑对应端的同步脚本恢复（Windows `ensure_junctions.ps1` / WSL `sync-wsl.sh`）；若该名字已在 `manual-skills.md` 里，那是**尚未纳入 npx 的存量件**，属显式接纳——要迁移就先销账，再删副本、重跑同步 |
 | `[EXTRA]` | 本体系僵尸。确认源已改名/删除后手工删 |
 | `[BRK ]` | 同步脚本会自动清死链；若清不掉，查源目录（仓库或 LLMWiki）是否还在 |
 | `[UNK ]` | **不删**。逐条判断：市场件 → 留给工具自己管；旧副本 → 确认后清理 |

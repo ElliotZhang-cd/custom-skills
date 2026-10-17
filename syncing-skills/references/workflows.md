@@ -111,7 +111,7 @@
 
 ## 第三方技能
 
-「第三方」= 由 `npx skills` 管理的技能。两端各有**一份存储面**：WSL `~/.agents/skills/`、Windows `%USERPROFILE%\.agents\skills`（2026-10-17 起，见 `docs/adr/0004`）；权威是各自目录下的锁文件 `.skill-lock.json`（v3，每条带 `sourceUrl` / `skillFolderHash` / `installedAt` / `updatedAt`）。CLI 会把技能物化到它**认识**的 agent 目录；不认识的面（`dsh` / `workbuddy`）仍需手工副本，走下一节。
+「第三方」= 由 `npx skills` 管理的技能。两端各有**一份仓库层**：WSL `~/.agents/skills/`、Windows `%USERPROFILE%\.agents\skills`（2026-10-17 起，见 `docs/adr/0004`）；权威是各自目录下的锁文件 `.skill-lock.json`（v3，每条带 `sourceUrl` / `skillFolderHash` / `installedAt` / `updatedAt`）。**npx 只管这一层**——把它装/更到仓库层；各平台面上的第三方是本体系建的**链接**（指向该平台仓库层的同名条目），由同步脚本建、由对账检查。所以 `dsh` / `workbuddy` 不在 CLI 的 agent 表里也无妨：这两个面照样能拿到链接。
 
 命令面（`skills` v1.7.0，可用 `npx skills --help` 复核）：
 
@@ -128,8 +128,8 @@
 
 1. **别让自建进锁文件**：`npx skills` 只管第三方；对自建跑 `update` 会把链接换成拷贝、覆盖本地修改（依据：`docs/adr/0002`）。
 2. **跑 `add` / `update` 之前先核对锁文件的 `lastSelectedAgents`**（本机 14 个 agent 别名）：那是 CLI 自己的"面注册表"，被扩写会在**分发清单之外**悄悄新建目录、物化副本（2026-07-31「53 份拷贝」同机制）。
-3. 装完/更新完 → 刷新派生表（`gen-skills-table.py`，仅 WSL）→ 对账（两端）。
-4. 新名字会以 **`[UNK ]` 提醒**出现（Windows 各目标上是"没账"）——属预期。要不要给 Windows 各面补副本，见下一节。
+3. 装完/更新完 → **两端各跑一次同步脚本**（把新条目链到各面；这一步不属于 npx）→ 刷新派生表（`gen-skills-table.py`，仅 WSL）→ 对账（两端）。
+4. 新名字会以 **`[UNK ]` 提醒**出现在 CLI 自己物化过、但不在分发清单里的目录（有则点名）——属预期；本体系各面由同步脚本建链，不需要手工补。
 
 ### 卸载 / 退役第三方
 

@@ -7,24 +7,32 @@
 #            role == "junction" ones are linked / pruned. A missing or
 #            unparsable config is a hard error (exit 1), never a silent no-op.
 #   add    : every selfbuilt skill (a repo dir holding SKILL.md) + mllw gets a
-#            junction pointing at its source on every junction surface.
+#            junction pointing at its source on every junction surface. On
+#            surfaces whose expect list contains "thirdparty", every skill in
+#            the npx store (%USERPROFILE%\.agents\skills, real dirs) also gets
+#            a junction pointing at that store entry -- npx owns the store
+#            (repo layer) only; the platform layer is this script + links +
+#            reconciliation.
 #   lazy   : if a surface's PARENT dir exists (the tool is installed) but the
 #            skills dir does not, the skills dir is created and reported as
 #            "[new] surface created: ...". Tools that materialize their skills
 #            root lazily (desktop DSH) are therefore owned here.
 #   prune  : a junction/symlink on a surface whose target lies under a managed
-#            root (this repo or LLMWiki\skills) but no longer resolves to a skill
-#            (renamed / retired / dead target) is removed. Only the link is
-#            deleted, never a target, and never a foreign link.
+#            root (this repo, LLMWiki\skills or the npx store) but no longer
+#            resolves to a skill (renamed / retired / dead target) is removed.
+#            Only the link is deleted, never a target, and never a foreign link.
 #   warn   : a surface whose parent is missing too (tool not installed) prints
 #            "[WARN] surface missing (tool not installed?)". That only sets
 #            exit 1 when the surface is required: true in the whitelist, so
 #            "tool not installed" is not misreported as a sync failure.
-# Manual third-party items (manual-skills.md ledger) are NOT managed here:
-# real directories are skipped and reported.
+# Real directories are NEVER replaced here: legacy manual third-party copies
+# (manual-skills.md ledger) and anything the CLI materialized into a surface are
+# left alone and reported. Once a name is in the npx store, reconciliation
+# flags such a copy as [STALE]; a human deletes it, then this script links it.
 $ErrorActionPreference = 'Continue'
 $repo = Join-Path $env:USERPROFILE 'custom-skills'
 $mllwSrc = Join-Path $env:USERPROFILE 'Documents\LLMWiki\skills\maintaining-llm-wiki'
+$store = Join-Path $env:USERPROFILE '.agents\skills'   # npx 仓库层（第三方存储面）
 $configPath = Join-Path $PSScriptRoot 'distribution-targets.json'
 
 function Get-Prop($obj, [string]$name, $default) {
@@ -63,6 +71,7 @@ foreach ($s in @($cfg.surfaces)) {
     Id       = $sid
     Role     = [string](Get-Prop $s 'role' 'junction')
     Required = [bool](Get-Prop $s 'required' $false)
+    Expect   = @(Get-Prop $s 'expect' @())
     Path     = (Join-Path $env:USERPROFILE ($rel -join '\'))
   }
 }
@@ -72,7 +81,7 @@ Write-Output ("  [cfg]  " + $targets.Count + " Windows surface(s) from distribut
 # does not exist stays out of the list, so an unavailable repo or LLMWiki can
 # never cause a pruning spree.
 $managedRoots = @()
-foreach ($root in @($repo, (Split-Path $mllwSrc -Parent))) {
+foreach ($root in @($repo, (Split-Path $mllwSrc -Parent), $store)) {
   if (Test-Path $root) { $managedRoots += (Resolve-Path $root).Path.TrimEnd('\') }
 }
 
@@ -97,6 +106,18 @@ Get-ChildItem $repo -Directory | Where-Object { Test-Path (Join-Path $_.FullName
   $items += ,@($_.Name, $_.FullName)
 }
 if (Test-Path $mllwSrc) { $items += ,@('maintaining-llm-wiki', $mllwSrc) }
+
+# third-party items live in the npx store as real directories (our own entries
+# there are junctions, so LinkType plus the name check keeps them out).
+$owned = @{}
+foreach ($i in $items) { $owned[[string]$i[0]] = $true }
+$tpItems = @()
+if (Test-Path $store) {
+  Get-ChildItem $store -Directory -Force | Where-Object {
+    (-not $_.LinkType) -and (-not $owned.ContainsKey($_.Name)) -and
+    (Test-Path (Join-Path $_.FullName 'SKILL.md'))
+  } | ForEach-Object { $tpItems += ,@($_.Name, $_.FullName) }
+}
 $miss = 0
 $added = 0
 $cleaned = 0
@@ -165,6 +186,25 @@ foreach ($t in $targets) {
     New-Item -ItemType Junction -Path $dst -Value $src | Out-Null
     Write-Output ("  [link] " + $dst + " -> " + $src)
     $added++
+  }
+
+  # --- third-party: npx owns the store, this script links it into surfaces ---
+  if (@($t.Expect) -contains 'thirdparty') {
+    foreach ($item in $tpItems) {
+      $s = $item[0]; $src = $item[1]
+      $dst = Join-Path $tPath $s
+      if (Test-Path $dst) {
+        $lt = "$((Get-Item $dst).LinkType)"
+        if ($lt -ne 'Junction') {
+          Write-Output ("  [note] real copy where a third-party junction is expected: " +
+                        $dst + " (delete the copy, then re-run to link the store entry)")
+        }
+        continue
+      }
+      New-Item -ItemType Junction -Path $dst -Value $src | Out-Null
+      Write-Output ("  [link] " + $dst + " -> " + $src)
+      $added++
+    }
   }
 }
 Write-Output ("  [sum]  added " + $added + " / cleaned " + $cleaned + " / source-missing " + $miss)

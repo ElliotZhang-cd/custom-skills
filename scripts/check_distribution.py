@@ -16,10 +16,11 @@
              仅列出，不报错不删除
   BROKEN   = 死符号链接 / 死 junction
   CONFLICT = 同名同时出现在自建集与第三方锁文件（命名空间冲突，必须改名）
-  STALE    = 来自 selfbuilt/mllw 池的 expected 名字在本面存在同名 SKILL.md 条目，但它不是指向
-             本仓库/LLMWiki 的链接（真实目录或外来链接）——即本体系 junction/符号链接被工具
-             自建的真实副本顶掉了。manual/thirdparty 池豁免（它们在投影面本来就是真实副本）。
-             只在 role 为 junction/link/storage（或未声明 role）的面启用。
+  STALE    = 该面 expected 的**链接类**来源（自建 / 第二个来源 / 面已声明 thirdparty 且非存储面的
+             第三方）在本面存在同名 SKILL.md 条目，但它不是指向该来源权威位置的链接（真实目录
+             或外来链接）——即本体系 junction/符号链接被工具自建的真实副本顶掉了。两点例外：
+             manual 池永不参与（按定义就是真实副本）；存储面（role=storage）是第三方真实目录的
+             所在地，其第三方也不参与。只在 role 为 junction/link/storage（或未声明 role）的面启用。
   WARN(面) = 面目录不存在（本机无此面）：只打 [WARN]，但该面 required: true 时计入退出码 1。
 配置自检 = 分发清单字段缺失/拼错、目标 id 不在 LEDGER_TOKENS、账本「所在目标」列含未声明的
               token —— 一律明确报错并退出码 1，不再静默剔除或静默降级（见 specs/syncing-skills R5）。
@@ -55,9 +56,12 @@ def selfbuilt_set():
             if d.is_dir() and (d / "SKILL.md").is_file()}
 
 
-def thirdparty_set():
-    """第三方 expected = skills CLI 锁文件的 skills key 集；读不到则空（不假装对账）"""
-    lock = Path.home() / ".agents" / ".skill-lock.json"
+def thirdparty_set(home=None):
+    """第三方 expected = 该**平台**的 skills CLI 锁文件的 skills key 集；读不到则空（不假装对账）。
+
+    npx 是仓库层、按平台各持一份存储面与锁（见 docs/adr/0001/0004），所以池必须按被审面所在
+    平台的 home 取——否则在 WSL 上审计 win 面时会拿 WSL 的锁去要求 Windows 的面。"""
+    lock = (home or Path.home()) / ".agents" / ".skill-lock.json"
     if not lock.is_file():
         return set()
     try:
@@ -300,12 +304,12 @@ def expand_surfaces(surfaces):
                 continue  # Windows 原生不审计 WSL 的符号链接面
             out.append({"id": sid, "label": "~/" + "/".join(rel),
                         "path": home.joinpath(*rel), "expect": expect,
-                        "role": role, "required": required})
+                        "role": role, "required": required, "home": home})
         else:
             for wh in win_homes():
                 out.append({"id": sid, "label": f"[win:{wh.name}] " + "/".join(rel),
                             "path": wh.joinpath(*rel), "expect": expect,
-                            "role": role, "required": required})
+                            "role": role, "required": required, "home": wh})
     return out
 
 
@@ -400,14 +404,25 @@ def audit(label, path, pools, role="", required=False):
     missing = sorted(expected - present)
     extra = sorted(managed - expected)
     unknown = sorted(present - expected - managed)
-    # STALE：selfbuilt/mllw 池的 expected 名字在本面存在同名 SKILL.md 条目，但它不是指向
-    # 本仓库/LLMWiki 的链接（真实目录 / 外来链接）→ 链接被工具自建副本顶掉。
-    # manual/thirdparty 池豁免（在投影面本来就是真实副本）；只对 role in junction/link/storage
-    # （或未声明 role）的面启用。
+    # STALE：该面 expected 的链接类来源（自建 / 第二个来源 / 已声明 thirdparty 的第三方）在本面
+    # 存在同名 SKILL.md 条目，但它不是指向该来源权威位置的链接 → 链接被工具自建副本顶掉。
+    # manual 池永不参与（它按定义就是真实副本）；thirdparty 是否算链接类，由该面 expect 决定
+    # ——声明了 thirdparty 就表示「第三方在本面应是链接（指向 npx 的仓库层）」。
+    # 只对 role in junction/link/storage（或未声明 role）的面启用。
     stale = []
     if role in ("", "junction", "link", "storage"):
-        link_pool = pools.get("selfbuilt", set()) | pools.get("mllw", set())
-        stale = sorted((present - managed) & link_pool)
+        # 自建 / 第二个来源：必须是**指向本仓库或 LLMWiki 的链接**（is_managed 认的就是这个）
+        owned = pools.get("selfbuilt", set()) | pools.get("mllw", set())
+        stale_owned = (present - managed) & owned
+        # 第三方（该面声明了 thirdparty 且不是存储面）：必须是**链接**——指向该平台的 npx 仓库层，
+        # 因此不必落在仓库/LLMWiki 之下；登记在册的存量副本显式接纳，存储面本身就是真实目录。
+        stale_tp = set()
+        if role != "storage":
+            for n in sorted(present & (pools.get("thirdparty", set()) - pools.get("manual", set()))):
+                e = path / n
+                if not (e.is_symlink() or read_link_target(e) is not None):
+                    stale_tp.add(n)
+        stale = sorted(stale_owned | stale_tp)
     bad = bool(missing or extra or broken or stale)
     if not bad and not unknown:
         print(f"  [OK]   {label}  对齐（{len(present & expected)}/{len(expected)}）")
@@ -474,22 +489,24 @@ def main(argv=None):
     pools = {
         "selfbuilt": selfbuilt_set(),
         "mllw": {MLLW} if mllw_source_exists() else set(),
-        "thirdparty": thirdparty_set(),
     }
-    conflict = sorted(pools["selfbuilt"] & pools["thirdparty"])
+    local_tp = thirdparty_set()
+    conflict = sorted(pools["selfbuilt"] & local_tp)
     manual = manual_entries()
     expanded = expand_surfaces(surfaces)
-    total = sum(len(v) for v in pools.values())
+    total = sum(len(v) for v in pools.values()) + len(local_tp)
     print(f"[audit] 真相源 {total} 个"
           f"（自建 {len(pools['selfbuilt'])} / mllw {len(pools['mllw'])}"
-          f" / 第三方 {len(pools['thirdparty'])}）；"
-          f"手动件账本 {sum(len(v) for v in manual.values())} 条")
+          f" / 第三方 {len(local_tp)}（本机锁））；"
+          f"手动件登记表 {sum(len(v) for v in manual.values())} 条")
     if conflict:
         print(f"[CONFLICT] 命名冲突（自建 ∩ 第三方同名，必须改名）: {', '.join(conflict)}")
     bad = bool(conflict)
     req_missing = []
     for sf in expanded:
         sub = {k: (v if k in sf["expect"] else set()) for k, v in pools.items()}
+        if "thirdparty" in sf["expect"]:
+            sub["thirdparty"] = thirdparty_set(sf["home"])   # 按被审面所在平台取锁
         if "manual" in sf["expect"]:
             sub["manual"] = manual.get(sf["id"], set())
         if not sf["path"].is_dir() and sf["required"]:
@@ -501,8 +518,8 @@ def main(argv=None):
             print(f"[audit] required 面缺失 {len(req_missing)} 个（计入退出码 1）: "
                   f"{', '.join(req_missing)}")
         print("[audit] 存在缺口：MISSING 跑对应端同步脚本补齐；EXTRA/BROKEN 确认后清理；"
-              "STALE 说明自建/mllw 的链接被复制成了真实副本，跑 ensure_junctions.ps1 恢复；"
-              "UNKNOWN 为残留仅列出、不改写。")
+              "STALE 说明该面 expected 的链接类来源被复制成了真实副本（自建 / 第二个来源 / 已声明 "
+              "thirdparty 的第三方），跑对应端的同步脚本恢复；UNKNOWN 为残留仅列出、不改写。")
         return 1
     print("[audit] 全部分发面对齐。（若上方有 UNK 残留，属非本体系，不影响结论）")
     return 0

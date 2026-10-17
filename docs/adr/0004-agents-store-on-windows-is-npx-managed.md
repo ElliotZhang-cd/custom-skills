@@ -1,6 +1,6 @@
-# Windows 的 `~/.agents/skills` 存在，但只能由 npx 管理
+# Windows 的 `~/.agents/skills` 是 npx 的仓库层，只能由 npx 写
 
-Windows 侧 `%USERPROFILE%\.agents\skills` 从 2026-10-17 起是**第三方技能的存储面**：由 `npx skills` 的全局模式写（它的全局根硬编码为 `<home>/.agents/skills`，**没有任何环境变量能改**），权威是同一目录下的 `.skill-lock.json`。**机主裁定：第三方 skill 统一由 npx 管理**（见 `docs/adr/0001`），于是这个目录从"必须不存在"改为"必须存在、且只能由 npx 维护"。
+Windows 侧 `%USERPROFILE%\.agents\skills` 从 2026-10-17 起是**第三方技能的仓库层**：由 `npx skills` 的全局模式写（它的全局根硬编码为 `<home>/.agents/skills`，**没有任何环境变量能改**），权威是同一目录下的 `.skill-lock.json`。**机主裁定：第三方 skill 统一由 npx 管理，且 npx 只管仓库层、不管平台**（见 `docs/adr/0001`、`docs/adr/0002`）——各平台面上的第三方是对这一层的**链接**，由同步脚本建、由对账检查。
 
 历史与本决定的边界：2026-09-03 曾删除该目录，因为它是 2026-07-03 的**冻结快照**——脱离管理近两个月，`maintaining-llm-wiki` 还是缺三个工作流文件的旧架构。**病根是"无人管理的陈旧内容"，不是目录本身**。所以现在仍然禁止：手工往里放或改技能、让它变陈旧、把它当自建技能的存放处（自建只在本仓库，走链接分发）。
 

@@ -7,9 +7,10 @@
 #       (清失效链 + 建链) -> 刷新 AGENTS.md 技能表 -> 分发对账 -> 锁文件快照备份
 # 面清单: scripts/distribution-targets.json 里 platform=posix 的面（唯一声明处）
 #   role=storage 的面直指源目录；role=link 的面用相对路径指向第一个 storage 面
-#   expect 决定每个面该有哪些来源（selfbuilt / mllw / thirdparty / manual；
-#   本脚本只建链接类来源 selfbuilt 与 mllw——thirdparty 是 CLI 落的真实目录，
-#   manual 是人工放置的真实副本，都不由本脚本增删）
+#   expect 决定每个面该有哪些来源（selfbuilt / mllw / thirdparty / manual）：
+#   本脚本建 selfbuilt / mllw / thirdparty 的链接——第三方指向 npx 的**仓库层**
+#   （存储面同名条目），名字以 CLI 锁文件为权威；manual 是人工放置的真实副本，
+#   不由本脚本增删（真实副本一律只点名、不替换）。
 # 注意: 自建 skill 绝不进入 skills CLI 锁文件; 编辑只发生在任一 clone, push 后他端 pull
 # ============================================================
 set -u
@@ -101,6 +102,26 @@ done < <(find "$REPO" -maxdepth 2 -name SKILL.md -printf "%h\n" 2>/dev/null \
          | sed "s|$REPO/||" | sort)
 [ -n "$MLLW_SRC" ] && SRC["$MLLW_NAME"]="$MLLW_SRC"
 [ "${#SRC[@]}" -gt 0 ] || fail "仓库里没找到任何自建 skill（根下含 SKILL.md 的目录）"
+
+# ---- 第三方池（**仓库层**）：npx 只管存储面与锁，本脚本负责把这些条目链到各面 ----
+# 名字**以 CLI 锁文件为权威**（与 check_distribution.py 的 thirdparty 池同源，绝不擅自扩面：
+# 存储面里锁外的目录不链，否则会在对账里变成 [UNK]）；只链「锁里有 且 存储面里真的在」的，
+# 避免造出悬空链。锁读不到 → 池为空（不假装有第三方）。
+declare -A TP=()
+if [ -n "$STORAGE_DIR" ] && [ -d "$STORAGE_DIR" ] && [ -f "$LOCK" ]; then
+    tp_names="$(python3 -c 'import json,sys
+try:
+    d = json.load(open(sys.argv[1], encoding="utf-8"))
+    print("\n".join(sorted((d.get("skills") or {}).keys())))
+except Exception:
+    pass' "$LOCK" 2>/dev/null || true)"
+    while IFS= read -r n; do
+        [ -n "$n" ] || continue
+        [ -n "${SRC[$n]:-}" ] && continue              # 自建 / 第二个来源另有归属
+        [ -f "$STORAGE_DIR/$n/SKILL.md" ] || continue  # 真实目录且是技能
+        TP["$n"]="$STORAGE_DIR/$n"
+    done <<<"$tp_names"
+fi
 
 # 归属判定：只看链接自身的**字面目标**（v7.1 的教训——不要用 realpath 链式解析，
 # 否则 .agents 旧链先删后，.claude 链会断在半途而漏删）。
@@ -213,8 +234,34 @@ for id in "${!FACE_DIR[@]}"; do
             added=$((added + 1))
         fi
     done
+
+    # 第三方：本面声明了 thirdparty 就该有链接（指向存储面同名条目）——npx 只管仓库层，
+    # 平台层由本脚本建链；真实副本占位不删（那是用户内容），只点名，让对账去判 [STALE]。
+    if [ "$role" != "storage" ]; then
+        case "$exp" in *" thirdparty "*)
+            for name in $(printf '%s\n' "${!TP[@]}" | sort); do
+                [ -n "$name" ] || continue
+                link="$dir/$name"
+                if [ -L "$link" ]; then continue; fi
+                if [ -e "$link" ]; then
+                    note "真实副本占位（第三方在本面应为链接，确认后删掉再跑一次）: ${link#"$HOME"/}"
+                    continue
+                fi
+                pbase="${STORAGE_DIR:-}"
+                [ -n "$pbase" ] || continue
+                tgt="$(python3 -c 'import os, sys; print(os.path.relpath(sys.argv[1], sys.argv[2]))' \
+                       "$pbase/$name" "$dir" 2>/dev/null || true)"
+                [ -n "$tgt" ] || tgt="$pbase/$name"
+                if ln -s "$tgt" "$link"; then
+                    echo "  [$id] + $name -> $(readlink "$link")"
+                    added=$((added + 1))
+                fi
+            done
+            ;;
+        esac
+    fi
 done
-echo "  [sum]  新增 $added / 清理 $cleaned"
+echo "  [sum]  新增 $added / 清理 $cleaned（第三方池 ${#TP[@]} 个，来自 ${STORAGE_DIR:-未发现存储面}）"
 
 # ---- [4/6] 刷新 AGENTS.md 技能表 ----
 if [ -f "$TABLE_SCRIPT" ]; then
