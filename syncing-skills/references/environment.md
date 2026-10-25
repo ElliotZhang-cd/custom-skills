@@ -1,16 +1,15 @@
 # 真相源、来源类别与平台前提
 
-## 两个真相源
+## 真相源
 
 - **自建技能**：GitHub `ElliotZhang-cd/custom-skills`（唯一源头）。两端各一个 clone：WSL `~/custom-skills/`、Windows `%USERPROFILE%\custom-skills`，都能编辑，但**只有 push 才算发布**（见 `docs/adr/0001`）。投影目标里的任何改动都不算数。
-- **第二个来源**：`LLMWiki/skills/maintaining-llm-wiki`——一个技能，独立仓库、独立 git 历史。
+- 历史：曾有「第二个来源」（LLMWiki 仓库里的 `maintaining-llm-wiki`，独立仓库独立历史），2026-10-25 退役并入自建（`docs/adr/0005`）——仓库现在是唯一的内容源头。LLMWiki 仓库仍在，但只作**落账**去处（体系级改动写它的 `log.md`），不再是技能来源。
 
-## 四类来源
+## 三类来源
 
 | 来源 | 是什么 | 怎么分发 | 谁声明 |
 |---|---|---|---|
 | `selfbuilt` | 本仓库根下含 `SKILL.md` 的目录 | 链接（WSL 两级符号链接 / Windows junction） | 仓库自身——仓库即列表 |
-| `mllw` | `maintaining-llm-wiki` | 两端都由同步脚本按清单建链（Windows：junction；WSL：storage 面直指源 + link 面二级链），前提是源可被发现 | LLMWiki 仓库是否存在 |
 | `thirdparty` | `npx skills` 管理的第三方技能 | 各平台面 → **链接**到该平台的仓库层（仓库层本身是 CLI 维护的真实目录；增删改流程见 `references/workflows.md`「第三方技能」） | 各平台自己的锁文件 `.skill-lock.json` |
 | `manual` | 人工放置、无仓库来源的第三方技能 | Windows 各目标下的真实副本 | 登记表 `manual-skills.md` |
 
@@ -27,7 +26,9 @@
 | 动作 | Windows | WSL |
 |---|---|---|
 | 对账 | `python scripts\check_distribution.py` | `python3 scripts/check_distribution.py` |
+| 跨端一键对账 | `check-all.bat`（本机 + WSL 一次跑完，任一端失败退出码 1） | —（由 Windows 侧发起） |
 | 一键同步 | `sync-custom-skills.bat`（转发到 `scripts/sync-windows.bat`） | `bash scripts/sync-wsl.sh` |
+| 一键同步（严格） | 同上加 `--strict`：对账失败 → 退出码 1、跳过 pause（供计划任务） | `bash scripts/sync-wsl.sh --strict` 同义 |
 | 刷新 AGENTS.md 技能表 | ✗ 来源面 `~/.agents/skills` 只在 WSL 存在 | ✓ |
 | 刷新 README 生成块 | ✓ `--readme` | ✓ `--readme` |
 | 对账覆盖 | 只审 `platform: win` 的目标 | 全部：本机 posix 面 + 所有 `/mnt/c/Users/*` 上的 win 面 |
@@ -40,7 +41,7 @@
 |---|---|---|
 | `README.md` | 人 | 目标一览（生成）、四类来源、硬规则、日常操作指路 |
 | 本技能 | agent | 四类操作的分步流程、判定分级、排查手册 |
-| `docs/adr/` | 人 | 4 条难回退的决定及其理由 |
+| `docs/adr/` | 人 | 难回退的决定及其理由（一条决定一个文件） |
 | LLMWiki `wiki/syntheses/skill-maintenance-workflow.md` | 人 | 为什么这样定、版本沿革、事故教训 |
 | `specs/syncing-skills/` | 维护者 | 本技能的需求/设计/任务/规则（构建期的产物） |
 

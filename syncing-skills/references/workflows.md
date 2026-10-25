@@ -4,19 +4,9 @@
 
 ---
 
-## 第二个来源（`maintaining-llm-wiki`）
+## 「第二个来源」已退役（2026-10-25）
 
-它不在本仓库里。两个平台**都由同步脚本按分发清单建链**，前提是源目录可被发现（候选：`$HOME/Documents/LLMWiki/skills/maintaining-llm-wiki`，以及 `/mnt/c/Users/*/Documents/LLMWiki/skills/maintaining-llm-wiki`）：
-
-| 平台 | 谁建链 | 命令 |
-|---|---|---|
-| Windows | `ensure_junctions.ps1` 读清单，把 mllw 源目录也纳入 | `sync-custom-skills.bat` |
-| WSL | `sync-wsl.sh` 读清单（面的 `expect` 含 `mllw` 才建），storage 面直指源、link 面走二级链 | `bash scripts/sync-wsl.sh` |
-| 任意（备用） | LLMWiki 仓库自己的脚本，只建 storage 面那一条 | `bash skills/maintaining-llm-wiki/scripts/install_links.sh` |
-
-**全新 WSL 家目录**：跑一次 `sync-wsl.sh` 就会把两个面都建好。若源不在候选位置（脚本会打印"源: N 个"而不含 mllw），先确认 LLMWiki 仓库在不在，再用上面第三条手工补。
-
-审计入口：LLMWiki 仓库的 `scripts/check_skill_links.py` 会按分发清单逐平台检查 mllw 入口是否指向源目录。
+`maintaining-llm-wiki` 已并入本仓库、成为自建技能之一（commit `52593cf`）；mllw 来源类别、同步脚本里的 mllw 建链分支、`install_links.sh` 备用入口与 `check_skill_links.py` 审计入口一并退役（理由与影响见 `docs/adr/0005`）。历史操作记录见 git 历史与 LLMWiki 的 `log.md`。
 
 ---
 
@@ -28,7 +18,6 @@
 2. `git add -A && git commit -m "[skill] 说明"` → push。**push 等于发布**；投影目标里的任何改动都不算数。
 3. 他端 `pull`，然后**两端各跑一次同步**：`sync-custom-skills.bat` / `bash scripts/sync-wsl.sh`。
    自建技能不需要登记进清单——「仓库即列表」：同步脚本扫描仓库根下含 `SKILL.md` 的目录自动建链接。
-   首次在 WSL 侧做这件事之前，先确认「第二个来源」的两条链已在（见上一节）。
 4. **刷新派生表**：`python3 scripts/gen-skills-table.py`（AGENTS.md，仅 WSL）与
    `python3 scripts/gen-skills-table.py --readme README.md`（README，两端可跑）。
 5. **把派生表也提交推送**：生成会改动 `README.md`/`~/AGENTS.md`，工作树随之变脏，而两端同步脚本都有脏树守卫——不提交，下一次同步会被自己挡住。正确循环是
@@ -79,7 +68,7 @@
 2. **登记清单**：加一条 `{id, platform, relpath, expect, role, required, note}`。
    - `id` 小写 token，同时也是登记表「所在目标」列的词表。
    - `platform` 取 `win` / `posix`：**漏写会让这个目标在 Windows 端被静默剔除**。
-   - `expect` 取 `selfbuilt` / `mllw` / `thirdparty` / `manual` 的子集。
+   - `expect` 取 `selfbuilt` / `thirdparty` / `manual` 的子集。
    - `role` 取 `junction` / `link` / `storage`：Windows 侧补链脚本只处理 `junction`，对账用它划定"被顶替"的范围。
    - `required`：本机在装则 `true`；目标目录缺失会计入退出码 1。
    - `note` 里写清该平台的加载机制细节（README 只指路到这里）。
@@ -183,8 +172,9 @@
 1. 任一端编辑 → commit + push。
 2. 他端 pull，然后两端各跑一次同步脚本。
 3. **脏树守卫**：任何未提交改动（含未跟踪文件）都会让同步脚本拒绝运行——这是保护，不是故障。生成派生表之后也要提交，否则下一次同步会被自己挡住。
-4. **同步脚本自己的成功信息不足信**：`sync-wsl.sh` 用 `|| true` 吞掉对账的非 0 退出码，且技能表生成器崩溃时仍会打印「完成」。**以对账输出为准，不以脚本退出码或结尾那句话为准。**
-5. **冲突**：`--ff-only` 只保护、不仲裁。两端同时改同一文件会产生 git 冲突，手工解决，绝不让脚本自动覆盖。
+4. **同步脚本的退出码仍不是判据**：默认模式下对账失败不改变退出码（2026-10-25 起失败会明确打印「未完成」，不再假报「完成」）；两端同步脚本都支持 `--strict`（对账失败 → 退出码 1，供计划任务/钩子自动化）。**无论如何，以对账输出为准。**
+5. **对账一次跑两端**：`check-all.bat`（仓库根，Windows 侧发起：本机 + WSL 各跑一次，任一端失败退出码 1）。
+6. **冲突**：`--ff-only` 只保护、不仲裁。两端同时改同一文件会产生 git 冲突，手工解决，绝不让脚本自动覆盖。
 
 ---
 

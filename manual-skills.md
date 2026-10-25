@@ -12,7 +12,6 @@
 
 | 名字 | 来源 | 一句话 | 更新时间 | 所在目标 |
 |---|---|---|---|---|
-| Humanizer-zh-main | humanizer-zh（具体仓库待确认） | 去除文本 AI 生成痕迹 | 2026-08-23 | ZCode+DSH |
 | domain-modeling | github.com/mattpocock/skills | 构建打磨项目领域模型（CONTEXT.md/ADR），grill-with-docs 的依赖 | 2026-08-23 | ZCode+DSH |
 | grill-with-docs | github.com/mattpocock/skills | 拷问式访谈 + 顺带产出 ADR 和术语表（编排 grilling + domain-modeling） | 2026-08-23 | ZCode+DSH |
 | handoff | github.com/mattpocock/skills | 把当前对话压缩成交接文档 | 2026-08-23 | ZCode+DSH |
@@ -36,5 +35,5 @@
 | ui-styling | 来源不详 | Create beautiful, accessible user interfaces with shadcn/ui … | 2026-08-13 | ZCode+DSH |
 
 > 依赖：`grill-with-docs` → `domain-modeling`（其另一依赖 `grilling` 已迁入 npx 仓库层，不在本表）。
-> 目录名变体：`Humanizer-zh-main` 对应锁文件中的 `humanizer-zh`，待归一。
 > 本表**只保留仍在账上的名字与其来源**；不写条目数、不写已删除项、不写溯源进度——那些是历史的活，归 git 历史与 LLMWiki 的 `log.md`（写在这里必漂）。
+> 历史注：`Humanizer-zh-main`（目录名变体，锁内名 humanizer-zh）已于 2026-10-25 归一退役——npx 仓库层已有同名件，两面的手工副本已删、账已销（对账新增的 `[NAME]` 检查防复发）。

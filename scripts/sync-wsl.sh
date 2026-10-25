@@ -2,18 +2,24 @@
 # ============================================================
 # sync-wsl.sh - WSL 侧同步 custom-skills（GitHub 为唯一真相源）
 # 架构: GitHub repo = 唯一真相源; WSL ~/custom-skills 与 Windows 均为 clone + 编辑入口
-# 用法: bash ~/custom-skills/scripts/sync-wsl.sh   （或 ~/.local/bin 软链后直接跑）
+# 用法: bash ~/custom-skills/scripts/sync-wsl.sh [--strict]   （或 ~/.local/bin 软链后直接跑）
 # 流程: 脏树守卫(含 untracked) -> git pull --ff-only -> 按分发清单同步 POSIX 面的链接
 #       (清失效链 + 建链) -> 刷新 AGENTS.md 技能表 -> 分发对账 -> 锁文件快照备份
+# --strict: 对账非 0 时以退出码 1 结束（供计划任务/钩子自动化用）；
+#       默认只记录不中断（历史行为）。无论哪种模式，都以对账输出为准。
 # 面清单: scripts/distribution-targets.json 里 platform=posix 的面（唯一声明处）
 #   role=storage 的面直指源目录；role=link 的面用相对路径指向第一个 storage 面
-#   expect 决定每个面该有哪些来源（selfbuilt / mllw / thirdparty / manual）：
-#   本脚本建 selfbuilt / mllw / thirdparty 的链接——第三方指向 npx 的**仓库层**
+#   expect 决定每个面该有哪些来源（selfbuilt / thirdparty / manual）：
+#   本脚本建 selfbuilt / thirdparty 的链接——第三方指向 npx 的**仓库层**
 #   （存储面同名条目），名字以 CLI 锁文件为权威；manual 是人工放置的真实副本，
 #   不由本脚本增删（真实副本一律只点名、不替换）。
+#   （mllw 类别已于 2026-10-25 退役——maintaining-llm-wiki 已并入自建，见 docs/adr/0005）。
 # 注意: 自建 skill 绝不进入 skills CLI 锁文件; 编辑只发生在任一 clone, push 后他端 pull
 # ============================================================
 set -u
+
+STRICT=0
+[ "${1:-}" = "--strict" ] && STRICT=1
 
 REPO="$HOME/custom-skills"
 CONFIG="$REPO/scripts/distribution-targets.json"
@@ -23,7 +29,6 @@ LOCK="$HOME/.agents/.skill-lock.json"
 LOCK_BAK="$REPO/scripts/.backup/skill-lock.json"
 ORIGIN="origin"
 BRANCH="master"
-MLLW_NAME="maintaining-llm-wiki"
 
 fail() {
     echo "[sync] 错误: $*" >&2
@@ -80,23 +85,9 @@ while IFS=$'\t' read -r id role exp rel; do
 done <<<"$FACE_DUMP"
 [ "${#FACE_DIR[@]}" -gt 0 ] || fail "清单里没有可用的 posix 面"
 
-# ---- 第二个来源：探测 LLMWiki 里的 maintaining-llm-wiki ----
-find_mllw_src() {
-    local c
-    for c in "$HOME/Documents/LLMWiki/skills/$MLLW_NAME" \
-             /mnt/c/Users/*/Documents/LLMWiki/skills/$MLLW_NAME; do
-        if [ -f "$c/SKILL.md" ]; then
-            printf '%s\n' "$c"
-            return 0
-        fi
-    done
-    return 1
-}
-MLLW_SRC="$(find_mllw_src || true)"
-
-# ---- 源集合：仓库根下含 SKILL.md 的目录（仓库即列表）+ 第二个来源 ----
+# ---- 源集合：仓库根下含 SKILL.md 的目录（仓库即列表；mllw 已并入自建，见 docs/adr/0005） ----
 declare -A SRC=()
-declare -A SRC_POOL=()   # 名字 -> 归属池（selfbuilt / mllw）：门控必须按**池**判，不能按名字
+declare -A SRC_POOL=()   # 名字 -> 归属池（当前只有 selfbuilt）：门控按**池**判，不按名字
 while IFS= read -r s; do
     if [ -n "$s" ]; then
         SRC["$s"]="$REPO/$s"
@@ -104,18 +95,6 @@ while IFS= read -r s; do
     fi
 done < <(find "$REPO" -maxdepth 2 -name SKILL.md -printf "%h\n" 2>/dev/null \
          | sed "s|$REPO/||" | sort)
-# 第二个来源：**只有仓库里没有同名时才作为 mllw 池的一员**（仓库优先）。
-# 2026-10-17 两条实证教训：① 门控若按名字判（`[ "$name" = "$MLLW_NAME" ]`），一个名字从
-# mllw 迁进仓库后会被当成"还是 mllw"，于是任何未声明 mllw 的面都跳过它（合成面直接报 [MISS]）；
-# ② 两个仓库同时存在同名技能时必须有确定归属，不能看谁先写进 map。
-if [ -n "$MLLW_SRC" ]; then
-    if [ -n "${SRC[$MLLW_NAME]:-}" ]; then
-        note "$MLLW_NAME 同时在仓库与第二个来源里；按**仓库**归属（selfbuilt）"
-    else
-        SRC["$MLLW_NAME"]="$MLLW_SRC"
-        SRC_POOL["$MLLW_NAME"]="mllw"
-    fi
-fi
 [ "${#SRC[@]}" -gt 0 ] || fail "仓库里没找到任何自建 skill（根下含 SKILL.md 的目录）"
 
 # ---- 第三方池（**仓库层**）：npx 只管存储面与锁，本脚本负责把这些条目链到各面 ----
@@ -132,7 +111,7 @@ except Exception:
     pass' "$LOCK" 2>/dev/null || true)"
     while IFS= read -r n; do
         [ -n "$n" ] || continue
-        [ -n "${SRC[$n]:-}" ] && continue              # 自建 / 第二个来源另有归属
+        [ -n "${SRC[$n]:-}" ] && continue              # 自建另有归属
         [ -f "$STORAGE_DIR/$n/SKILL.md" ] || continue  # 真实目录且是技能
         TP["$n"]="$STORAGE_DIR/$n"
     done <<<"$tp_names"
@@ -151,12 +130,6 @@ entry_owned() {  # $1 = 指向链接的绝对路径
     case "$t" in
         "$REPO"/*) return 0 ;;
     esac
-    # 第二个来源的链：只在**知道源在哪**时才认领，避免误删指向别处的活链
-    if [ -n "$MLLW_SRC" ]; then
-        case "$t" in
-            *"Documents/LLMWiki/skills/$MLLW_NAME"*) return 0 ;;
-        esac
-    fi
     name="$(basename "$e")"
     for d in "${FACE_DIR[@]}"; do
         rel="${d#"$HOME"/}"
@@ -173,11 +146,6 @@ entry_owned() {  # $1 = 指向链接的绝对路径
                     case "$bt" in
                         "$REPO"/*) return 0 ;;
                     esac
-                    if [ -n "$MLLW_SRC" ]; then
-                        case "$bt" in
-                            *"Documents/LLMWiki/skills/$MLLW_NAME"*) return 0 ;;
-                        esac
-                    fi
                 fi
                 return 1
                 ;;
@@ -204,7 +172,7 @@ for id in "${!FACE_DIR[@]}"; do
 done
 [ "$cleaned" -eq 0 ] && echo "  （无失效链接）"
 
-echo "[sync] 同步链接（POSIX 面: ${!FACE_DIR[*]}；源: ${#SRC[@]} 个$([ -n "$MLLW_SRC" ] && echo "，含 $MLLW_NAME")）..."
+echo "[sync] 同步链接（POSIX 面: ${!FACE_DIR[*]}；源: ${#SRC[@]} 个）..."
 added=0
 for id in "${!FACE_DIR[@]}"; do
     dir="${FACE_DIR[$id]}"
@@ -226,8 +194,8 @@ for id in "${!FACE_DIR[@]}"; do
         link="$dir/$name"
         if [ -L "$link" ]; then
             # 死链必须修：`-L` 对**死链**同样为真，只看它会把它当成"已有链接"跳过，
-            # 于是目标已消失的旧链接永远不被修复（2026-10-17 实证：一个名字从 mllw
-            # 迁到 selfbuilt 后，两面一直报 [BRK]，而本脚本报"新增 0"）。
+            # 于是目标已消失的旧链接永远不被修复（2026-10-17 实证：源目录挪位后
+            # 两面一直报 [BRK]，而本脚本报"新增 0"）。
             if [ -e "$link" ]; then
                 continue
             fi
@@ -285,13 +253,17 @@ done
 echo "  [sum]  新增 $added / 清理 $cleaned（第三方池 ${#TP[@]} 个，来自 ${STORAGE_DIR:-未发现存储面}）"
 
 # ---- [4/6] 刷新 AGENTS.md 技能表 ----
+table_failed=0
 if [ -f "$TABLE_SCRIPT" ]; then
-    python3 "$TABLE_SCRIPT"
+    python3 "$TABLE_SCRIPT" || table_failed=1
 fi
 
-# ---- [5/6] 分发对账（清单里的 posix 面 + 经 /mnt/c 看到的 win 面；缺口退出码 1 但不中断） ----
+# ---- [5/6] 分发对账（清单里的 posix 面 + 经 /mnt/c 看到的 win 面）----
+# 默认：对账非 0 只记录、不中断（历史行为，脚本退出码仍 0）；--strict 时以退出码 1 结束。
+# 无论哪种模式，结论都以对账输出为准——同步脚本的退出码与结尾话术从不是判据。
+audit_failed=0
 if [ -f "$AUDIT_SCRIPT" ]; then
-    python3 "$AUDIT_SCRIPT" || true
+    python3 "$AUDIT_SCRIPT" || audit_failed=1
 fi
 
 # ---- [6/6] 锁文件快照备份（第三方 expected 权威源兜底，随 git 推送远端） ----
@@ -303,4 +275,13 @@ else
     echo "[sync] 提示: 未找到锁文件 $LOCK，跳过备份"
 fi
 
-echo "[sync] 完成。符号链接即改即生效；新/变更 skill 已在 ~/AGENTS.md 技能表中。"
+if [ "$audit_failed" -eq 0 ] && [ "$table_failed" -eq 0 ]; then
+    echo "[sync] 完成。符号链接即改即生效；新/变更 skill 已在 ~/AGENTS.md 技能表中。"
+else
+    [ "$table_failed" -ne 0 ] && echo "[sync] 未完成：技能表生成器失败（见上方输出）。" >&2
+    [ "$audit_failed" -ne 0 ] && echo "[sync] 未完成：对账存在缺口（见上方输出；以对账输出为准）。" >&2
+fi
+if [ "$audit_failed" -ne 0 ] && [ "$STRICT" -eq 1 ]; then
+    exit 1
+fi
+exit 0

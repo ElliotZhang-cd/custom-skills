@@ -6,19 +6,20 @@
 #            entries with platform == "win" are considered, and of those only
 #            role == "junction" ones are linked / pruned. A missing or
 #            unparsable config is a hard error (exit 1), never a silent no-op.
-#   add    : every selfbuilt skill (a repo dir holding SKILL.md) + mllw gets a
+#   add    : every selfbuilt skill (a repo dir holding SKILL.md) gets a
 #            junction pointing at its source on every junction surface. On
 #            surfaces whose expect list contains "thirdparty", every skill in
 #            the npx store (%USERPROFILE%\.agents\skills, real dirs) also gets
 #            a junction pointing at that store entry -- npx owns the store
 #            (repo layer) only; the platform layer is this script + links +
-#            reconciliation.
+#            reconciliation. (The mllw category was retired 2026-10-25:
+#            maintaining-llm-wiki lives in this repo now; see docs/adr/0005.)
 #   lazy   : if a surface's PARENT dir exists (the tool is installed) but the
 #            skills dir does not, the skills dir is created and reported as
 #            "[new] surface created: ...". Tools that materialize their skills
 #            root lazily (desktop DSH) are therefore owned here.
 #   prune  : a junction/symlink on a surface whose target lies under a managed
-#            root (this repo, LLMWiki\skills or the npx store) but no longer
+#            root (this repo or the npx store) but no longer
 #            resolves to a skill (renamed / retired / dead target) is removed.
 #            Only the link is deleted, never a target, and never a foreign link.
 #   warn   : a surface whose parent is missing too (tool not installed) prints
@@ -31,7 +32,6 @@
 # flags such a copy as [STALE]; a human deletes it, then this script links it.
 $ErrorActionPreference = 'Continue'
 $repo = Join-Path $env:USERPROFILE 'custom-skills'
-$mllwSrc = Join-Path $env:USERPROFILE 'Documents\LLMWiki\skills\maintaining-llm-wiki'
 $store = Join-Path $env:USERPROFILE '.agents\skills'   # npx repo layer: third-party store. ASCII ONLY!
 $configPath = Join-Path $PSScriptRoot 'distribution-targets.json'
 
@@ -81,7 +81,7 @@ Write-Output ("  [cfg]  " + $targets.Count + " Windows surface(s) from distribut
 # does not exist stays out of the list, so an unavailable repo or LLMWiki can
 # never cause a pruning spree.
 $managedRoots = @()
-foreach ($root in @($repo, (Split-Path $mllwSrc -Parent), $store)) {
+foreach ($root in @($repo, $store)) {
   if (Test-Path $root) { $managedRoots += (Resolve-Path $root).Path.TrimEnd('\') }
 }
 
@@ -105,7 +105,6 @@ $items = @()
 Get-ChildItem $repo -Directory | Where-Object { Test-Path (Join-Path $_.FullName 'SKILL.md') } | ForEach-Object {
   $items += ,@($_.Name, $_.FullName)
 }
-if (Test-Path $mllwSrc) { $items += ,@('maintaining-llm-wiki', $mllwSrc) }
 
 # third-party items live in the npx store as real directories (our own entries
 # there are junctions, so LinkType plus the name check keeps them out).

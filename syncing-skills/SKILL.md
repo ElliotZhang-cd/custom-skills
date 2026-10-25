@@ -13,7 +13,7 @@ description: 维护和管理我的技能列表与各 agent 平台的分发，让
 
 ## 工作流
 
-1. **先判定输入属于哪一类**（四类来源与两个真相源见 `references/environment.md`）：
+1. **先判定输入属于哪一类**（来源类别与真相源见 `references/environment.md`）：
    - 自建技能的新增 / 改名 / 退役 / 改内容 → `references/workflows.md`「技能」
    - 第三方技能的引入 / 更新 / 卸载（`npx skills` 管的那些）→ `references/workflows.md`「第三方技能」
    - 人工放置的手工技能入账 / 恢复 → `references/workflows.md`「手工技能」
@@ -38,7 +38,7 @@ description: 维护和管理我的技能列表与各 agent 平台的分发，让
 
 - 声明层读不到、或自检报错：停下报错，**不要**手工建链接绕过——那会造出对账看不见的状态。
 - 要删除分发目标里的条目（尤其是工作区外的目录）：先打印待清理清单并等确认。`--retire <id>` 只打印、绝不删除，且**只认分发目标 id**——传技能名会报未知目标（退出码 2）；技能退役的预览是对账输出本身（`[BRK ]` 死链 / `[EXTRA]` 僵尸）。
-- **不要信同步脚本的退出码或结尾那句"完成"**：它把对账的非 0 退出码降级为警告，生成本身崩溃时也照样打印成功。以对账输出为准。
+- **不要信同步脚本默认模式的退出码**：默认模式下对账失败不改变退出码（加 `--strict` 才会以退出码 1 结束）；判据永远是对账输出本身，不是脚本结尾的话术（2026-10-25 起，失败时脚本会打印「未完成」而非「完成」，但结论仍以对账输出为准）。
 - 工作树脏：同步脚本会拒绝运行。先让人处理提交，不要绕过守卫；生成派生表之后要提交，否则下一次同步会被自己挡住。
 - 技能内容本身有问题（写法、结构、触发语）：转 `authoring-skills`，不要在这里改。
 - 知识库正文（入库 / 查询 / lint）：转 `maintaining-llm-wiki`。
@@ -50,7 +50,7 @@ description: 维护和管理我的技能列表与各 agent 平台的分发，让
 
 ## 验证
 
-改完必须跑 `python3 scripts/check_distribution.py`（两端各一次）并确认退出码 0，再跑 `python3 scripts/gen-skills-table.py` 刷新派生表（`--readme` 两端可跑；默认模式仅 WSL 可跑，见 `references/environment.md`）。
+改完必须**两端各跑一次**对账并确认退出码 0：Windows `python scripts\check_distribution.py`，WSL `python3 scripts/check_distribution.py`；或直接跑仓库根的 `check-all.bat`（两端一次跑完，任一端失败退出码 1）。再刷新派生表：Windows `python scripts\gen-skills-table.py --readme README.md`，WSL `python3 scripts/gen-skills-table.py`（AGENTS.md）与 `--readme` 模式（默认模式仅 WSL 可跑，见 `references/environment.md`）。
 
 ## References
 

@@ -1,26 +1,28 @@
 #!/usr/bin/env python3
 """check_distribution.py - skill 分发对账（双平台，仅标准库）
 
-真相源（expected 全集，分四类来源）:
+真相源（expected 全集，来源三类；mllw 类别已于 2026-10-25 退役——maintaining-llm-wiki
+           已并入自建，见 docs/adr/0005）:
   selfbuilt  = 本仓库(clone)根下含 SKILL.md 的目录（自建，唯一真相源）
-  mllw       = maintaining-llm-wiki（LLMWiki 仓库可探测时，第二源）
   thirdparty = ~/.agents/.skill-lock.json 的 skills key 集（skills CLI 管理，读不到则空）
   manual     = manual-skills.md 账本（人工放置的第三方件，按「所在面」列逐面取名字集）
 检查面: 由 scripts/distribution-targets.json 驱动（唯一配置源，白名单=封闭投影面）。
         每条含 role（junction/link/storage，v7.3 起为消费方）与 required（布尔，缺省 false）。
 判定:
   MISSING  = 应分发但目标缺失
-  EXTRA    = 带本体系管理标记(.custom-src / 指向自建仓库或 LLMWiki 的符号链接或 junction)
+  EXTRA    = 带本体系管理标记(.custom-src / 指向自建仓库的符号链接或 junction)
              但已不在 expected（改名/删除残留的僵尸）
   UNKNOWN  = 面内存在、既不在 expected 也无体系标记（历史残留 / 平台技能 / 第三方 Windows 残留）
-             仅列出，不报错不删除
+             仅列出，不报错不删除；已登记进清单 noise_entries 的名字降为 [裁定]（一行汇总）
   BROKEN   = 死符号链接 / 死 junction
   CONFLICT = 同名同时出现在自建集与第三方锁文件（命名空间冲突，必须改名）
-  STALE    = 该面 expected 的**链接类**来源（自建 / 第二个来源 / 面已声明 thirdparty 且非存储面的
+  STALE    = 该面 expected 的**链接类**来源（自建 / 面已声明 thirdparty 且非存储面的
              第三方）在本面存在同名 SKILL.md 条目，但它不是指向该来源权威位置的链接（真实目录
              或外来链接）——即本体系 junction/符号链接被工具自建的真实副本顶掉了。两点例外：
              manual 池永不参与（按定义就是真实副本）；存储面（role=storage）是第三方真实目录的
              所在地，其第三方也不参与。只在 role 为 junction/link/storage（或未声明 role）的面启用。
+  NAME     = 面内条目的目录名 ≠ 其 SKILL.md frontmatter 的 name（工具按 name 注册，会造成
+             同名重复注册——2026-10-25 Humanizer-zh-main 实证）。提醒级，不改退出码，但抑制 [OK]。
   WARN(面) = 面目录不存在（本机无此面）：只打 [WARN]，但该面 required: true 时计入退出码 1。
 配置自检 = 分发清单字段缺失/拼错、目标 id 不在 LEDGER_TOKENS、账本「所在目标」列含未声明的
               token —— 一律明确报错并退出码 1，不再静默剔除或静默降级（见 specs/syncing-skills R5）。
@@ -30,25 +32,16 @@
 UNKNOWN 不影响结论。`--retire <surface-id>` 只打印该面的待清理链接清单，绝不删除（退出码 0）。
 """
 import os
+import re
 import sys
 import json
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 MARKER = ".custom-src"
-MLLW = "maintaining-llm-wiki"
 LEDGER = REPO / "manual-skills.md"
 SKIP_WIN_USERS = {"All Users", "Default", "Default User", "Public"}
 CONFIG = REPO / "scripts" / "distribution-targets.json"
-
-
-def mllw_source_exists():
-    cands = [Path.home() / "Documents" / "LLMWiki" / "skills" / MLLW]
-    mnt = Path("/mnt/c/Users")
-    if mnt.is_dir():
-        cands += [u / "Documents" / "LLMWiki" / "skills" / MLLW
-                  for u in mnt.iterdir() if u.is_dir() and u.name not in SKIP_WIN_USERS]
-    return any((c / "SKILL.md").is_file() for c in cands)
 
 
 def selfbuilt_set():
@@ -76,13 +69,15 @@ LEDGER_TOKENS = {"agents": "wsl", "claude": "wsl", "workbuddy": "workbuddy",
                  "zcode": "zcode", "dsh": "dsh"}
 
 VALID_PLATFORM = {"win", "posix"}
-VALID_EXPECT = {"selfbuilt", "mllw", "thirdparty", "manual"}
+VALID_EXPECT = {"selfbuilt", "thirdparty", "manual"}
 VALID_ROLE = {"junction", "link", "storage"}
 SURFACE_KEYS = {"id", "platform", "relpath", "expect", "role", "required", "note"}
 KNOWN_NOISE_KEYS = {"relpath", "note"}
-# 已裁定的长期噪音（清单里的 known_noise）由 load_surfaces() 填，供自检与提醒共用。
-# 不变量 I8：不登记就会每次倾倒数百条，把真信号稀释掉。
+NOISE_ENTRY_KEYS = {"surface", "names", "note"}
+# 已裁定的长期噪音由 load_surfaces() 填：known_noise（整目录）与 noise_entries（面内条目），
+# 供自检与提醒共用。不变量 I8：不登记就会每次倾倒数百条，把真信号稀释掉。
 KNOWN_NOISE = []
+NOISE_ENTRIES = []
 
 
 def ledger_faces():
@@ -106,7 +101,7 @@ def ledger_faces():
     return out
 
 
-def validate_config(surfaces, known_noise=()):
+def validate_config(surfaces, known_noise=(), noise_entries=()):
     """声明自检（R5）：字段缺失/拼错一律报错，不静默降级。
 
     三类历史静默失败：platform 漏写 → Windows 端静默剔除该目标（连 [skip] 都不打）；
@@ -183,6 +178,26 @@ def validate_config(surfaces, known_noise=()):
         note = k.get("note")
         if not isinstance(note, str) or not note.strip():
             errors.append(f"{where} note 必须写清为何裁定为噪音（没写等于没裁定）")
+    for i, e in enumerate(noise_entries or [], 1):
+        where = f"noise_entries[{i}]"
+        if not isinstance(e, dict):
+            errors.append(f"{where} 不是对象")
+            continue
+        unknown = sorted(set(e) - NOISE_ENTRY_KEYS)
+        if unknown:
+            errors.append(f"{where} 含未知字段: {', '.join(unknown)}"
+                          f"（合法字段: {', '.join(sorted(NOISE_ENTRY_KEYS))}）")
+        surf = e.get("surface")
+        if not isinstance(surf, str) or surf not in seen_ids:
+            errors.append(f"{where} surface 必须是已声明的分发目标 id（当前 {surf!r}；"
+                          f"已声明: {', '.join(sorted(seen_ids))}）")
+        names = e.get("names")
+        if (not isinstance(names, list) or not names or
+                not all(isinstance(x, str) and x.strip() for x in names)):
+            errors.append(f"{where} names 必须是非空字符串数组")
+        note = e.get("note")
+        if not isinstance(note, str) or not note.strip():
+            errors.append(f"{where} note 必须写清为何裁定为噪音（没写等于没裁定）")
     return errors
 
 
@@ -225,16 +240,6 @@ def discover_skill_dirs(declared, root=None):
         if names:
             found.append((cur, names))
     return found
-
-
-def mllw_source_dirs():
-    """第二个来源自身的目录（它是来源、不是分发目标，发现机制应排除，避免自报）。"""
-    cands = [Path.home() / "Documents" / "LLMWiki" / "skills"]
-    mnt = Path("/mnt/c/Users")
-    if mnt.is_dir():
-        cands += [u / "Documents" / "LLMWiki" / "skills"
-                  for u in mnt.iterdir() if u.is_dir() and u.name not in SKIP_WIN_USERS]
-    return [c for c in cands if (c / MLLW).is_dir()]
 
 
 def _home_rel(path):
@@ -320,9 +325,11 @@ def load_surfaces():
     if not isinstance(surfaces, list):
         print(f"[audit] 错误: 配置缺少 surfaces 数组 {CONFIG}。")
         return None
-    global KNOWN_NOISE
+    global KNOWN_NOISE, NOISE_ENTRIES
     kn = cfg.get("known_noise") or []
     KNOWN_NOISE = kn if isinstance(kn, list) else []
+    ne = cfg.get("noise_entries") or []
+    NOISE_ENTRIES = ne if isinstance(ne, list) else []
     return surfaces
 
 
@@ -391,14 +398,12 @@ def managed_roots():
 
 
 def is_managed(entry):
-    """管理标记 = bat 写入的 .custom-src，或指向自建仓库/LLMWiki 的符号链接或 junction"""
+    """管理标记 = bat 写入的 .custom-src，或指向自建仓库的符号链接或 junction"""
     if (entry / MARKER).is_file():
         return True
 
     def under_managed(real):
         posix = real.as_posix().replace("\\", "/")
-        if "LLMWiki/skills" in posix:
-            return True
         for root in managed_roots():
             try:
                 real.relative_to(root)
@@ -425,7 +430,27 @@ def is_managed(entry):
         return False
 
 
-def audit(label, path, pools, role="", required=False):
+def frontmatter_name(skill_dir):
+    """SKILL.md frontmatter 里的 name 字段（没有 frontmatter / 没有 name 返回 None）。
+
+    目录名 ≠ name 时，工具按 name 注册会出现同名重复（2026-10-25 Humanizer-zh-main 实证）；
+    对账按目录名判，看不见这层冲突，故以 [NAME] 点名。"""
+    try:
+        with open(skill_dir / "SKILL.md", encoding="utf-8", errors="replace") as f:
+            head = f.read(4096)
+    except OSError:
+        return None
+    m = re.match(r"^---\s*\n(.*?\n)---", head, re.DOTALL)
+    if not m:
+        return None
+    for line in m.group(1).splitlines():
+        mm = re.match(r"^name:\s*(.+?)\s*$", line)
+        if mm:
+            return mm.group(1).strip("\"'")
+    return None
+
+
+def audit(label, path, pools, role="", required=False, noise=None):
     if not path.is_dir():
         print(f"  [WARN] surface missing: {label}（本机无此面）")
         if required:
@@ -449,7 +474,17 @@ def audit(label, path, pools, role="", required=False):
                 managed.add(e.name)
     missing = sorted(expected - present)
     extra = sorted(managed - expected)
-    unknown = sorted(present - expected - managed)
+    residue = present - expected - managed
+    adj_names = frozenset(noise["names"]) if noise else frozenset()
+    unknown = sorted(residue - adj_names)
+    adjudicated = sorted(residue & adj_names)
+    name_mismatch = []
+    for n in sorted(present):
+        if n in adj_names:
+            continue   # 已裁定的面内噪音（如市场件）不按我们的目录名纪律要求
+        fm = frontmatter_name(path / n)
+        if fm and fm != n:
+            name_mismatch.append(f"{n}→{fm}")
     # STALE：该面 expected 的链接类来源（自建 / 第二个来源 / 已声明 thirdparty 的第三方）在本面
     # 存在同名 SKILL.md 条目，但它不是指向该来源权威位置的链接 → 链接被工具自建副本顶掉。
     # manual 池永不参与（它按定义就是真实副本）；thirdparty 是否算链接类，由该面 expect 决定
@@ -457,8 +492,8 @@ def audit(label, path, pools, role="", required=False):
     # 只对 role in junction/link/storage（或未声明 role）的面启用。
     stale = []
     if role in ("", "junction", "link", "storage"):
-        # 自建 / 第二个来源：必须是**指向本仓库或 LLMWiki 的链接**（is_managed 认的就是这个）
-        owned = pools.get("selfbuilt", set()) | pools.get("mllw", set())
+        # 自建：必须是**指向本仓库的链接**（is_managed 认的就是这个）
+        owned = pools.get("selfbuilt", set())
         stale_owned = (present - managed) & owned
         # 第三方（该面声明了 thirdparty 且不是存储面）：必须是**链接**——指向该平台的 npx 仓库层，
         # 因此不必落在仓库/LLMWiki 之下。**不看登记表**：一个名字只要进了该平台的仓库层，
@@ -472,20 +507,26 @@ def audit(label, path, pools, role="", required=False):
                     stale_tp.add(n)
         stale = sorted(stale_owned | stale_tp)
     bad = bool(missing or extra or broken or stale)
-    if not bad and not unknown:
+    if not bad and not unknown and not name_mismatch:
         print(f"  [OK]   {label}  对齐（{len(present & expected)}/{len(expected)}）")
-        return False
-    if missing:
-        print(f"  [MISS] {label}  缺失: {', '.join(missing)}")
-    if extra:
-        print(f"  [EXTRA]{label}  僵尸: {', '.join(extra)} （源已改名/删除，确认后手动删）")
-    if broken:
-        print(f"  [BRK ] {label}  死链: {', '.join(broken)}")
-    if stale:
-        print(f"  [STALE]{label}  非链接副本: {', '.join(stale)}"
-              f"（expected 自建/mllw 在本面应是 junction/符号链接；疑似被工具自建副本覆盖，见事故教训）")
-    if unknown:
-        print(f"  [UNK ] {label}  非本体系残留(不删，仅列出): {', '.join(unknown)}")
+    else:
+        if missing:
+            print(f"  [MISS] {label}  缺失: {', '.join(missing)}")
+        if extra:
+            print(f"  [EXTRA]{label}  僵尸: {', '.join(extra)} （源已改名/删除，确认后手动删）")
+        if broken:
+            print(f"  [BRK ] {label}  死链: {', '.join(broken)}")
+        if stale:
+            print(f"  [STALE]{label}  非链接副本: {', '.join(stale)}"
+                  f"（expected 自建/第三方在本面应是 junction/符号链接；疑似被工具自建副本覆盖，见事故教训）")
+        if unknown:
+            print(f"  [UNK ] {label}  非本体系残留(不删，仅列出): {', '.join(unknown)}")
+        if name_mismatch:
+            print(f"  [NAME] {label}  目录名≠frontmatter name: {', '.join(name_mismatch)}"
+                  f"（工具按 name 注册，会顶出同名重复；归一：改目录名或改 name）")
+    if adjudicated:
+        print(f"  [裁定] {label}  {len(adjudicated)} 项面内噪音"
+              f"（已裁定：{noise['note']}）—— 只提醒、不影响退出码")
     return bad
 
 
@@ -522,7 +563,7 @@ def main(argv=None):
     surfaces = load_surfaces()
     if surfaces is None:
         return 1   # 配置不可用：不静默空跑
-    errs = validate_config(surfaces, KNOWN_NOISE)
+    errs = validate_config(surfaces, KNOWN_NOISE, NOISE_ENTRIES)
     if errs:
         print("[audit] 错误: 分发清单/账本自检未通过（不静默降级，见 R5）:")
         for e in errs:
@@ -536,21 +577,26 @@ def main(argv=None):
         return retire_mode(argv[i + 1], surfaces)
     pools = {
         "selfbuilt": selfbuilt_set(),
-        "mllw": {MLLW} if mllw_source_exists() else set(),
     }
     local_tp = thirdparty_set()
     conflict = sorted(pools["selfbuilt"] & local_tp)
     manual = manual_entries()
     expanded = expand_surfaces(surfaces)
-    total = sum(len(v) for v in pools.values()) + len(local_tp)
-    print(f"[audit] 真相源 {total} 个"
-          f"（自建 {len(pools['selfbuilt'])} / mllw {len(pools['mllw'])}"
-          f" / 第三方 {len(local_tp)}（本机锁））；"
+    print(f"[audit] 真相源 {len(pools['selfbuilt']) + len(local_tp)} 个"
+          f"（自建 {len(pools['selfbuilt'])} / 第三方 {len(local_tp)}（本机锁））；"
           f"手动件登记表 {sum(len(v) for v in manual.values())} 条")
     if conflict:
         print(f"[CONFLICT] 命名冲突（自建 ∩ 第三方同名，必须改名）: {', '.join(conflict)}")
     bad = bool(conflict)
     req_missing = []
+    noise_by_surface = {}
+    for e in NOISE_ENTRIES:
+        if not (isinstance(e, dict) and isinstance(e.get("surface"), str)):
+            continue
+        slot = noise_by_surface.setdefault(e["surface"], {"names": set(), "note": ""})
+        slot["names"].update(n for n in (e.get("names") or []) if isinstance(n, str))
+        if e.get("note"):
+            slot["note"] = e["note"]
     for sf in expanded:
         sub = {k: (v if k in sf["expect"] else set()) for k, v in pools.items()}
         if "thirdparty" in sf["expect"]:
@@ -559,14 +605,15 @@ def main(argv=None):
             sub["manual"] = manual.get(sf["id"], set())
         if not sf["path"].is_dir() and sf["required"]:
             req_missing.append(sf["label"])
-        bad |= audit(sf["label"], sf["path"], sub, sf["role"], sf["required"])
-    report_undeclared([sf["path"] for sf in expanded] + mllw_source_dirs(), KNOWN_NOISE)
+        bad |= audit(sf["label"], sf["path"], sub, sf["role"], sf["required"],
+                     noise_by_surface.get(sf["id"]))
+    report_undeclared([sf["path"] for sf in expanded], KNOWN_NOISE)
     if bad:
         if req_missing:
             print(f"[audit] required 面缺失 {len(req_missing)} 个（计入退出码 1）: "
                   f"{', '.join(req_missing)}")
         print("[audit] 存在缺口：MISSING 跑对应端同步脚本补齐；EXTRA/BROKEN 确认后清理；"
-              "STALE 说明该面 expected 的链接类来源被复制成了真实副本（自建 / 第二个来源 / 已声明 "
+              "STALE 说明该面 expected 的链接类来源被复制成了真实副本（自建 / 已声明 "
               "thirdparty 的第三方），跑对应端的同步脚本恢复；UNKNOWN 为残留仅列出、不改写。")
         return 1
     print("[audit] 全部分发面对齐。（若上方有 UNK 残留，属非本体系，不影响结论）")

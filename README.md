@@ -11,19 +11,18 @@
 
 整体结构（五层归属、不变量、机制契约、盲区总账）见 `docs/architecture.md`——那是先读的一份。
 
-两个真相源：
+真相源：
 
 - **自建技能** = 本仓库（GitHub `ElliotZhang-cd/custom-skills`）。WSL `~/custom-skills/` 与 Windows `%USERPROFILE%\custom-skills` 都是它的 clone，都能编辑；**push 才算发布**。
-- **第二个来源** = `LLMWiki/skills/maintaining-llm-wiki`（独立仓库、独立历史）。
+- 历史注：曾有「第二个来源」（LLMWiki 仓库里的 `maintaining-llm-wiki`），2026-10-25 已退役并入自建（`docs/adr/0005`）；LLMWiki 现在只是**落账**去处，不是技能来源。
 
 技能的**内容**由人写（写法规范见 `authoring-skills`）；本仓库管的是它落到哪、怎么分发、怎么对账、怎么退役。
 
-## 四类来源
+## 三类来源
 
 | 来源 | 是什么 | 怎么分发 | 谁声明 |
 |---|---|---|---|
 | 自建 | 本仓库根下含 `SKILL.md` 的目录 | 链接（WSL 两级符号链接 / Windows junction） | 仓库自身——仓库即列表 |
-| 第二个来源 | `maintaining-llm-wiki` | 同上，指向 LLMWiki 源目录 | LLMWiki 仓库是否存在 |
 | 第三方 | `npx skills` 管理的技能 | **链接**：各平台面 → 该平台的 npx **仓库层**（WSL `~/.agents/skills`、Windows `%USERPROFILE%\.agents\skills`；仓库层本身是真实目录） | 各平台自己的锁文件 `.skill-lock.json` |
 | 手工技能 | 人工放置、无仓库来源的第三方技能 | Windows 各目标下的真实副本 | 登记表 `manual-skills.md` |
 
@@ -32,12 +31,12 @@
 <!-- TARGETS_TABLE_START -->
 | 目标 | 路径 | 角色 | 加载什么 |
 |---|---|---|---|
-| `agents` | `~/.agents/skills` | storage | 自建、第二个来源、第三方 |
-| `claude` | `~/.claude/skills` | link | 自建、第二个来源、第三方 |
+| `agents` | `~/.agents/skills` | storage | 自建、第三方 |
+| `claude` | `~/.claude/skills` | link | 自建、第三方 |
 | `agents-win` | `%USERPROFILE%\.agents\skills` | storage | 第三方 |
-| `workbuddy` | `%USERPROFILE%\.workbuddy\skills` | junction | 自建、第二个来源 |
-| `zcode` | `%USERPROFILE%\.zcode\skills` | junction | 自建、第二个来源、第三方、手工技能 |
-| `dsh` | `%USERPROFILE%\.dsh\skills` | junction | 自建、第二个来源、第三方、手工技能 |
+| `workbuddy` | `%USERPROFILE%\.workbuddy\skills` | junction | 自建 |
+| `zcode` | `%USERPROFILE%\.zcode\skills` | junction | 自建、第三方、手工技能 |
+| `dsh` | `%USERPROFILE%\.dsh\skills` | junction | 自建、第三方、手工技能 |
 <!-- TARGETS_TABLE_END -->
 
 > 这张表由 `python3 scripts/gen-skills-table.py --readme README.md` 从 `scripts/distribution-targets.json` 生成，**不要手改**。
@@ -82,11 +81,12 @@
 
 **流程细节不在这里复述**——完整流程见技能 `syncing-skills/`（`SKILL.md` 是入口），对账输出怎么读见它的 `references/reconciliation.md`。
 
-两条一键命令：
+两条一键命令 + 一条跨端对账：
 
 ```
-Windows:  sync-custom-skills.bat
-WSL:      bash scripts/sync-wsl.sh
+Windows 同步:       sync-custom-skills.bat        （--strict：对账失败 → 退出码 1）
+WSL 同步:          bash scripts/sync-wsl.sh      （同上）
+两端一键对账:      check-all.bat                 （本机 + WSL 各跑一次，任一端失败退出码 1）
 ```
 
 两端脚本各自的分步流程（步数、顺序、脏树守卫、锁快照等）见 skill 的 `references/workflows.md`——本文不复述操作细节。
@@ -98,9 +98,10 @@ WSL:      bash scripts/sync-wsl.sh
 scripts/                 分发与对账工具（分发目标声明、补链、对账、派生表生成）
 manual-skills.md         手工技能登记表
 specs/syncing-skills/    本技能的需求 / 设计 / 任务 / 规则
-docs/adr/                难回退的决定及其理由
+docs/adr/                难回退的决定及其理由（一条决定一个文件）
 README.md                本文件（生成块 + 硬规则）
 sync-custom-skills.bat   Windows 一键同步入口（转发到 scripts/sync-windows.bat）
+check-all.bat            跨端一键对账入口（本机 + WSL，任一端失败退出码 1）
 ```
 
 ## 排障
@@ -111,6 +112,6 @@ sync-custom-skills.bat   Windows 一键同步入口（转发到 scripts/sync-win
 ## 决定与沿革
 
 - `docs/architecture.md` — **结构总图**：五层归属、不变量、机制契约、盲区总账、文档分工（先读这个）。
-- `docs/adr/` — 4 条难回退的决定：自建看 git / 第三方看 npx、链接与副本的分工、对账的子集语义、Windows `.agents` 存储面只能由 npx 管理。
+- `docs/adr/` — 难回退的决定及其理由，一条决定一个文件（目录即清单）。
 - `specs/syncing-skills/` — 本技能**构建期**的需求、设计、任务与规则（已冻结，勿据以操作）。
 - LLMWiki 的 `wiki/syntheses/skill-maintenance-workflow.md` — 为什么这样定、版本沿革与事故教训。

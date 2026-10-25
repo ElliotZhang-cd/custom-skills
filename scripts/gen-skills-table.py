@@ -27,8 +27,8 @@ import yaml
 SKILLS_SYSTEM_RE = re.compile(r"<skills_system[^>]*>.*?</skills_system>", re.DOTALL)
 
 # --readme 模式的生成块：标记之间的一切由本脚本重建，标记之外一律是手写内容。
-EXPECT_LABEL = {"selfbuilt": "自建", "mllw": "第二个来源",
-                "thirdparty": "第三方", "manual": "手工技能"}
+# mllw 类别已于 2026-10-25 退役（docs/adr/0005），词表里不再有它。
+EXPECT_LABEL = {"selfbuilt": "自建", "thirdparty": "第三方", "manual": "手工技能"}
 
 USAGE_BLOCK = """<usage>
 When users ask you to perform tasks, check if any of the available skills below can help complete the task more effectively. Skills provide specialized capabilities and domain knowledge.
