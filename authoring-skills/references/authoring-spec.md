@@ -122,3 +122,20 @@ python3 scripts/check-skill.py path/to/skill-dir     # WSL
 
 Exit 0 required. Each warning must be fixed or justified; a surviving warning
 needs a reason in the body, not silence.
+
+What is fatal and what is not:
+
+| Finding | Default | `--strict` |
+| --- | --- | --- |
+| description over budget, no trigger, trigger-first, feature inventory, narration | error | error |
+| `name` invalid, reserved word, too long | error | error |
+| linked file missing, backslash or Windows path | error | error |
+| body missing `Goal` / `Workflow` / `Success criteria` / `Stop rules` | warning | error |
+| exclusions in description, Chinese enumeration, non-gerund name | warning | warning |
+
+Section names are house style. A skill written as `Overview` / `流程` / `边界` is
+not broken, so the default run reports it without failing; a skill generated
+*from this template* should still use the canonical names, which is what
+`--strict` is for. Description budget violations are always errors — that is the
+failure this checker exists for, and it never becomes advisory.
+

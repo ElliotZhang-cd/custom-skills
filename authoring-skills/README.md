@@ -20,7 +20,8 @@ authoring-skills/
 2. Ask the model to create, review, or improve a skill.
 3. The model follows the structure defined in `SKILL.md`.
 4. Validate mechanically: `python scripts/check-skill.py <skill-dir>` (Windows) or
-   `python3 scripts/check-skill.py <skill-dir>` (WSL). Exit 0 required.
+   `python3 scripts/check-skill.py <skill-dir>` (WSL). Exit 0 required. Add
+   `--strict` when the skill must also use the canonical section names.
 
 ## The description budget
 
