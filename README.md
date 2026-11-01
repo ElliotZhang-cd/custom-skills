@@ -53,6 +53,7 @@
 | `authoring-skills` | Creates, reviews, and fixes portable Agent Skills (SKILL.md packages). Use when writing a new skill, revising… |
 | `defining-products` | 在立项与审查阶段做产品定义：定位四问、不可能三角与迁移成本，产出定位声明与放弃清单。 |
 | `maintaining-llm-wiki` | 维护 LLM Wiki 知识库（入库/查询/lint/派生同步/生命周期）。 |
+| `maintaining-relationship` | 分析男同伴侣聊天记录中的自我位置、冲突结构、互动模式、纵向趋势与关系期待，并跨会话维护一份关系档案；不诊断对方人格、不替用户做决定、不替代心理咨询。 |
 | `researching-user-costs` | 用成本视角验证用户是否真的接受产品：以付费、时间、注意力、迁移等真实成本取证，不采信口头表态。 |
 | `syncing-skills` | 维护和管理我的技能列表与各 agent 平台的分发，让每个平台加载到的技能与真相源保持一致。 |
 <!-- SELF_BUILT_TABLE_END -->
