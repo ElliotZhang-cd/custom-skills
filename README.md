@@ -50,10 +50,10 @@
 | `analyzing-bigfive` | 解读 BFI-2 的 5 维度 + 15 子维度原始分，产出给来访者阅读的 HTML 报告；不做诊断。 |
 | `analyzing-complex-systems` | 帮助用户以系统思维分析多主体复杂问题（平台生态、市场、组织、社会现象等），产出「机制—杠杆—风险」结构化判断。 |
 | `analyzing-functions` | 解读荣格八维 / MBTI 八功能分数，判定类型并为单人产出人格 HTML 报告、为情侣双方产出关系动力 HTML 报告；不覆盖职业适配、年龄推断，以及理论范围之外的婚恋适配裁决。 |
-| `authoring-skills` | Creates, reviews, and iterates on portable Agent Skills (SKILL.md packages) that follow open SKILL.md / AgentS… |
-| `defining-products` | Use when 用户在产品/功能/项目立项或审查阶段需要回答"为什么做、为谁做、先做什么、凭什么是我们"。 |
+| `authoring-skills` | Creates, reviews, and fixes portable Agent Skills (SKILL.md packages). Use when writing a new skill, revising… |
+| `defining-products` | 在立项与审查阶段做产品定义：定位四问、不可能三角与迁移成本，产出定位声明与放弃清单。 |
 | `maintaining-llm-wiki` | 维护 LLM Wiki 知识库（入库/查询/lint/派生同步/生命周期）。 |
-| `researching-user-costs` | Use when 用户在做用户访谈、收集反馈、评估"用户是否真的接受产品/功能"。 |
+| `researching-user-costs` | 用成本视角验证用户是否真的接受产品：以付费、时间、注意力、迁移等真实成本取证，不采信口头表态。 |
 | `syncing-skills` | 维护和管理我的技能列表与各 agent 平台的分发，让每个平台加载到的技能与真相源保持一致。 |
 <!-- SELF_BUILT_TABLE_END -->
 
