@@ -48,7 +48,8 @@ ENUM_RE = re.compile(
 )
 ENUM_ZH_RE = re.compile(r"包括[:：]|例如[:：]")
 EXCLUSION_RE = re.compile(
-    r"(?:\bnot\s+for\b|\bdoes\s+not\s+cover\b|\bexcluding\b|\bexcludes\b|不用于|不负责)",
+    r"(?:\bnot\s+for\b|\bdoes\s+not\s+cover\b|\bexcluding\b|\bexcludes\b|"
+    r"不适用|不用于|不负责|不属于|Don't\s+use\s+for)",
     re.IGNORECASE,
 )
 NARRATION_RE = re.compile(
@@ -191,7 +192,10 @@ def check_description(meta, rep):
     if ENUM_ZH_RE.search(desc):
         rep.warn("description: looks like an enumeration (包括/例如). Prefer a class description.")
     if EXCLUSION_RE.search(desc):
-        rep.warn("description: states what it does NOT cover. Move exclusions to Constraints.")
+        rep.err(
+            "description: states what it does NOT cover. Move exclusions to the body "
+            "(Constraints / Stop rules) — they only matter after the decision to load."
+        )
     if NARRATION_RE.search(desc):
         rep.err("description: narrates the workflow. Describe the destination, not the steps.")
 

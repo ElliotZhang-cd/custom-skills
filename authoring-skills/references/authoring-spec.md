@@ -128,10 +128,11 @@ What is fatal and what is not:
 | Finding | Default | `--strict` |
 | --- | --- | --- |
 | description over budget, no trigger, trigger-first, feature inventory, narration | error | error |
+| exclusions in description (`not for`, `不适用`, …) | error | error |
 | `name` invalid, reserved word, too long | error | error |
 | linked file missing, backslash or Windows path | error | error |
 | body missing `Goal` / `Workflow` / `Success criteria` / `Stop rules` | warning | error |
-| exclusions in description, Chinese enumeration, non-gerund name | warning | warning |
+| Chinese enumeration (`包括：`, `例如：`) in description, non-gerund name | warning | warning |
 
 Section names are house style. A skill written as `Overview` / `流程` / `边界` is
 not broken, so the default run reports it without failing; a skill generated

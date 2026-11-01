@@ -48,7 +48,7 @@
 | 技能 | 一句话 |
 |---|---|
 | `analyzing-bigfive` | 解读 BFI-2 的 5 维度 + 15 子维度原始分，产出给来访者阅读的 HTML 报告；不做诊断。 |
-| `analyzing-complex-systems` | 帮助用户以系统思维分析多主体复杂问题（平台生态、市场、组织、社会现象等），产出「机制—杠杆—风险」结构化判断。 |
+| `analyzing-complex-systems` | 用系统思维分析多主体复杂问题（平台生态、市场、组织、社会现象），产出「机制—杠杆—风险」结构化判断。 |
 | `analyzing-functions` | 解读荣格八维 / MBTI 八功能分数，判定类型并为单人产出人格 HTML 报告、为情侣双方产出关系动力 HTML 报告；不覆盖职业适配、年龄推断，以及理论范围之外的婚恋适配裁决。 |
 | `authoring-skills` | Creates, reviews, and fixes portable Agent Skills (SKILL.md packages). Use when writing a new skill, revising… |
 | `defining-products` | 在立项与审查阶段做产品定义：定位四问、不可能三角与迁移成本，产出定位声明与放弃清单。 |
