@@ -1,6 +1,9 @@
 ---
 name: your-skill-name
-description: Does X and Y. Use when Z.
+# capability (class of work + artifact), then trigger (2-3 signals).
+# Budget: 2 sentences, 200 chars target / 280 hard fail. No feature lists, no
+# exclusions, no step narration. Filled in AFTER the body below is written.
+description: Does X for <artifact>. Use when <signal 1>, <signal 2>, or <signal 3>.
 ---
 
 # Your Skill Name
@@ -39,7 +42,8 @@ Only if inputs or preconditions are non-obvious.
 
 ## Constraints
 
-Only if safety, permissions, or scope boundaries matter.
+Only if safety, permissions, or scope boundaries matter. Exclusions from the
+description belong here.
 
 ## Output Format
 

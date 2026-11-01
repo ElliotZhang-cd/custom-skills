@@ -10,7 +10,8 @@ authoring-skills/
 ├── README.md
 ├── references/
 ├── templates/
-└── examples/
+├── examples/
+└── scripts/
 ```
 
 ## Usage
@@ -18,6 +19,17 @@ authoring-skills/
 1. Place this directory in a skills directory supported by your runtime.
 2. Ask the model to create, review, or improve a skill.
 3. The model follows the structure defined in `SKILL.md`.
+4. Validate mechanically: `python scripts/check-skill.py <skill-dir>` (Windows) or
+   `python3 scripts/check-skill.py <skill-dir>` (WSL). Exit 0 required.
+
+## The description budget
+
+`description` ships on every turn for every installed skill, so it is an ad slot:
+capability first, trigger second, nothing else. Target 2 sentences / 200
+characters; hard fail above 3 sentences / 280 characters. No feature inventory,
+no `.xlsx/.csv/.tsv`-style format lists, no exclusions, no step narration — all
+of that goes in the body. `scripts/check-skill.py` enforces this; see
+`references/authoring-spec.md` for the full rationale.
 
 ## Generated skills
 
@@ -29,11 +41,13 @@ skill-name/
 ├── README.md
 ├── references/
 ├── templates/
-└── examples/
+├── examples/
+└── scripts/
 ```
 
 And every `SKILL.md` should contain:
 
-- Frontmatter: valid `name` and `description`.
+- Frontmatter: valid `name`, and a `description` inside the budget.
 - Body: Goal, Workflow, Success criteria, Stop rules.
 - Optional sections only when needed.
+- `check-skill.py` passing.
