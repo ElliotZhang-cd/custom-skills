@@ -3,7 +3,8 @@
 # sync-wsl.sh - WSL 侧同步 custom-skills（GitHub 为唯一真相源）
 # 架构: GitHub repo = 唯一真相源; WSL ~/custom-skills 与 Windows 均为 clone + 编辑入口
 # 用法: bash ~/custom-skills/scripts/sync-wsl.sh [--strict]   （或 ~/.local/bin 软链后直接跑）
-# 流程: 脏树守卫(含 untracked) -> git pull --ff-only -> 按分发清单同步 POSIX 面的链接
+# 流程: 脏树守卫(含 untracked) -> git pull --ff-only（代理失败自动重试直连，同
+#       sync-windows.bat）-> 按分发清单同步 POSIX 面的链接
 #       (清失效链 + 建链) -> 刷新 AGENTS.md 技能表 -> 分发对账 -> 锁文件快照备份
 # --strict: 对账非 0 时以退出码 1 结束（供计划任务/钩子自动化用）；
 #       默认只记录不中断（历史行为）。无论哪种模式，都以对账输出为准。
@@ -52,7 +53,13 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 # ---- [2/6] pull ----
-git pull --ff-only "$ORIGIN" "$BRANCH" || fail "pull 失败（已排除本地修改干扰），请检查网络/代理"
+# 与 sync-windows.bat 同款回退：代理不可达时改直连重试（-c http.proxy= 置空只作用于
+# 本条命令，不改用户 git 配置）。两跳都失败才算失败。
+if ! git pull --ff-only "$ORIGIN" "$BRANCH"; then
+    echo "[sync] pull 经代理失败，重试直连..."
+    git -c http.proxy= -c https.proxy= pull --ff-only "$ORIGIN" "$BRANCH" \
+        || fail "pull 失败（代理与直连均不可达），请检查网络/代理"
+fi
 echo "[sync] 当前版本: $(git log -1 --oneline)"
 
 # ---- 读清单：platform=posix 的面 → id / role / expect / 目录 ----
