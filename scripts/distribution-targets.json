@@ -51,6 +51,7 @@
     {"relpath": ".codeium/windsurf/skills", "note": "同上"},
     {"relpath": ".openhands/skills", "note": "同上"},
     {"relpath": ".zcode/skills", "note": "同上；注意 Windows 侧同名目录是已登记分发目标（platform: win），本条只裁定 WSL 家目录下这份"},
+    {"relpath": ".claude/skills", "note": "npx skills 的 agent 表条目（Windows 侧）：2026-11-18 add astryx 时 CLI 物化的到仓库层 junction，无真实内容，已裁定不登记为我方分发目标；要清爽可整目录删除，下次 add/update 会再建。注意 WSL 侧同路径是已登记分发目标（platform: posix），本条只裁定 Windows 家目录下这份"},
     {"relpath": ".lingma/skills", "note": "同上"},
     {"relpath": ".iflow/skills", "note": "同上"},
     {"relpath": ".ona/skills", "note": "同上"},
